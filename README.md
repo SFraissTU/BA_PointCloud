@@ -4,7 +4,7 @@ PointCloud-BachelorThesis
 Project files for my bachelor thesis on rendering point clouds in Unity.
 
 Projects:
-* Points1: A simple test project for trying to render simple point clouds.
+* Points1: A simple test project for trying to render simple point clouds. Open Assets/Scene1.unity!
   In this project there are three objects in the scene, of which only one should be enabled.
   Depending on what you want to try, you can enable different objects:
   * PointCloud_Plane: A plane-pointcloud is created by creating random points and rendering them as circles (using the Quads-Primitive). If you press the space button, the points are newly generated.
