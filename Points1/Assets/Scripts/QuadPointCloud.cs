@@ -17,8 +17,8 @@ public class QuadPointCloud : PointCloud
         {
             material = Resources.Load("Materials/QuadPointMaterial", typeof(Material)) as Material;
             Rect screen = GameObject.Find("Main Camera").GetComponent<Camera>().pixelRect;
-            material.SetInt("Screen Width", (int)screen.width);
-            material.SetInt("Screen Height", (int)screen.height);
+            material.SetInt("_ScreenWidth", (int)screen.width);
+            material.SetInt("_ScreenHeight", (int)screen.height);
         }
 
         Mesh mesh = new Mesh();
