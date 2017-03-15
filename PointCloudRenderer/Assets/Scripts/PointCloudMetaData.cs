@@ -15,8 +15,8 @@ public class PointCloudMetaData
     public BoundingBox boundingBox;
     public BoundingBox tightBoundingBox;
     public List<string> pointAttributes;
-    public double spacing;
-    public double scale;
+    public float spacing;
+    public float scale;
     public int hierarchyStepSize;
 
     public static PointCloudMetaData ReadFromJson(string json)

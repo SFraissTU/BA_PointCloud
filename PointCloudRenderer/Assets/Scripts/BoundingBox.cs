@@ -6,14 +6,14 @@ using System.Text;
 [Serializable]
 public class BoundingBox
 {
-    public double lx;
-    public double ly;
-    public double lz;
-    public double ux;
-    public double uy;
-    public double uz;
+    public float lx;
+    public float ly;
+    public float lz;
+    public float ux;
+    public float uy;
+    public float uz;
 
-    public BoundingBox(double lx, double ly, double lz, double ux, double uy, double uz)
+    public BoundingBox(float lx, float ly, float lz, float ux, float uy, float uz)
     {
         this.lx = lx;
         this.ly = ly;
