@@ -36,7 +36,7 @@ public class PointCloudLoaderController : MonoBehaviour {
             {
                 cloudPath = cloudPath + "\\";
             }
-
+            
             metaData = CloudLoader.LoadMetaData(cloudPath);
 
             rootNode = CloudLoader.LoadPointCloud(cloudPath, metaData);

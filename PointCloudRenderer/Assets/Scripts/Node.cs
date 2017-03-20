@@ -9,7 +9,7 @@ using UnityEngine;
 public class Node
 {
     private string name;//filename without the r. for example 073
-    private uint pointcount;
+    private BoundingBox boundingBox;
     //Values that are yet to be created in a mesh. Set in the constructor. Set to null after createGameObjects
     private Vector3[] verticesToStore;
     private Color[] colorsToStore;
@@ -18,9 +18,10 @@ public class Node
     //List containing the gameobjects resembling this node
     private List<GameObject> gameObjects = new List<GameObject>();
 
-    public Node(string name)
+    public Node(string name, BoundingBox boundingBox)
     {
         this.name = name;
+        this.boundingBox = boundingBox;
     }
 
     //Creates the Game Object(s) containing the points of this node
@@ -55,6 +56,13 @@ public class Node
         }
         verticesToStore = null;
         colorsToStore = null;
+    }
+
+    public void CreateBoundingBoxGameObject()
+    {
+        GameObject box = UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/BoundingBoxPrefab"));
+        box.transform.Translate(boundingBox.Min() + boundingBox.Size() / 2);
+        box.transform.localScale = boundingBox.Size();
     }
 
     /* As CreateGameObjects, but it also creates the gameobjects of the children recursively
@@ -132,16 +140,11 @@ public class Node
         get { return name;  }
     }
 
-    public uint Pointcount
+    public BoundingBox BoundingBox
     {
         get
         {
-            return pointcount;
-        }
-
-        set
-        {
-            pointcount = value;
+            return boundingBox;
         }
     }
 }

@@ -27,8 +27,8 @@ class CloudLoader
     public static Node LoadPointCloud(string cloudPath, PointCloudMetaData metaData)
     {
         string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
-        Node rootNode = new Node("");
-        LoadHierarchy(dataRPath, rootNode);
+        Node rootNode = new Node("", metaData.boundingBox);
+        LoadHierarchy(dataRPath, metaData, rootNode);
         LoadAllPoints(dataRPath, metaData, rootNode);
         return rootNode;
     }
@@ -36,11 +36,10 @@ class CloudLoader
     /* Loads the complete hierarchy of the given node. Creates all the children and their data. Points are not yet stored in there.
      * dataRPath is the path of the R-folder
      */
-    private static void LoadHierarchy(string dataRPath, Node root)
+    private static void LoadHierarchy(string dataRPath, PointCloudMetaData metaData, Node root)
     {
         byte[] data;
-        //TODO: is this always 4?
-        if (root.Name.Length <= 4)
+        if (root.Name.Length < metaData.hierarchyStepSize)
         {
             data = File.ReadAllBytes(dataRPath + "r" + root.Name + ".hrc");
         } else
@@ -57,14 +56,14 @@ class CloudLoader
         {
             Node n = nextNodes.Dequeue();
             byte configuration = data[offset];
-            uint pointcount = System.BitConverter.ToUInt32(data, offset + 1);
-            n.Pointcount = pointcount;
+            //uint pointcount = System.BitConverter.ToUInt32(data, offset + 1);
+            //n.Pointcount = pointcount; //Pointcount is wrong
             for (int j = 0; j < 8; j++)
             {
                 //check bits
                 if ((configuration & (1 << j)) != 0)
                 {
-                    Node child = new Node(n.Name + j);
+                    Node child = new Node(n.Name + j, calculateBoundingBox(n.BoundingBox, j));
                     n.SetChild(j, child);
                     nextNodes.Enqueue(child);
                 }
@@ -73,8 +72,31 @@ class CloudLoader
         }
         while(nextNodes.Count != 0) {
             Node n = nextNodes.Dequeue();
-            LoadHierarchy(dataRPath, n);
+            LoadHierarchy(dataRPath, metaData, n);
         }
+    }
+
+    private static BoundingBox calculateBoundingBox(BoundingBox parent, int index)
+    {
+        Vector3 min = parent.Min();
+        Vector3 max = parent.Max();
+        Vector3 size = parent.Size();
+        if ((index & 1) != 0) {
+            min.z += size.z / 2;
+        } else {
+            max.z -= size.z / 2;
+        }
+        if ((index & 2) != 0) {
+            min.y += size.y / 2;
+        } else {
+            max.y -= size.y / 2;
+        }
+        if ((index & 4) != 0) {
+            min.x += size.x / 2;
+        } else {
+            max.x -= size.x / 2;
+        }
+        return new BoundingBox(min, max);
     }
 
     /* Loads the points for just that one node
@@ -82,8 +104,7 @@ class CloudLoader
     private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node)
     {
         byte[] data;
-        //TODO: is this always 4?
-        if (node.Name.Length <= 4)
+        if (node.Name.Length < metaData.hierarchyStepSize)
         {
             data = File.ReadAllBytes(dataRPath + "r" + node.Name + ".bin");
         }
@@ -105,10 +126,11 @@ class CloudLoader
                 for (int i = 0; i < numPoints; i++)
                 {
                     //TODO: min
+                    //TODO: double precision...
                     //Note: y and z are switched
-                    float x = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale;
-                    float y = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale;
-                    float z = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale;
+                    float x = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale + node.BoundingBox.lx;
+                    float y = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale + node.BoundingBox.lz;
+                    float z = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale + node.BoundingBox.ly;
                     vertices[i] = new Vector3(x, y, z);
                 }
                 offset += 12;
