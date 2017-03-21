@@ -61,8 +61,8 @@ public class Node
     public void CreateBoundingBoxGameObject()
     {
         GameObject box = UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/BoundingBoxPrefab"));
-        box.transform.Translate(boundingBox.Min() + boundingBox.Size() / 2);
-        box.transform.localScale = boundingBox.Size();
+        box.transform.Translate((boundingBox.Min() + (boundingBox.Size() / 2)).ToFloatVector());
+        box.transform.localScale = boundingBox.Size().ToFloatVector();
     }
 
     /* As CreateGameObjects, but it also creates the gameobjects of the children recursively

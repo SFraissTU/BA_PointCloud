@@ -78,9 +78,9 @@ class CloudLoader
 
     private static BoundingBox calculateBoundingBox(BoundingBox parent, int index)
     {
-        Vector3 min = parent.Min();
-        Vector3 max = parent.Max();
-        Vector3 size = parent.Size();
+        Vector3d min = parent.Min();
+        Vector3d max = parent.Max();
+        Vector3d size = parent.Size();
         if ((index & 1) != 0) {
             min.z += size.z / 2;
         } else {
@@ -125,12 +125,11 @@ class CloudLoader
                 Vector3[] vertices = new Vector3[numPoints];
                 for (int i = 0; i < numPoints; i++)
                 {
-                    //TODO: min
-                    //TODO: double precision...
+                    //Reduction to single precision!
                     //Note: y and z are switched
-                    float x = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale + node.BoundingBox.lx;
-                    float y = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale + node.BoundingBox.lz;
-                    float z = System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale + node.BoundingBox.ly;
+                    float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale + node.BoundingBox.lx);
+                    float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale + node.BoundingBox.lz);
+                    float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale + node.BoundingBox.ly);
                     vertices[i] = new Vector3(x, y, z);
                 }
                 offset += 12;

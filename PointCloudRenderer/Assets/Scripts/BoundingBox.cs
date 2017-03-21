@@ -7,14 +7,14 @@ using UnityEngine;
 [Serializable]
 public class BoundingBox
 {
-    public float lx;
-    public float ly;
-    public float lz;
-    public float ux;
-    public float uy;
-    public float uz;
+    public double lx;
+    public double ly;
+    public double lz;
+    public double ux;
+    public double uy;
+    public double uz;
 
-    public BoundingBox(float lx, float ly, float lz, float ux, float uy, float uz)
+    public BoundingBox(double lx, double ly, double lz, double ux, double uy, double uz)
     {
         this.lx = lx;
         this.ly = ly;
@@ -24,7 +24,7 @@ public class BoundingBox
         this.uz = uz;
     }
 
-    public BoundingBox(Vector3 min, Vector3 max)
+    public BoundingBox(Vector3d min, Vector3d max)
     {
         lx = min.x;
         ly = min.y;
@@ -34,18 +34,18 @@ public class BoundingBox
         uz = max.z;
     }
 
-    public Vector3 Size()
+    public Vector3d Size()
     {
-        return new Vector3(ux - lx, uy - ly, uz - lz);
+        return new Vector3d(ux - lx, uy - ly, uz - lz);
     }
 
-    public Vector3 Min()
+    public Vector3d Min()
     {
-        return new Vector3(lx, ly, lz);
+        return new Vector3d(lx, ly, lz);
     }
 
-    public Vector3 Max()
+    public Vector3d Max()
     {
-        return new Vector3(ux, uy, uz);
+        return new Vector3d(ux, uy, uz);
     }
 }
