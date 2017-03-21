@@ -13,7 +13,7 @@ class PointMeshConfiguration : MeshConfiguration
          material = new Material(Shader.Find("Custom/PointShader"));
     }
 
-    public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData)
+    public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox)
     {
         GameObject gameObject = new GameObject(name);
 
@@ -33,6 +33,10 @@ class PointMeshConfiguration : MeshConfiguration
         mesh.vertices = vertexData;
         mesh.colors = colorData;
         mesh.SetIndices(indecies, MeshTopology.Points, 0);
+
+        //Set Translation
+        gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+
         return gameObject;
     }
 

@@ -81,12 +81,13 @@ class CloudLoader
         Vector3d min = parent.Min();
         Vector3d max = parent.Max();
         Vector3d size = parent.Size();
-        if ((index & 1) != 0) {
+        //z and y are different here than in the sample-code because these coordinates are switched in unity
+        if ((index & 2) != 0) {
             min.z += size.z / 2;
         } else {
             max.z -= size.z / 2;
         }
-        if ((index & 2) != 0) {
+        if ((index & 1) != 0) {
             min.y += size.y / 2;
         } else {
             max.y -= size.y / 2;
@@ -127,9 +128,9 @@ class CloudLoader
                 {
                     //Reduction to single precision!
                     //Note: y and z are switched
-                    float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale + node.BoundingBox.lx);
-                    float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale + node.BoundingBox.lz);
-                    float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale + node.BoundingBox.ly);
+                    float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale/* + node.BoundingBox.lx*/);
+                    float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale/* + node.BoundingBox.lz*/);
+                    float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale/* + node.BoundingBox.ly*/);
                     vertices[i] = new Vector3(x, y, z);
                 }
                 offset += 12;

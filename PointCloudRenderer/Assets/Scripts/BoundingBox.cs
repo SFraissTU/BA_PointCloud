@@ -34,6 +34,16 @@ public class BoundingBox
         uz = max.z;
     }
 
+    public void SwitchYZ()
+    {
+        double temp = ly;
+        ly = lz;
+        lz = temp;
+        temp = uy;
+        uy = uz;
+        uz = temp;
+    }
+
     public Vector3d Size()
     {
         return new Vector3d(ux - lx, uy - ly, uz - lz);

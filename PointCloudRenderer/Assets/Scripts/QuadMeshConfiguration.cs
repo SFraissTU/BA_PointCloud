@@ -27,7 +27,7 @@ class QuadMeshConfiguration : MeshConfiguration
         material.SetInt("_ScreenHeight", (int)screen.height);
     }
 
-    public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData)
+    public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox)
     {
         GameObject gameObject = new GameObject(name);
 
@@ -61,6 +61,10 @@ class QuadMeshConfiguration : MeshConfiguration
         mesh.colors = newColorBuffer;
         mesh.uv = offsetBuffer;
         mesh.SetIndices(indecies, MeshTopology.Quads, 0);
+
+        //Set Translation
+        gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+
         return gameObject;
     }
 
