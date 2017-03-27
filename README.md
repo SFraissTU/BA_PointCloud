@@ -12,3 +12,11 @@ Projects:
   * PointCloud_Lion_Points: The Lion-Cloud is loaded and rendered with points (using the Points-Primitive. PointSize doesn't seem to work)
   
   The used PointCloud is an upscaled version of the Lion-PointCloud. It is also subsampled because the original cloud file was too big for github. So there are only ~880.000 points instead of 4 million.
+
+* PointCloudRenderer: Main-Project. Open Assets/Scenes/LionScene.unity!
+  This project is able to load a pointcloud in the Potree-format. The whole cloud is loaded and rendered.
+  In this project there is an object "PointCloudLoader" in the scene. When selecting this you can set the path to the point cloud to load in the inspector.
+  You can also choose a MeshConfiguration by clicking on the small circle beside the textfield. Three configurations are provided:
+  * DefaultPointMeshConfiguration: Draws the points as single 1px-points.
+  * RectQuadMeshConfiguration: Draws the points as squares. The size is changeable in the inspector of this object.
+  * CircleQuadMeshConfiguration: Draws the points as circles. The size is changeable in the inspector of this object.
