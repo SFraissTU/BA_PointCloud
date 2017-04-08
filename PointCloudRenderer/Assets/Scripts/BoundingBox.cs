@@ -44,6 +44,18 @@ public class BoundingBox
         uz = temp;
     }
 
+    public void moveToOrigin()
+    {
+        Vector3d size = Size();
+        Vector3d newMin = (size / -2);
+        lx = newMin.x;
+        ly = newMin.y;
+        lz = newMin.z;
+        ux = lx + size.x;
+        uy = ly + size.y;
+        uz = lz + size.z;
+    }
+
     public Vector3d Size()
     {
         return new Vector3d(ux - lx, uy - ly, uz - lz);

@@ -29,4 +29,9 @@ public class Vector3d
     {
         return new Vector3d(a.x + b.x, a.y + b.y, a.z + b.z);
     }
+
+    public static Vector3d operator-(Vector3d a, Vector3d b)
+    {
+        return new Vector3d(a.x - b.x, a.y - b.y, a.z - b.z);
+    }
 }

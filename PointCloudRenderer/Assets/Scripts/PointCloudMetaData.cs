@@ -19,11 +19,16 @@ public class PointCloudMetaData
     public double scale;
     public int hierarchyStepSize;
 
-    public static PointCloudMetaData ReadFromJson(string json)
+    public static PointCloudMetaData ReadFromJson(string json, bool moveToOrigin)
     {
         PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);
         data.boundingBox.SwitchYZ();
         data.tightBoundingBox.SwitchYZ();
+        if (moveToOrigin)
+        {
+            data.boundingBox.moveToOrigin();
+            data.tightBoundingBox.moveToOrigin();
+        }
         return data;
     }
     

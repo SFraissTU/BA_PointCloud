@@ -14,14 +14,16 @@ public class Node
     private Vector3[] verticesToStore;
     private Color[] colorsToStore;
     private Node[] children = new Node[8];
+    private Node parent;
 
     //List containing the gameobjects resembling this node
     private List<GameObject> gameObjects = new List<GameObject>();
 
-    public Node(string name, BoundingBox boundingBox)
+    public Node(string name, BoundingBox boundingBox, Node parent)
     {
         this.name = name;
         this.boundingBox = boundingBox;
+        this.parent = parent;
     }
 
     //Creates the Game Object(s) containing the points of this node
@@ -145,6 +147,19 @@ public class Node
         get
         {
             return boundingBox;
+        }
+    }
+
+    public Node Parent
+    {
+        get
+        {
+            return parent;
+        }
+
+        set
+        {
+            parent = value;
         }
     }
 }

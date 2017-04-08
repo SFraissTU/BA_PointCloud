@@ -11,7 +11,7 @@ class CloudLoader
 {
     /* Loads the metadata from the json-file in the given cloudpath
      */
-    public static PointCloudMetaData LoadMetaData(string cloudPath)
+    public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false)
     {
         string jsonfile;
         using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default))
@@ -19,7 +19,7 @@ class CloudLoader
             jsonfile = reader.ReadToEnd();
             reader.Close();
         }
-        return PointCloudMetaData.ReadFromJson(jsonfile);
+        return PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
     }
 
     /* Loads the complete Hierarchy and ALL points from the pointcloud described in the PointCloudMetaData
@@ -27,7 +27,7 @@ class CloudLoader
     public static Node LoadPointCloud(string cloudPath, PointCloudMetaData metaData)
     {
         string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
-        Node rootNode = new Node("", metaData.boundingBox);
+        Node rootNode = new Node("", metaData.boundingBox, null);
         LoadHierarchy(dataRPath, metaData, rootNode);
         LoadAllPoints(dataRPath, metaData, rootNode);
         return rootNode;
@@ -38,14 +38,15 @@ class CloudLoader
      */
     private static void LoadHierarchy(string dataRPath, PointCloudMetaData metaData, Node root)
     {
-        byte[] data;
+        /*byte[] data;
         if (root.Name.Length < metaData.hierarchyStepSize)
         {
             data = File.ReadAllBytes(dataRPath + "r" + root.Name + ".hrc");
         } else
         {
             data = File.ReadAllBytes(dataRPath + "\\" + root.Name + "\\r" + root.Name + ".hrc");
-        }
+        }*/
+        byte[] data = FindAndLoadFile(dataRPath, metaData, root.Name, ".hrc");
         int nodeByteSize = 5;
         int numNodes = data.Length / nodeByteSize;
         int offset = 0;
@@ -63,16 +64,24 @@ class CloudLoader
                 //check bits
                 if ((configuration & (1 << j)) != 0)
                 {
-                    Node child = new Node(n.Name + j, calculateBoundingBox(n.BoundingBox, j));
+                    //This is done twice for some nodes
+                    Node child = new Node(n.Name + j, calculateBoundingBox(n.BoundingBox, j), n);
                     n.SetChild(j, child);
                     nextNodes.Enqueue(child);
                 }
             }
             offset += 5;
         }
+        HashSet<Node> parentsOfNextNodes = new HashSet<Node>();
         while(nextNodes.Count != 0) {
-            Node n = nextNodes.Dequeue();
-            LoadHierarchy(dataRPath, metaData, n);
+            Node n = nextNodes.Dequeue().Parent;
+            if (!parentsOfNextNodes.Contains(n))
+            {
+                parentsOfNextNodes.Add(n);
+                LoadHierarchy(dataRPath, metaData, n);
+            }
+            //Node n = nextNodes.Dequeue();
+            //LoadHierarchy(dataRPath, metaData, n);
         }
     }
 
@@ -104,15 +113,16 @@ class CloudLoader
      */
     private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node)
     {
-        byte[] data;
+        /*byte[] data;
         if (node.Name.Length < metaData.hierarchyStepSize)
         {
             data = File.ReadAllBytes(dataRPath + "r" + node.Name + ".bin");
         }
         else
         {
-            data = File.ReadAllBytes(dataRPath + "\\" + node.Name + "\\r" + node.Name + ".bin");
-        }
+           data = File.ReadAllBytes(dataRPath + "\\" + node.Name + "\\r" + node.Name + ".bin");
+        }*/
+        byte[] data = FindAndLoadFile(dataRPath, metaData, node.Name, ".bin");
         int pointByteSize = 24;//TODO: Is this always the case?
         int numPoints = data.Length / pointByteSize;
         int offset = 0;
@@ -150,6 +160,22 @@ class CloudLoader
                 node.ColorsToStore = colors;
             }
         }
+    }
+
+    /* Finds a file for a node in the hierarchy.
+     * Assuming hierarchyStepSize is 3 and we are looking for the file 0123456765.bin, it is in:
+     * 012/012345/012345676/r0123456765.bin (TODO: Check this with supervisor)
+     */
+    private static byte[] FindAndLoadFile(string dataRPath, PointCloudMetaData metaData, string id, string fileending)
+    {
+        int levels = id.Length / metaData.hierarchyStepSize;
+        string path = "";
+        for (int i = 1; i <= levels; i ++)
+        {
+            path += id.Substring(0, i * metaData.hierarchyStepSize) + "\\";
+        }
+        path += "r" + id + fileending;
+        return File.ReadAllBytes(dataRPath + path);
     }
 
     /* Loads the points for that node and all its children

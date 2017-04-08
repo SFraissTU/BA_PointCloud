@@ -14,6 +14,8 @@ public class PointCloudLoaderController : MonoBehaviour {
     public string cloudPath;
     //Defines the type of PointCloud (Points, Quads, Circles)
     public MeshConfiguration meshConfiguration;
+    //Move bounding box to origin
+    public bool moveToOrigin;
 
     private PointCloudMetaData metaData;
     private Node rootNode;
@@ -37,7 +39,7 @@ public class PointCloudLoaderController : MonoBehaviour {
                 cloudPath = cloudPath + "\\";
             }
             
-            metaData = CloudLoader.LoadMetaData(cloudPath);
+            metaData = CloudLoader.LoadMetaData(cloudPath, moveToOrigin);
 
             rootNode = CloudLoader.LoadPointCloud(cloudPath, metaData);
 
