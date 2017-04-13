@@ -33,6 +33,26 @@ class CloudLoader
         return rootNode;
     }
 
+    public static Node LoadHierarchyOnly(string cloudPath, PointCloudMetaData metaData)
+    {
+        string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
+        Node rootNode = new Node("", metaData.boundingBox, null);
+        LoadHierarchy(dataRPath, metaData, rootNode);
+        return rootNode;
+    }
+
+    public static void LoadPointsForNode(string cloudPath, PointCloudMetaData metaData, Node node)
+    {
+        string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
+        LoadPoints(dataRPath, metaData, node);
+    }
+
+    public static void UnloadPointsForNode(Node node)
+    {
+        node.VerticesToStore = null;
+        node.ColorsToStore = null;
+    }
+
     /* Loads the complete hierarchy of the given node. Creates all the children and their data. Points are not yet stored in there.
      * dataRPath is the path of the R-folder
      */
@@ -57,8 +77,8 @@ class CloudLoader
         {
             Node n = nextNodes.Dequeue();
             byte configuration = data[offset];
-            //uint pointcount = System.BitConverter.ToUInt32(data, offset + 1);
-            //n.Pointcount = pointcount; //Pointcount is wrong
+            uint pointcount = System.BitConverter.ToUInt32(data, offset + 1);
+            n.PointCount = pointcount; //TODO: Pointcount is wrong
             for (int j = 0; j < 8; j++)
             {
                 //check bits

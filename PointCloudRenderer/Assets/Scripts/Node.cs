@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 /* Resembles a node of the nested octree
  */
-public class Node
+public class Node : IEnumerable<Node>
 {
     private string name;//filename without the r. for example 073
     private BoundingBox boundingBox;
@@ -15,6 +16,8 @@ public class Node
     private Color[] colorsToStore;
     private Node[] children = new Node[8];
     private Node parent;
+    private uint pointCount;
+    private bool isReadyForGameObjectCreation = false;
 
     //List containing the gameobjects resembling this node
     private List<GameObject> gameObjects = new List<GameObject>();
@@ -24,6 +27,11 @@ public class Node
         this.name = name;
         this.boundingBox = boundingBox;
         this.parent = parent;
+    }
+
+    public int GetLevel()
+    {
+        return name.Length;
     }
 
     //Creates the Game Object(s) containing the points of this node
@@ -56,8 +64,6 @@ public class Node
             amount = Math.Min(max, verticesToStore.Length);
             index++;
         }
-        verticesToStore = null;
-        colorsToStore = null;
     }
 
     public void CreateBoundingBoxGameObject()
@@ -111,6 +117,68 @@ public class Node
         return children[index] != null;
     }
 
+    public IEnumerator<Node> GetEnumerator()
+    {
+        return new ChildEnumerator(this);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator(); //...?
+    }
+
+    private class ChildEnumerator : IEnumerator<Node>
+    {
+        Node outer;
+
+        public ChildEnumerator(Node n)
+        {
+            outer = n;
+        }
+
+        int nextIndex = -1;
+
+        public Node Current
+        {
+            get
+            {
+                if (nextIndex < 0 || nextIndex >= 8)
+                {
+                    throw new InvalidOperationException();
+                }
+                return outer.children[nextIndex];
+            }
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                return Current;
+            }
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public bool MoveNext()
+        {
+            do
+            {
+                ++nextIndex;
+            }
+            while (nextIndex < 8 && outer.children[nextIndex] == null) ;
+            if (nextIndex == 8) return false;
+            return true;
+        }
+
+        public void Reset()
+        {
+            nextIndex = -1;
+        }
+    }
+
     public Vector3[] VerticesToStore
     {
         get
@@ -161,6 +229,36 @@ public class Node
         {
             parent = value;
         }
+    }
+
+    public uint PointCount
+    {
+        get
+        {
+            return pointCount;
+        }
+        set
+        {
+            pointCount = value;
+        }
+    }
+
+    public bool IsReadyForGameObjectCreation
+    {
+        get
+        {
+            return isReadyForGameObjectCreation;
+        }
+
+        set
+        {
+            isReadyForGameObjectCreation = value;
+        }
+    }
+
+    public override string ToString()
+    {
+        return "Node: r" + Name;
     }
 }
 

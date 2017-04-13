@@ -15,9 +15,26 @@ public class Vector3d
         this.z = z;
     }
 
+    public Vector3d(Vector3 original)
+    {
+        this.x = original.x;
+        this.y = original.y;
+        this.z = original.z;
+    }
+
+    public double Length()
+    {
+        return Math.Sqrt(x * x + y + y + z * z);
+    }
+
     public Vector3 ToFloatVector()
     {
         return new Vector3((float)x, (float)y, (float)z);
+    }
+
+    public double distance(Vector3d other)
+    {
+        return (this - other).Length();
     }
 
     public static Vector3d operator/(Vector3d v, double divisor)

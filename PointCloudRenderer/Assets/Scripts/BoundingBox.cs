@@ -56,6 +56,11 @@ public class BoundingBox
         uz = lz + size.z;
     }
 
+    public double Radius()
+    {
+        return Size().Length() / 2;
+    }
+
     public Vector3d Size()
     {
         return new Vector3d(ux - lx, uy - ly, uz - lz);
@@ -69,5 +74,10 @@ public class BoundingBox
     public Vector3d Max()
     {
         return new Vector3d(ux, uy, uz);
+    }
+
+    public Vector3d Center()
+    {
+        return new Vector3d((ux + lx) / 2, (uy + ly) / 2, (uz + lz) / 2);
     }
 }
