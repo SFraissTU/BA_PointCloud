@@ -39,6 +39,10 @@ public class Node : IEnumerable<Node>
     //Set verticesToStore and colorsToStore before calling this!
     public void CreateGameObjects(MeshConfiguration configuration)
     {
+        if (!isReadyForGameObjectCreation)
+        {
+            throw new InvalidOperationException("Not ready for GameObject creation");// ArgumentException("GameObjects already created!");
+        }
         if (gameObjects.Count != 0)
         {
             throw new ArgumentException("GameObjects already created!");
@@ -64,6 +68,7 @@ public class Node : IEnumerable<Node>
             amount = Math.Min(max, verticesToStore.Length);
             index++;
         }
+        IsReadyForGameObjectCreation = false;
     }
 
     public void CreateBoundingBoxGameObject()

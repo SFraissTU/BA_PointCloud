@@ -24,21 +24,23 @@ public class DynamicLoaderController : MonoBehaviour {
     private Node rootNode;
 
     private PriorityQueue<double, Node> toRender = new ListPriorityQueue<double, Node>();//new DictionaryQueue<double,Node>();
+    private ThreadSafeQueue<Node> toDelete = new ThreadSafeQueue<Node>();
 
     private Status status = Status.INITIALIZED;
     private bool shuttingDown;
-
-    private Camera camera;
+    
     private float screenHeight;
-    private Vector3 cameraPositionF;
     private float fieldOfView;
+    private Vector3 cameraPositionF;
+    private Plane[] frustum;
+    private Camera userCamera;
 
 
     // Use this for initialization
     void Start () {
         Thread thread = new Thread(LoadHierarchy);
         thread.Start();
-        camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
 
     void LoadHierarchy()
@@ -66,12 +68,11 @@ public class DynamicLoaderController : MonoBehaviour {
         }
     }
 
-    void HierarchyTraversal()
+    void FillRenderingQueue()
     {
         SetStatus(Status.FILLING_QUEUE);
         Vector3d cameraPosition = new Vector3d(cameraPositionF);
         toRender.Clear();
-        uint renderingPoints = 0;
         Queue<Node> toCheck = new Queue<Node>();
         toCheck.Enqueue(rootNode);
         double radius = rootNode.BoundingBox.Radius();
@@ -85,8 +86,9 @@ public class DynamicLoaderController : MonoBehaviour {
                 radius /= 2;
                 ++lastLevel;
             }
-            //TODO: CULLING
+
             //if (renderingPoints + currentNode.PointCount < pointBudget)   //TODO: PointCount currently not available. Fix after fixing of converter
+            if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.ToBounds()))
             {
                 double distance = currentNode.BoundingBox.Center().distance(cameraPosition); //TODO: Maybe other point?
                 double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
@@ -102,12 +104,33 @@ public class DynamicLoaderController : MonoBehaviour {
                         toCheck.Enqueue(child);
                     }
                 }
+                else
+                {
+                    if (currentNode.HasGameObjects())
+                    {
+                        toDelete.Enqueue(currentNode);
+                    }
+                }
+            }
+            else
+            {
+                if (currentNode.HasGameObjects())
+                {
+                    toDelete.Enqueue(currentNode);
+                }
             }
         }
-        if (shuttingDown) return;
+        SetStatus(Status.LOADING_AND_RENDERING);
+    }
 
-        SetStatus(Status.READY_FOR_RENDERING);
+    void LoadRenderingPoints()
+    {
         Debug.Log("Nodes in queue: " + toRender.Count);
+        uint renderingPoints = 0;
+        foreach (Node n in toDelete)
+        {
+            CloudLoader.UnloadPointsForNode(n);
+        }
         foreach (Node n in toRender)
         {
             if (shuttingDown) return;
@@ -116,52 +139,68 @@ public class DynamicLoaderController : MonoBehaviour {
             if (renderingPoints + amount < pointBudget)
             {
                 renderingPoints += (uint)amount;
-                n.IsReadyForGameObjectCreation = true;
+                if (!n.HasGameObjects())
+                {
+                    n.IsReadyForGameObjectCreation = true;
+                }
                 //Debug.Log("Loaded points for node " + n.Name);
             } else
             {
                 CloudLoader.UnloadPointsForNode(n);
                 toRender.Remove(n); //TODO: Very ugly, fix with converter fix
+                if (n.HasGameObjects())
+                {
+                    toDelete.Enqueue(n);
+                }
                 //Debug.Log("Unloading points for node " + n.Name);
-                //TODO: Maybe the gameobjects have to be removed as well! or they should not be able to be created
             }
         }
-        //TODO: Threadsicherheit
-        //Wait for renderqueue to be empty
-        while (!toRender.IsEmpty() && !shuttingDown) ;
-        SetStatus(Status.DONE);
+        SetStatus(Status.ONLY_RENDERING);
     }
 
     //TODO: End Thread when game ends (?)
 
     void CreateNextNodeGameObjects()
     {
-        int MAX_NODES_PER_FRAME = 5;
-        for (int i = 0; i < MAX_NODES_PER_FRAME && !toRender.IsEmpty() && !shuttingDown; i++)
+        int MAX_NODES_CREATE_PER_FRAME = 5;
+        int MAX_NODES_DELETE_PER_FRAME = 3;
+        for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty() && !shuttingDown; i++)
         {
             Node n = toRender.Peek();
-            if (!n.IsReadyForGameObjectCreation)
+            if (!n.IsReadyForGameObjectCreation && !n.HasGameObjects())
             {
                 break;
             }
             toRender.Dequeue();
             //Debug.Log("Creating GO for node " + n.Name + ", next one: " + toRender.Peek()); 
-            n.CreateGameObjects(meshConfiguration);
+            if (!n.HasGameObjects())
+            {
+                n.CreateGameObjects(meshConfiguration);
+            }
+        }
+        for (int i = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty() && !shuttingDown; i++)
+        {
+            toDelete.Dequeue().RemoveGameObjects();
+        }
+        if (status == Status.ONLY_RENDERING && toRender.IsEmpty() && toDelete.IsEmpty())
+        {
+            SetStatus(Status.READY_FOR_FILL);
         }
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        screenHeight= camera.pixelRect.height;
-        cameraPositionF = camera.transform.position;
-        fieldOfView = camera.fieldOfView;
+        screenHeight= userCamera.pixelRect.height;
+        cameraPositionF = userCamera.transform.position;
+        fieldOfView = userCamera.fieldOfView;
+        frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
         if (status == Status.READY_FOR_FILL && Input.GetKey(KeyCode.X))
         {
-            SetStatus(Status.FILLING_QUEUE);
-            new Thread(HierarchyTraversal).Start();
+            FillRenderingQueue();
+            new Thread(LoadRenderingPoints).Start();
         }
-        else if (status == Status.READY_FOR_RENDERING)
+        else if (status == Status.LOADING_AND_RENDERING || status == Status.ONLY_RENDERING)
         {
             CreateNextNodeGameObjects();
         }
@@ -184,7 +223,7 @@ public class DynamicLoaderController : MonoBehaviour {
         LOADING_HIERARCHY,
         READY_FOR_FILL,
         FILLING_QUEUE,
-        READY_FOR_RENDERING,
-        DONE
+        LOADING_AND_RENDERING,
+        ONLY_RENDERING
     }
 }

@@ -80,4 +80,9 @@ public class BoundingBox
     {
         return new Vector3d((ux + lx) / 2, (uy + ly) / 2, (uz + lz) / 2);
     }
+
+    public Bounds ToBounds()
+    {
+        return new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
+    }
 }
