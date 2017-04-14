@@ -108,15 +108,62 @@ public class DynamicLoaderController : MonoBehaviour {
                 {
                     if (currentNode.HasGameObjects())
                     {
-                        toDelete.Enqueue(currentNode);
+                        //Remove lower LOD-Objects first!
+                        Queue<Node> childrenToCheck = new Queue<Node>();
+                        Stack<Node> newNodesToDelete = new Stack<Node>();
+                        newNodesToDelete.Push(currentNode);
+                        foreach (Node child in currentNode)
+                        {
+                            childrenToCheck.Enqueue(child);
+                        }
+                        while (childrenToCheck.Count != 0)
+                        {
+                            Node child = childrenToCheck.Dequeue();
+                            if (child.HasGameObjects())
+                            {
+                                newNodesToDelete.Push(child);
+                                foreach (Node childchild in child)
+                                {
+                                    childrenToCheck.Enqueue(childchild);
+                                }
+                            }
+                        }
+                        while (newNodesToDelete.Count != 0)
+                        {
+                            toDelete.Enqueue(newNodesToDelete.Pop());
+                        }
                     }
                 }
             }
             else
             {
+                //TODO: DUPLICATE CODE - UGLY
                 if (currentNode.HasGameObjects())
                 {
-                    toDelete.Enqueue(currentNode);
+                    //Remove lower LOD-Objects first!
+                    Queue<Node> childrenToCheck = new Queue<Node>();
+                    Stack<Node> newNodesToDelete = new Stack<Node>();
+                    newNodesToDelete.Push(currentNode);
+                    foreach (Node child in currentNode)
+                    {
+                        childrenToCheck.Enqueue(child);
+                    }
+                    while (childrenToCheck.Count != 0)
+                    {
+                        Node child = childrenToCheck.Dequeue();
+                        if (child.HasGameObjects())
+                        {
+                            newNodesToDelete.Push(child);
+                            foreach (Node childchild in child)
+                            {
+                                childrenToCheck.Enqueue(childchild);
+                            }
+                        }
+                    }
+                    while (newNodesToDelete.Count != 0)
+                    {
+                        toDelete.Enqueue(newNodesToDelete.Pop());
+                    }
                 }
             }
         }
@@ -157,10 +204,9 @@ public class DynamicLoaderController : MonoBehaviour {
         }
         SetStatus(Status.ONLY_RENDERING);
     }
+    
 
-    //TODO: End Thread when game ends (?)
-
-    void CreateNextNodeGameObjects()
+    void UpdateGameObjects()
     {
         int MAX_NODES_CREATE_PER_FRAME = 5;
         int MAX_NODES_DELETE_PER_FRAME = 3;
@@ -172,7 +218,6 @@ public class DynamicLoaderController : MonoBehaviour {
                 break;
             }
             toRender.Dequeue();
-            //Debug.Log("Creating GO for node " + n.Name + ", next one: " + toRender.Peek()); 
             if (!n.HasGameObjects())
             {
                 n.CreateGameObjects(meshConfiguration);
@@ -202,7 +247,7 @@ public class DynamicLoaderController : MonoBehaviour {
         }
         else if (status == Status.LOADING_AND_RENDERING || status == Status.ONLY_RENDERING)
         {
-            CreateNextNodeGameObjects();
+            UpdateGameObjects();
         }
 	}
 
