@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using NUnitLite;
 using DataStructures;
+using System.Collections.Generic;
 
 namespace tests
 {
@@ -19,7 +20,7 @@ namespace tests
         [Test]
         public void TestExampleDictionaryQueue()
         {
-            PriorityQueue<double, int> queue = new DictionaryQueue<double, int>();
+            PriorityQueue<double, int> queue = new DictionaryPriorityQueue<double, int>();
             int[] elements = new int[] { 4, 9, 8, 7, 3, 22, 4, 9, -20, -40, -100, 102, 4, 5 };
             for (int i = 0; i < elements.Length; i++)
             {
@@ -33,18 +34,18 @@ namespace tests
                 Assert.AreEqual(expected[i], queue.Dequeue());
             }
             Assert.AreEqual(queue.Count, 0);
+            Assert.IsTrue(queue.IsEmpty());
         }
 
         [Test]
         public void TestEmptyDictionaryQueue()
         {
-            PriorityQueue<double, string> queue = new DictionaryQueue<double, string>();
+            PriorityQueue<double, string> queue = new DictionaryPriorityQueue<double, string>();
             queue.Enqueue("1", 1);
             queue.Enqueue("2", 2);
             Assert.AreEqual(queue.Dequeue(), "2");
             Assert.AreEqual(queue.Dequeue(), "1");
-            Assert.AreEqual(queue.Dequeue(), null);
-            Assert.AreEqual(queue.Dequeue(), null);
+            Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
             queue.Enqueue("3", 3);
             Assert.AreEqual(queue.Dequeue(), "3");
         }
@@ -52,7 +53,7 @@ namespace tests
         [Test]
         public void TestEnumeratorDictionaryQueue()
         {
-            PriorityQueue<double, int> queue = new DictionaryQueue<double, int>();
+            PriorityQueue<double, int> queue = new DictionaryPriorityQueue<double, int>();
             int[] elements = new int[] { 4, 9, 8, 7, 3, 22, 4, 9, -20, -40, -100, 102, 4, 5 };
             for (int i = 0; i < elements.Length; i++)
             {
@@ -70,7 +71,7 @@ namespace tests
         [Test]
         public void TestEnumeratorWhileChangingDictionaryQueue()
         {
-            PriorityQueue<double, int> queue = new DictionaryQueue<double, int>();
+            PriorityQueue<double, int> queue = new DictionaryPriorityQueue<double, int>();
             int[] elements = new int[] { 4, 9, 8, 7, 3, 22, 4, 9, -20, -40, -100, 102, 4, 5 };
             for (int i = 0; i < elements.Length; i++)
             {
@@ -82,7 +83,7 @@ namespace tests
             {
                 Assert.AreEqual(expected[j], element);
                 j++;
-                if ((j + 1) % 3 == 0)
+                if ((j + 1) % 2 == 0)
                 {
                     queue.Dequeue();
                 }
@@ -90,9 +91,41 @@ namespace tests
         }
 
         [Test]
+        public void TestEnumeratorWhileChangingEntriesWithSamePriorityDictionaryQueue()
+        {
+            PriorityQueue<int, string> queue = new DictionaryPriorityQueue<int, string>();
+            int[] keys = new int[] { 9, 9, 9, 7, 7};
+            string[] values = new string[] { "9a", "9b", "9c", "7a", "7b" };
+            for (int i = 0; i < values.Length; i++)
+            {
+                queue.Enqueue(values[i], keys[i]);
+            }
+            IEnumerator<string> enumerator = queue.GetEnumerator();
+            //First moving, then deleting
+            enumerator.MoveNext();
+            queue.Remove("9a");
+            string val1 = enumerator.Current;
+            Assert.IsTrue(val1.Equals("9a") || val1.Equals("9b") || val1.Equals("9c"));
+            enumerator.MoveNext();
+            string val2 = enumerator.Current;
+            Assert.IsTrue(val1.Equals("9b") || val2.Equals("9b") || val2.Equals("9c"));
+            Assert.AreNotEqual(val2, val1);
+            enumerator.MoveNext();
+            //First deleting, then moving
+            queue.Remove("7a");
+            enumerator.MoveNext();
+            val1 = enumerator.Current;
+            enumerator.MoveNext();
+            val2 = enumerator.Current;
+            Assert.IsTrue(val1.Equals("7a") || val1.Equals("7b"));
+            Assert.IsTrue(val2.Equals("7a") || val2.Equals("7b"));
+            Assert.AreNotEqual(val1, val2);
+        }
+
+        [Test]
         public void TestSamePrioritiesDictionaryQueue()
         {
-            PriorityQueue<int, string> queue = new DictionaryQueue<int, string>();
+            PriorityQueue<int, string> queue = new DictionaryPriorityQueue<int, string>();
             int[] keys = { 1, 3, 5, 3, 4, 3, 2, 4 };
             string[] vals = { "1", "3a", "5", "3b", "4a", "3c", "2", "4b" };
             for (int i = 0; i < keys.Length; i++)
@@ -118,7 +151,7 @@ namespace tests
         [Test]
         public void TestRemoveWithPriorityDictionaryQueue()
         {
-            PriorityQueue<int, int> queue = new DictionaryQueue<int, int>();
+            PriorityQueue<int, int> queue = new DictionaryPriorityQueue<int, int>();
             int[] keys =    new int[] { 4, 9, 8,  7, 3, 22, 4,  9, -20, -40, -100, 102, 4, 5 };
             int[] values =  new int[] { 4, 9, 8, 69, 3, 22, 9,  9, -20, -40,    3, 102, 4, 5 };
             for (int i = 0; i < keys.Length; i++)
@@ -141,7 +174,7 @@ namespace tests
         [Test]
         public void TestRemoveWithoutPriorityDictionaryQueue()
         {
-            PriorityQueue<int, int> queue = new DictionaryQueue<int, int>();
+            PriorityQueue<int, int> queue = new DictionaryPriorityQueue<int, int>();
             int[] keys =   new int[] { 4, 9, 8, 7, 3, 22, 4, 9, -20, -40, -100, 102, 4, 5 };
             int[] values = new int[] { 4, 9, 8, 7, 3, 22, 4, 9, -20, -40, -100, 102, 0, 5 };
             for (int i = 0; i < keys.Length; i++)
@@ -188,8 +221,7 @@ namespace tests
             queue.Enqueue("2", 2);
             Assert.AreEqual(queue.Dequeue(), "2");
             Assert.AreEqual(queue.Dequeue(), "1");
-            Assert.AreEqual(queue.Dequeue(), null);
-            Assert.AreEqual(queue.Dequeue(), null);
+            Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
             queue.Enqueue("3", 3);
             Assert.AreEqual(queue.Dequeue(), "3");
         }
@@ -198,12 +230,12 @@ namespace tests
         public void TestSparseListQueue()
         {
             PriorityQueue<int, string> queue = new ListPriorityQueue<int, string>();
-            Assert.AreEqual(queue.Dequeue(), null);
+            Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
             queue.Enqueue("1", 1);
             Assert.AreEqual(queue.Dequeue(), "1");
             queue.Enqueue("2", 2);
             Assert.AreEqual(queue.Dequeue(), "2");
-            Assert.AreEqual(queue.Dequeue(), null);
+            Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
             queue.Enqueue("3", 3);
             queue.Enqueue("4", 4);
             Assert.AreEqual(queue.Dequeue(), "4");
@@ -243,7 +275,7 @@ namespace tests
             {
                 Assert.AreEqual(expected[j], element);
                 j++;
-                if ((j + 1) % 3 == 0)
+                if ((j + 1) % 2 == 0)
                 {
                     queue.Dequeue();
                 }

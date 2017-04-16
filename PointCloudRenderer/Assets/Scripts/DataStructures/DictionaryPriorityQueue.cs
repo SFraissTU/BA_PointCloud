@@ -6,18 +6,19 @@ namespace DataStructures
 {
     /* This queue uses a sorted dictionary to work as a priority queue
      */
-    public class DictionaryQueue<I, T> : PriorityQueue<I, T> where I : IComparable<I>
+    public class DictionaryPriorityQueue<I, T> : PriorityQueue<I, T> where I : IComparable<I>
     {
         //Keys are stored negatively, so that the ordering is alright!
         private SortedDictionary<IWrapper, TWrapper> dictionary;
         private int count = 0;
 
-        public DictionaryQueue()
+        public DictionaryPriorityQueue()
         {
             dictionary = new SortedDictionary<IWrapper, TWrapper>();
         }
 
-        public void Enqueue(T element, I priority)
+        //Inserts an element with its priority into this queue
+        public override void Enqueue(T element, I priority)
         {
             lock (dictionary)
             {
@@ -39,7 +40,8 @@ namespace DataStructures
             }
         }
 
-        public T Dequeue()
+        //Removes and returns the element with the highest priority from the queue. Throws an InvalidOperationException if no element exists
+        public override T Dequeue()
         {
             lock (dictionary)
             {
@@ -61,11 +63,12 @@ namespace DataStructures
                         return toreturn.element;
                     }
                 }
-                return default(T);
+                throw new InvalidOperationException("Queue is empty!");
             }
         }
 
-        public T Peek()
+        //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
+        public override T Peek()
         {
             lock (dictionary)
             {
@@ -73,11 +76,12 @@ namespace DataStructures
                 {
                     return entry.Value.element;
                 }
-                return default(T);
+                throw new InvalidOperationException("Queue is empty!");
             }
         }
 
-        public int Count
+        //The number of elements in this queue
+        public override int Count
         {
             get
             {
@@ -85,7 +89,8 @@ namespace DataStructures
             }
         }
 
-        public void Clear()
+        //Removes all elements from the queue
+        public override void Clear()
         {
             lock (dictionary)
             {
@@ -93,27 +98,25 @@ namespace DataStructures
             }
         }
 
-        public bool IsEmpty()
+        //Returns true, iff the queue does not contain any elements
+        public override bool IsEmpty()
         {
             lock (dictionary)
             {
-                return dictionary.Count == 0;
+                return count == 0;
             }
         }
 
-        /* Not able to handle concurrent modification!
+        /* Returns a threadsafe enumerator, which means you can delete elements from the queue while enumerating over it.
+         * However, the changes are not seen in the enumerator, as the data is copied at initializing the enumerator.
          */
-        public IEnumerator<T> GetEnumerator()
+        public override IEnumerator<T> GetEnumerator()
         {
             return new QueueEnumerator(dictionary);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Remove(T element, I priority)
+        //Removes the given element from this queue, if it exists. It's also assured that the given priority matches this element. Giving the priority speeds up the process. Only one element will be deleted, even if there are several equal ones
+        public override void Remove(T element, I priority)
         {
             lock (dictionary)
             {
@@ -149,7 +152,8 @@ namespace DataStructures
             }
         }
 
-        public void Remove(T element)
+        //Removes the given element from this queue, if it exists. Only one element will be deleted, even if there are several equal ones
+        public override void Remove(T element)
         {
             lock (dictionary)
             {
@@ -243,7 +247,26 @@ namespace DataStructures
 
             public QueueEnumerator(SortedDictionary<IWrapper, TWrapper> dict)
             {
-                this.dict = new SortedDictionary<IWrapper, TWrapper>(dict);
+                //We have to make a deep copy!
+                this.dict = new SortedDictionary<IWrapper, TWrapper>();
+                foreach (KeyValuePair<IWrapper, TWrapper> entry in dict) {
+                    IWrapper key = new IWrapper(entry.Key.priority);
+                    TWrapper firstOriginal = entry.Value;
+                    TWrapper firstNew = new TWrapper(firstOriginal.element);
+                    TWrapper currentOriginal = firstOriginal.next;
+                    TWrapper lastNew = firstNew;
+                    while (currentOriginal != firstOriginal)
+                    {
+                        TWrapper currentNew = new TWrapper(currentOriginal.element);
+                        currentNew.last = lastNew;
+                        lastNew.next = currentNew;
+                        currentOriginal = currentOriginal.next;
+                        lastNew = currentNew;
+                    }
+                    lastNew.next = firstNew;
+                    firstNew.last = lastNew;
+                    this.dict.Add(key, firstNew);
+                }
                 Reset();
             }
 

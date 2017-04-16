@@ -5,14 +5,17 @@ using System.Linq;
 
 namespace DataStructures
 {
+    /* A priorityqueue using a linkedlist, which is sorted when neccessary
+     */
     public class ListPriorityQueue<I, T> : PriorityQueue<I, T> where I : IComparable<I>
     {
 
-        LinkedList<KeyValuePair<I,T>> list = new LinkedList<KeyValuePair<I, T>>();
-        KeyReverseComparer comparer = new KeyReverseComparer();
-        bool sorted = true;
+        private LinkedList<KeyValuePair<I,T>> list = new LinkedList<KeyValuePair<I, T>>();
+        private KeyReverseComparer comparer = new KeyReverseComparer();
+        private bool sorted = true;
 
-        public void Clear()
+        //Removes all elements from the queue
+        public override void Clear()
         {
             lock (list)
             {
@@ -20,13 +23,14 @@ namespace DataStructures
             }
         }
 
-        public T Dequeue()
+        //Removes and returns the element with the highest priority from the queue. Throws an InvalidOperationException if no element exists
+        public override T Dequeue()
         {
             lock (list)
             {
                 if (list.Count == 0)
                 {
-                    return default(T);
+                    throw new InvalidOperationException("Queue is empty!");
                 }
                 assertSorting();
                 T element = list.First.Value.Value;
@@ -35,20 +39,22 @@ namespace DataStructures
             }
         }
 
-        public T Peek()
+        //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
+        public override T Peek()
         {
             lock (list)
             {
                 if (list.Count == 0)
                 {
-                    return default(T);
+                    throw new InvalidOperationException("Queue is empty!");
                 }
                 assertSorting();
                 return list.First.Value.Value;
             }
         }
 
-        public void Enqueue(T element, I priority)
+        //Inserts an element with its priority into this queue
+        public override void Enqueue(T element, I priority)
         {
             lock (list)
             {
@@ -65,7 +71,8 @@ namespace DataStructures
             }
         }
 
-        public int Count
+        //The number of elements in this queue
+        public override int Count
         {
             get
             {
@@ -73,9 +80,10 @@ namespace DataStructures
             }
         }
 
-        /* This enumerator copys the state of the list so iterating can be continued while elements are removed from the queue
+        /* Returns a threadsafe enumerator, which means you can delete elements from the queue while enumerating over it.
+         * However, the changes are not seen in the enumerator, as the list is copied at initialization.
          */
-        public IEnumerator<T> GetEnumerator()
+        public override IEnumerator<T> GetEnumerator()
         {
             assertSorting();
             return new QueueEnumerator(list);
@@ -90,17 +98,14 @@ namespace DataStructures
             }
         }
 
-        public bool IsEmpty()
+        //Returns true, iff the queue does not contain any elements
+        public override bool IsEmpty()
         {
             return list.Count == 0;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Remove(T element, I priority)
+        //Removes the given element from this queue, if it exists. It's also assured that the given priority matches this element. Only one element will be deleted, even if there are several equal ones
+        public override void Remove(T element, I priority)
         {
             lock (list)
             {
@@ -115,7 +120,8 @@ namespace DataStructures
             }
         }
 
-        public void Remove(T element)
+        //Removes the given element from this queue, if it exists. Only one element will be deleted, even if there are several equal ones
+        public override void Remove(T element)
         {
             lock (list)
             {
