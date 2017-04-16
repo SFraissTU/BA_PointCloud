@@ -26,29 +26,10 @@ namespace Controllers
         public double minNodeSize;
         //Point-Budget
         public uint pointBudget;
-
-        //-----Point-Cloud-Info-----
-        private PointCloudMetaData metaData;
-        private Node rootNode;
-
-        //-----DataStructures for Rendering-----
-        //Points that are supposed to be rendered. PriorityQueue
-        private PriorityQueue<double, Node> toRender = new ListPriorityQueue<double, Node>();
-        //Points that are supposed to be deleted. Normal Queue (but threadsafe)
-        private ThreadSafeQueue<Node> toDelete = new ThreadSafeQueue<Node>();
-
-        //-----Status-Info of the Rendering-Prozess-----
-        //current Status
-        private Status status = Status.INITIALIZED;
-        //Wether the programm is exiting
-        private bool shuttingDown;
-
-        //-----Screen- and Camera-Info-----
+        
+        private ConcurrentRenderer pRenderer;
         private Camera userCamera;
-        private float screenHeight;
-        private float fieldOfView;
-        private Vector3 cameraPositionF;
-        private Plane[] frustum;
+        private bool hierarchyLoaded = false;
 
 
         // Use this for initialization
@@ -63,243 +44,74 @@ namespace Controllers
         {
             try
             {
-                SetStatus(Status.LOADING_HIERARCHY);
                 Debug.Log("Loading Hierarchy");
                 if (!cloudPath.EndsWith("\\"))
                 {
                     cloudPath = cloudPath + "\\";
                 }
 
-                metaData = CloudLoader.LoadMetaData(cloudPath, moveToOrigin);
+                PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, moveToOrigin);
 
-                rootNode = CloudLoader.LoadHierarchyOnly(cloudPath, metaData);
+                Node rootNode = CloudLoader.LoadHierarchyOnly(cloudPath, metaData);
+
+                pRenderer = new ConcurrentRenderer(rootNode, metaData, cloudPath, minNodeSize, pointBudget);
 
                 Debug.Log("Finished Loading Hierachy");
-
-                SetStatus(Status.READY_FOR_FILL);
             }
             catch (Exception ex)
             {
                 Debug.LogError(ex);
             }
         }
+        
 
-        void FillRenderingQueue()
+        // Update is called once per frame
+        void Update()
         {
-            SetStatus(Status.FILLING_QUEUE);
-            Vector3d cameraPosition = new Vector3d(cameraPositionF);
-            toRender.Clear();
-            Queue<Node> toCheck = new Queue<Node>();
-            toCheck.Enqueue(rootNode);
-            double radius = rootNode.BoundingBox.Radius();
-            int lastLevel = rootNode.GetLevel();//= 0
-                                                //Breitensuche
-            while (toCheck.Count != 0 && !shuttingDown)
+            if (pRenderer != null)
             {
-                Node currentNode = toCheck.Dequeue();
-                if (currentNode.GetLevel() != lastLevel)
+                float screenHeight = userCamera.pixelRect.height;
+                Vector3 cameraPositionF = userCamera.transform.position;
+                float fieldOfView = userCamera.fieldOfView;
+                Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
+                if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete())
                 {
-                    radius /= 2;
-                    ++lastLevel;
-                }
-
-                //if (renderingPoints + currentNode.PointCount < pointBudget)   //TODO: PointCount currently not available. Fix after fixing of converter
-                if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject()))
-                {
-                    double distance = currentNode.BoundingBox.Center().distance(cameraPosition); //TODO: Maybe other point?
-                    double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
-                    double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
-                    //Debug.Log("Radius = " + radius + ", Distance = " + distance + ", Slope = " + slope + ", fov: " + fieldOfView +  ", projectedSize = " + projectedSize);
-                    //TODO: Include centrality into priority
-                    if (projectedSize >= minNodeSize)
-                    {
-                        if (!currentNode.HasGameObjects())
-                        {
-                            toRender.Enqueue(currentNode, projectedSize);
-                        }
-                        //renderingPoints += currentNode.PointCount;
-                        foreach (Node child in currentNode)
-                        {
-                            toCheck.Enqueue(child);
-                        }
-                    }
-                    else
-                    {
-                        if (currentNode.HasGameObjects())
-                        {
-                            //Remove lower LOD-Objects first!
-                            Queue<Node> childrenToCheck = new Queue<Node>();
-                            Stack<Node> newNodesToDelete = new Stack<Node>();
-                            newNodesToDelete.Push(currentNode);
-                            foreach (Node child in currentNode)
-                            {
-                                childrenToCheck.Enqueue(child);
-                            }
-                            while (childrenToCheck.Count != 0)
-                            {
-                                Node child = childrenToCheck.Dequeue();
-                                if (child.HasGameObjects())
-                                {
-                                    newNodesToDelete.Push(child);
-                                    foreach (Node childchild in child)
-                                    {
-                                        childrenToCheck.Enqueue(childchild);
-                                    }
-                                }
-                            }
-                            while (newNodesToDelete.Count != 0)
-                            {
-                                toDelete.Enqueue(newNodesToDelete.Pop());
-                            }
-                        }
-                    }
+                    pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum);
+                    pRenderer.UpdateRenderingQueue();
+                    pRenderer.StartUpdatingPoints();
                 }
                 else
                 {
-                    //TODO: DUPLICATE CODE - UGLY
-                    if (currentNode.HasGameObjects())
-                    {
-                        //Remove lower LOD-Objects first!
-                        Queue<Node> childrenToCheck = new Queue<Node>();
-                        Stack<Node> newNodesToDelete = new Stack<Node>();
-                        newNodesToDelete.Push(currentNode);
-                        foreach (Node child in currentNode)
-                        {
-                            childrenToCheck.Enqueue(child);
-                        }
-                        while (childrenToCheck.Count != 0)
-                        {
-                            Node child = childrenToCheck.Dequeue();
-                            if (child.HasGameObjects())
-                            {
-                                newNodesToDelete.Push(child);
-                                foreach (Node childchild in child)
-                                {
-                                    childrenToCheck.Enqueue(childchild);
-                                }
-                            }
-                        }
-                        while (newNodesToDelete.Count != 0)
-                        {
-                            toDelete.Enqueue(newNodesToDelete.Pop());
-                        }
-                    }
+                    UpdateGameObjects();
                 }
             }
-            SetStatus(Status.LOADING_AND_RENDERING);
         }
-
-        void LoadRenderingPoints()
-        {
-            try
-            {
-                Debug.Log("Nodes in queue: " + toRender.Count);
-                uint renderingPoints = 0;
-                foreach (Node n in toRender)
-                {
-                    if (shuttingDown) return;
-                    uint amount = n.PointCount;
-                    //PointCount might already be sad from loading the points before
-                    if (amount == 0)
-                    {
-                        CloudLoader.LoadPointsForNode(cloudPath, metaData, n);
-                        amount = n.PointCount;
-                    }
-                    if (renderingPoints + amount < pointBudget)
-                    {
-                        renderingPoints += amount;
-                        if (!n.HasPointsToRender())
-                        {
-                            CloudLoader.LoadPointsForNode(cloudPath, metaData, n);
-                        }
-                        if (!n.HasGameObjects())
-                        {
-                            n.SetReadyForGameObjectCreation();
-                        }
-                    }
-                    else
-                    {
-                        toRender.Remove(n); //TODO: Very ugly, fix with converter fix
-                        if (n.HasGameObjects())
-                        {
-                            toDelete.Enqueue(n);
-                        }
-                    }
-                }
-                SetStatus(Status.ONLY_RENDERING);
-            } catch (Exception ex)
-            {
-                Debug.LogError(ex);
-                SetStatus(Status.ERROR);
-            }
-        }
-
 
         void UpdateGameObjects()
         {
-            int MAX_NODES_CREATE_PER_FRAME = 5;
-            int MAX_NODES_DELETE_PER_FRAME = 3;
-            for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty() && !shuttingDown; i++)
+            int MAX_NODES_CREATE_PER_FRAME = 15;
+            int MAX_NODES_DELETE_PER_FRAME = 10;
+            for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && pRenderer.HasNodesToRender(); i++)
             {
-                Node n = toRender.Peek();
-                if (n.IsWaitingForReadySet())
+                Node n = pRenderer.GetNextNodeToRender();
+                if (n == null) //Still waiting for point rendering
                 {
                     break;
                 }
                 else if (n.IsReadyForGameObjectCreation())
                 {
-                    toRender.Dequeue();
                     n.CreateGameObjects(meshConfiguration);
                 }
             }
-            for (int i = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty() && !shuttingDown; i++)
+            for (int i = 0; i < MAX_NODES_DELETE_PER_FRAME && pRenderer.HasNodesToDelete(); i++)
             {
-                toDelete.Dequeue().RemoveGameObjects();
-            }
-            if (status == Status.ONLY_RENDERING && toRender.IsEmpty() && toDelete.IsEmpty())
-            {
-                SetStatus(Status.READY_FOR_FILL);
-            }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            screenHeight = userCamera.pixelRect.height;
-            cameraPositionF = userCamera.transform.position;
-            fieldOfView = userCamera.fieldOfView;
-            frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
-            if (status == Status.READY_FOR_FILL && Input.GetKey(KeyCode.X))
-            {
-                FillRenderingQueue();
-                new Thread(LoadRenderingPoints).Start();
-            }
-            else if (status == Status.LOADING_AND_RENDERING || status == Status.ONLY_RENDERING)
-            {
-                UpdateGameObjects();
+                pRenderer.GetNextNodeToDelete().RemoveGameObjects();
             }
         }
 
         public void OnApplicationQuit()
         {
-            shuttingDown = true;
-        }
-
-        private void SetStatus(Status status)
-        {
-            this.status = status;
-            Debug.Log("Status set to: " + status.ToString());
-        }
-
-        enum Status
-        {
-            INITIALIZED,
-            LOADING_HIERARCHY,
-            READY_FOR_FILL,
-            FILLING_QUEUE,
-            LOADING_AND_RENDERING,
-            ONLY_RENDERING,
-            ERROR
+            pRenderer.ShutDown();
         }
     }
 
