@@ -32,7 +32,7 @@ namespace Loading {
         private string cloudPath;
 
         public ConcurrentRenderer(Node rootNode, PointCloudMetaData metaData, string cloudPath, double minNodeSize, uint pointBudget) {
-            toRender = new DictionaryPriorityQueue<double, Node>();
+            toRender = new HeapPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
             this.rootNode = rootNode;
             this.minNodeSize = minNodeSize;

@@ -18,6 +18,7 @@ namespace DataStructures
         }
 
         //Inserts an element with its priority into this queue
+        //Complexity: O(logn)
         public override void Enqueue(T element, I priority)
         {
             lock (dictionary)
@@ -41,6 +42,7 @@ namespace DataStructures
         }
 
         //Removes and returns the element with the highest priority from the queue. Throws an InvalidOperationException if no element exists
+        //Complexity: O(logn)
         public override T Dequeue()
         {
             lock (dictionary)
@@ -68,6 +70,7 @@ namespace DataStructures
         }
 
         //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
+        //Complexity: O(logn)
         public override T Peek()
         {
             lock (dictionary)
@@ -109,13 +112,17 @@ namespace DataStructures
 
         /* Returns a threadsafe enumerator, which means you can delete elements from the queue while enumerating over it.
          * However, the changes are not seen in the enumerator, as the data is copied at initializing the enumerator.
+         * Complexity: O(nlogn) (Has to be copied and inserted into tree)
          */
         public override IEnumerator<T> GetEnumerator()
         {
-            return new QueueEnumerator(dictionary);
+            lock (dictionary) {
+                return new QueueEnumerator(dictionary);
+            }
         }
 
         //Removes the given element from this queue, if it exists. It's also assured that the given priority matches this element. Giving the priority speeds up the process. Only one element will be deleted, even if there are several equal ones
+        //Complexity: O(log n)
         public override void Remove(T element, I priority)
         {
             lock (dictionary)
@@ -153,6 +160,7 @@ namespace DataStructures
         }
 
         //Removes the given element from this queue, if it exists. Only one element will be deleted, even if there are several equal ones
+        //Complexity: O(n)
         public override void Remove(T element)
         {
             lock (dictionary)

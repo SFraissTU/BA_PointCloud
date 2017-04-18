@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Start.cs" />
+    <Compile Include="QueueSpeedTest.cs" />
     <Compile Include="QueueTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

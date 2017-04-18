@@ -73,6 +73,7 @@ namespace DataStructures {
             }
         }
 
+        //Complexity: O(logn)
         public override T Dequeue() {
             lock (locker) {
                 if (count == 0) throw new InvalidOperationException("Queue is empty!");
@@ -85,6 +86,7 @@ namespace DataStructures {
             }
         }
 
+        //Complexity: O(logn)
         public override void Enqueue(T element, I priority) {
             lock (locker) {
                 if (count == heapArray.Length) {
@@ -113,6 +115,7 @@ namespace DataStructures {
             heapArray[j] = ei;
         }
 
+        //Complexity: O(n)
         public override IEnumerator<T> GetEnumerator() {
             lock (locker) {
                 return new HeapPriorityQueueEnumerator(this);
@@ -125,6 +128,7 @@ namespace DataStructures {
             }
         }
 
+        //Complexity: O(1)
         public override T Peek() {
             lock (locker) {
                 if (count == 0) throw new InvalidOperationException("Queue is empty!");
@@ -132,6 +136,7 @@ namespace DataStructures {
             }
         }
 
+        //Complexity: O(n)
         public override void Remove(T element) {
             lock (locker) {
                 for (int i = 0; i < count; i++) {
@@ -143,6 +148,7 @@ namespace DataStructures {
             }
         }
 
+        //Complexity: O(n)
         public override void Remove(T element, I priority) {
             lock (locker) {
                 if (count == 0) return;

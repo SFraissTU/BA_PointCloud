@@ -4,14 +4,14 @@ using NUnitLite;
 using DataStructures;
 using System.Collections.Generic;
 
-namespace tests {
+namespace Tests {
 
     [TestFixture]
-    class QueueTest {
+    public class QueueTest {
 
-        public static void Main(String[] args) {
-            new AutoRun().Execute(args);
-            Console.ReadKey();
+        public static void Run() {
+            new AutoRun().Execute(new String[0]);
+            //Console.ReadKey();
         }
 
         [Test]
