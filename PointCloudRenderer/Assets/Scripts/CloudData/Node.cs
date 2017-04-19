@@ -1,4 +1,4 @@
-﻿using MeshConfigurations;
+﻿using ObjectCreation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -96,12 +96,13 @@ namespace CloudData
         }
 
         /* Removes the gameobjects again. To create them again, you once again have to set the vertices and colors and call SetReadyForGameObjectCreation()
+         * Given MeshConfiguration should be the same that has been used for creation
          */
-        public void RemoveGameObjects()
+        public void RemoveGameObjects(MeshConfiguration configuration)
         {
             foreach (GameObject go in gameObjects)
             {
-                UnityEngine.Object.Destroy(go);
+                configuration.RemoveGameObject(go);
             }
             gameObjects.Clear();
         }

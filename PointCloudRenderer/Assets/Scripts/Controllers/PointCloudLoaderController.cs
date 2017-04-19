@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Threading;
 using UnityEngine;
-using MeshConfigurations;
+using ObjectCreation;
 using CloudData;
 using Loading;
 
-namespace Controllers
-{
+namespace Controllers {
     /* MonoBehaviour for loading PointClouds from a file. All points are loaded at once at the beginning and are then displayed.
      * No dynamic changing is possible afterwards
      */
-    public class PointCloudLoaderController : MonoBehaviour
-    {
+    public class PointCloudLoaderController : MonoBehaviour {
 
         //Path to the folder in which the cloud.js is
         public string cloudPath;
@@ -25,21 +23,17 @@ namespace Controllers
         private bool fileLoading = false;
 
         // Use this for initialization
-        void Start()
-        {
+        void Start() {
             Thread thread = new Thread(new ThreadStart(LoadFile));
             thread.Start();
         }
 
         //Loads the complete point cloud
-        private void LoadFile()
-        {
-            try
-            {
+        private void LoadFile() {
+            try {
                 Debug.Log("Loading file");
                 fileLoading = true;
-                if (!cloudPath.EndsWith("\\"))
-                {
+                if (!cloudPath.EndsWith("\\")) {
                     cloudPath = cloudPath + "\\";
                 }
 
@@ -50,18 +44,14 @@ namespace Controllers
                 Debug.Log("Finished Loading");
 
                 fileLoading = false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Debug.LogError(ex);
             }
         }
 
         // Update is called once per frame
-        void Update()
-        {
-            if (!fileLoading && rootNode != null)
-            {
+        void Update() {
+            if (!fileLoading && rootNode != null) {
                 rootNode.CreateAllGameObjects(meshConfiguration);
                 rootNode = null; //TODO: temporary line, so this doesnt happen every frame
                 Debug.Log("Created GameObject");
@@ -72,8 +62,7 @@ namespace Controllers
          * Stops the loading of the file if the application is closed
          * TODO: This doesn't have any consequence right now
          */
-        private void OnApplicationQuit()
-        {
+        private void OnApplicationQuit() {
             fileLoading = false;
         }
     }

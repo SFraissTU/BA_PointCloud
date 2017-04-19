@@ -8,13 +8,15 @@ using UnityEngine;
 /*
  * Defines how the PointCloud is rendered (points / quads / spheres etc.)
  */
-namespace MeshConfigurations
+namespace ObjectCreation
 {
     public abstract class MeshConfiguration : MonoBehaviour
     {
         public abstract int GetMaximumPointsPerMesh();
         //Condition: Length of vertexData and colorData are the same and not more than MaximumPointsPerMesh.
         public abstract GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox);
+        //Removes the GameObject again
+        public abstract void RemoveGameObject(GameObject gameObject);
     }
 
 }

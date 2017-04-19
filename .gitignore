@@ -32,3 +32,11 @@
 # Builds
 *.apk
 *.unitypackage
+
+#Plugins
+*/Assets/Plugins.meta
+*/Assets/Plugins/
+*/Assets/AVProMovieCapture/
+
+#other stuff
+_ignore/

@@ -41,12 +41,22 @@ namespace DataStructures
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new Queue<T>(queue).GetEnumerator();
+            lock (queue) {
+                return new Queue<T>(queue).GetEnumerator();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public int Count {
+            get {
+                lock (queue) {
+                    return queue.Count;
+                }
+            }
         }
     }
 }
