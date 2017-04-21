@@ -1,5 +1,6 @@
 ﻿using CloudData;
 using DataStructures;
+using ObjectCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -166,6 +167,24 @@ namespace Loading {
             }
         }
 
+        public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
+            int MAX_NODES_CREATE_PER_FRAME = 15;
+            int MAX_NODES_DELETE_PER_FRAME = 10;
+            for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
+                Node n = toRender.Peek();
+                if (n.IsWaitingForReadySet()) //Still waiting for point rendering
+                {
+                    break;
+                } else if (n.IsReadyForGameObjectCreation()) {
+                    toRender.Dequeue();
+                    n.CreateGameObjects(meshConfiguration);
+                }
+            }
+            for (int i = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); i++) {
+                toDelete.Dequeue().RemoveGameObjects(meshConfiguration);
+            }
+        }
+
         public void ShutDown() {
             shuttingDown = true;
         }
@@ -174,25 +193,8 @@ namespace Loading {
             return !toRender.IsEmpty();
         }
 
-        /* Returns the next Node for which a GameObject should be created. Or null if the next node is not ready yet (points not loaded) or no nodes are left
-         */
-        public Node GetNextNodeToRender() {
-            Node n = toRender.Peek();
-            if (n.IsWaitingForReadySet()) {
-                return null;
-            }
-            return toRender.Dequeue();
-        }
-
         public bool HasNodesToDelete() {
             return !toDelete.IsEmpty();
         }
-
-        /* Returns the next Node for which a GameObject should be deleted. Or null if no node is left
-         */
-        public Node GetNextNodeToDelete() {
-            return toDelete.Dequeue();
-        }
     }
-
 }

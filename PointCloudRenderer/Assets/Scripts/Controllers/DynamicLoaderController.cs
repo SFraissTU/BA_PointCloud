@@ -60,34 +60,17 @@ namespace Controllers {
         // Update is called once per frame
         void Update() {
             if (pRenderer != null) {
-                float screenHeight = userCamera.pixelRect.height;
-                Vector3 cameraPositionF = userCamera.transform.position;
-                float fieldOfView = userCamera.fieldOfView;
-                Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
                 if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
+                    float screenHeight = userCamera.pixelRect.height;
+                    Vector3 cameraPositionF = userCamera.transform.position;
+                    float fieldOfView = userCamera.fieldOfView;
+                    Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
                     pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum);
                     pRenderer.UpdateRenderingQueue();
                     pRenderer.StartUpdatingPoints();
                 } else {
-                    UpdateGameObjects();
+                    pRenderer.UpdateGameObjects(meshConfiguration);
                 }
-            }
-        }
-
-        void UpdateGameObjects() {
-            int MAX_NODES_CREATE_PER_FRAME = 15;
-            int MAX_NODES_DELETE_PER_FRAME = 10;
-            for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && pRenderer.HasNodesToRender(); i++) {
-                Node n = pRenderer.GetNextNodeToRender();
-                if (n == null) //Still waiting for point rendering
-                {
-                    break;
-                } else if (n.IsReadyForGameObjectCreation()) {
-                    n.CreateGameObjects(meshConfiguration);
-                }
-            }
-            for (int i = 0; i < MAX_NODES_DELETE_PER_FRAME && pRenderer.HasNodesToDelete(); i++) {
-                pRenderer.GetNextNodeToDelete().RemoveGameObjects(meshConfiguration);
             }
         }
 
