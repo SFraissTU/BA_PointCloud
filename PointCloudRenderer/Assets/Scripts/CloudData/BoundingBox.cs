@@ -66,9 +66,14 @@ namespace CloudData
             bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
         }
 
+        //How much you would have to move the box so its center is in the origin
+        public Vector3d DistanceToOrigin() {
+            return (Size() / -2) - Min();
+        }
+
         /* Moves the boxes center to the origin
          */
-        public void moveToOrigin()
+        public void MoveToOrigin()
         {
             Vector3d size = Size();
             Vector3d newMin = (size / -2);
@@ -79,6 +84,16 @@ namespace CloudData
             uy = ly + size.y;
             uz = lz + size.z;
             bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
+        }
+
+        public void MoveAlong(Vector3d vector) {
+            lx += vector.x;
+            ly += vector.y;
+            lz += vector.z;
+            ux += vector.x;
+            uy += vector.y;
+            uz += vector.z;
+            bounds = new Bounds(Center().ToFloatVector(), bounds.size);
         }
 
         //Returns the radius of the circumscribed sphere (half the length of the diagonal)
@@ -115,6 +130,9 @@ namespace CloudData
             return bounds;
         }
 
+        public override string ToString() {
+            return "BoundingBox: [" + lx + "," + ly + "," + lz + ";" + ux + "," + uy + "," + uz + "]";
+        }
 
 
         public double Lx

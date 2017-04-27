@@ -1,4 +1,5 @@
 ﻿using CloudData;
+using Controllers;
 using DataStructures;
 using ObjectCreation;
 using System;
@@ -16,6 +17,8 @@ namespace Loading {
         private bool shuttingDown = false;
 
         private PriorityQueue<double, Node> toRender;
+        //Points in toRender, that should not be rendered because they would exceed the point budget
+        private HashSet<Node> notToRender;
         //Points that are supposed to be deleted. Normal Queue (but threadsafe)
         private ThreadSafeQueue<Node> toDelete;
 
@@ -29,15 +32,19 @@ namespace Loading {
         private double minNodeSize;
         private uint pointBudget;
 
+        //private CloudRenderState renderState;
+
         private PointCloudMetaData metaData;
         private string cloudPath;
 
-        public ConcurrentRenderer(Node rootNode, PointCloudMetaData metaData, string cloudPath, double minNodeSize, uint pointBudget) {
+        public ConcurrentRenderer(Node rootNode, PointCloudMetaData metaData, string cloudPath, int minNodeSize, uint pointBudget /*CloudRenderState renderState*/) {
             toRender = new HeapPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
+            notToRender = new HashSet<Node>();
             this.rootNode = rootNode;
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
+            //this.renderState = renderState;
             this.metaData = metaData;
             this.cloudPath = cloudPath;
         }
@@ -60,7 +67,10 @@ namespace Loading {
                 throw new InvalidOperationException("Renderer is not ready for filling. Still loading points.");
             }
             Vector3d cameraPosition = new Vector3d(cameraPositionF);
+            //renderState.ClearQueues()
             toRender.Clear();
+            toDelete.Clear();
+            notToRender.Clear();
             Queue<Node> toCheck = new Queue<Node>();
             toCheck.Enqueue(rootNode);
             double radius = rootNode.BoundingBox.Radius();
@@ -154,7 +164,8 @@ namespace Loading {
                             n.SetReadyForGameObjectCreation();
                         }
                     } else {
-                        toRender.Remove(n); //TODO: Very ugly, fix with converter fix
+                        //toRender.Remove(n); //TODO: Very ugly, fix with converter fix
+                        notToRender.Add(n); //This way we do not need to remove something from the queue (would be expensive)
                         if (n.HasGameObjects()) {
                             toDelete.Enqueue(n);
                         }
@@ -172,7 +183,10 @@ namespace Loading {
             int MAX_NODES_DELETE_PER_FRAME = 10;
             for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
                 Node n = toRender.Peek();
-                if (n.IsWaitingForReadySet()) //Still waiting for point rendering
+                if (notToRender.Contains(n)) {
+                    notToRender.Remove(n);
+                    toRender.Dequeue();
+                } else if (n.IsWaitingForReadySet()) //Still waiting for point rendering
                 {
                     break;
                 } else if (n.IsReadyForGameObjectCreation()) {

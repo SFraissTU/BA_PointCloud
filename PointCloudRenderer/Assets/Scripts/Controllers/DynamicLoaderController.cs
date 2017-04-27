@@ -18,12 +18,8 @@ namespace Controllers {
         public string cloudPath;
         //Defines the type of PointCloud (Points, Quads, Circles)
         public MeshConfiguration meshConfiguration;
-        //If the cloud should be moved to the origin
-        public bool moveToOrigin;
-        //Min-Node-Size on screen in pixels
-        public double minNodeSize;
-        //Point-Budget
-        public uint pointBudget;
+
+        public PointCloudSetController setController;
 
         private ConcurrentRenderer pRenderer;
         private Camera userCamera;
@@ -32,6 +28,7 @@ namespace Controllers {
 
         // Use this for initialization
         void Start() {
+            setController.RegisterController(this);
             Thread thread = new Thread(LoadHierarchy);
             thread.Start();
             userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -44,11 +41,13 @@ namespace Controllers {
                     cloudPath = cloudPath + "\\";
                 }
 
-                PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, moveToOrigin);
+                PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, false);
+
+                setController.UpdateBoundingBox(this, metaData.boundingBox);
 
                 Node rootNode = CloudLoader.LoadHierarchyOnly(cloudPath, metaData);
 
-                pRenderer = new ConcurrentRenderer(rootNode, metaData, cloudPath, minNodeSize, pointBudget);
+                pRenderer = new ConcurrentRenderer(rootNode, metaData, cloudPath, setController.minNodeSize, setController.pointBudget);
 
                 Debug.Log("Finished Loading Hierachy");
             } catch (Exception ex) {

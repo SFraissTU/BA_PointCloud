@@ -39,6 +39,12 @@ namespace DataStructures
             }
         }
 
+        public void Clear() {
+            lock (queue) {
+                queue.Clear();
+            }
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             lock (queue) {

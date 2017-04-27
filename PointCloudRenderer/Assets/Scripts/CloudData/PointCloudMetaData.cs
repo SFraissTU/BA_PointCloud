@@ -26,8 +26,8 @@ namespace CloudData
             data.tightBoundingBox.SwitchYZ();
             if (moveToOrigin)
             {
-                data.boundingBox.moveToOrigin();
-                data.tightBoundingBox.moveToOrigin();
+                data.boundingBox.MoveToOrigin();
+                data.tightBoundingBox.MoveToOrigin();
             }
             return data;
         }
