@@ -159,13 +159,14 @@ namespace Loading {
 
         /* Finds a file for a node in the hierarchy.
          * Assuming hierarchyStepSize is 3 and we are looking for the file 0123456765.bin, it is in:
-         * 012/012345/012345676/r0123456765.bin (TODO: Check this with supervisor)
+         * 012/012345/012345676/r0123456765.bin
+         * 012/345/676/r012345676.bin
          */
         private static byte[] FindAndLoadFile(string dataRPath, PointCloudMetaData metaData, string id, string fileending) {
             int levels = id.Length / metaData.hierarchyStepSize;
             string path = "";
-            for (int i = 1; i <= levels; i++) {
-                path += id.Substring(0, i * metaData.hierarchyStepSize) + "\\";
+            for (int i = 0; i < levels; i++) {
+                path += id.Substring(i * metaData.hierarchyStepSize, metaData.hierarchyStepSize) + "\\";
             }
             path += "r" + id + fileending;
             return File.ReadAllBytes(dataRPath + path);

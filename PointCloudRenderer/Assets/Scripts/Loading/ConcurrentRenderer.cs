@@ -32,6 +32,8 @@ namespace Loading {
 
         private double minNodeSize;
         private uint pointBudget;
+
+        private uint renderingPointCount = 0;
         
 
         public ConcurrentRenderer(int minNodeSize, uint pointBudget) {
@@ -102,7 +104,6 @@ namespace Loading {
                         if (!currentNode.HasGameObjects()) {
                             toRender.Enqueue(currentNode, priority);
                         }
-                        //renderingPoints += currentNode.PointCount;
                         foreach (Node child in currentNode) {
                             toCheck.Enqueue(child);
                         }
@@ -139,7 +140,9 @@ namespace Loading {
                 }
             }
             while (newNodesToDelete.Count != 0) {
-                toDelete.Enqueue(newNodesToDelete.Pop());
+                Node n = newNodesToDelete.Pop();
+                renderingPointCount -= n.PointCount;
+                toDelete.Enqueue(n);
             }
         }
 
@@ -156,7 +159,6 @@ namespace Loading {
         public void UpdateLoadedPoints() {
             try {
                 loadingPoints = true;
-                uint renderingPoints = 0;
                 foreach (Node n in toRender) {
                     if (shuttingDown) return;
                     uint amount = n.PointCount;
@@ -165,8 +167,8 @@ namespace Loading {
                         CloudLoader.LoadPointsForNode(n);
                         amount = n.PointCount;
                     }
-                    if (renderingPoints + amount < pointBudget) {
-                        renderingPoints += amount;
+                    if (renderingPointCount + amount < pointBudget) {
+                        renderingPointCount += amount;
                         if (!n.HasPointsToRender()) {
                             CloudLoader.LoadPointsForNode(n);
                         }
@@ -182,7 +184,7 @@ namespace Loading {
                     }
                 }
                 loadingPoints = false;
-                Debug.Log("Loaded " + renderingPoints + " points");
+                Debug.Log("Loaded " + renderingPointCount + " points");
             } catch (Exception ex) {
                 Debug.LogError(ex);
                 loadingPoints = false;
