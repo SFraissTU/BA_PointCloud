@@ -28,6 +28,7 @@ namespace Loading {
         private float fieldOfView;
         private Vector3 cameraPositionF;
         private Plane[] frustum;
+        private Matrix4x4 vpMatrix;
 
         private double minNodeSize;
         private uint pointBudget;
@@ -50,11 +51,12 @@ namespace Loading {
             return loadingPoints;
         }
 
-        public void SetCameraInfo(float screenHeight, float fieldOfView, Vector3 cameraPosition, Plane[] frustum) {
+        public void SetCameraInfo(float screenHeight, float fieldOfView, Vector3 cameraPosition, Plane[] frustum, Matrix4x4 vpMatrix) {
             this.screenHeight = screenHeight;
             this.fieldOfView = fieldOfView;
             this.cameraPositionF = cameraPosition;
             this.frustum = frustum;
+            this.vpMatrix = vpMatrix;
         }
 
         /* Updates the queues of nodes to be rendered / deleted. Important: Update camera data before!*/
@@ -89,13 +91,16 @@ namespace Loading {
                 //if (renderingPoints + currentNode.PointCount < pointBudget)   //TODO: PointCount currently not available. Fix after fixing of converter
                 //Is Node inside frustum?
                 if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject())) {
-                    double distance = currentNode.BoundingBox.Center().distance(cameraPosition); //TODO: Maybe other point?
+                    Vector3d center = currentNode.BoundingBox.Center();
+                    double distance = center.distance(cameraPosition); //TODO: Maybe other point?
                     double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
                     double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
-                    //TODO: Include centrality into priority
                     if (projectedSize >= minNodeSize) {
+                        Vector3 projected = vpMatrix * currentNode.BoundingBox.Center().ToFloatVector();
+                        projected = projected / projected.z;
+                        double priority = projectedSize / projected.magnitude;
                         if (!currentNode.HasGameObjects()) {
-                            toRender.Enqueue(currentNode, projectedSize);
+                            toRender.Enqueue(currentNode, priority);
                         }
                         //renderingPoints += currentNode.PointCount;
                         foreach (Node child in currentNode) {

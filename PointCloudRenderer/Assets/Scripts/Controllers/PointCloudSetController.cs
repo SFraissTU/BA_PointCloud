@@ -70,7 +70,7 @@ namespace Controllers {
                 Vector3 cameraPositionF = userCamera.transform.position;
                 float fieldOfView = userCamera.fieldOfView;
                 Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
-                pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum);
+                pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum, userCamera.worldToCameraMatrix * userCamera.projectionMatrix);
                 pRenderer.UpdateRenderingQueue();
                 pRenderer.StartUpdatingPoints();
             } else {
