@@ -14,6 +14,8 @@ namespace CloudData
     {
         //filename without the r. for example 073. identifieing the node in the tree
         private string name;
+        //MetaData of the cloud
+        private PointCloudMetaData metaData;
         //BoundingBox of this node
         private BoundingBox boundingBox;
         //The vertices this node is containing. Null before being set. Will be set to null after creating gameobjects
@@ -33,9 +35,10 @@ namespace CloudData
         //List containing the gameobjects resembling this node
         private List<GameObject> gameObjects = new List<GameObject>();
 
-        public Node(string name, BoundingBox boundingBox, Node parent)
+        public Node(string name, PointCloudMetaData metaData, BoundingBox boundingBox, Node parent)
         {
             this.name = name;
+            this.metaData = metaData;
             this.boundingBox = boundingBox;
             this.parent = parent;
         }
@@ -280,6 +283,10 @@ namespace CloudData
             {
                 return pointCount;
             }
+        }
+        
+        public PointCloudMetaData MetaData {
+            get { return metaData; }
         }
         
         public override string ToString()

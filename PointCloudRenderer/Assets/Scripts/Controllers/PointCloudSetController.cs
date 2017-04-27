@@ -1,5 +1,6 @@
 ﻿using CloudData;
 using Loading;
+using ObjectCreation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,17 +16,24 @@ namespace Controllers {
         public uint pointBudget;
         public int minNodeSize;
         public bool moveToOrigin;
+        //Defines the type of PointCloud (Points, Quads, Circles)
+        public MeshConfiguration meshConfiguration;
 
+        //For origin-moving:
         private bool hasMovedToOrigin = false;
-
-        private BoundingBox overallBoundingBox = new BoundingBox(Double.PositiveInfinity,Double.PositiveInfinity,Double.PositiveInfinity,
-                                                                    Double.NegativeInfinity,Double.NegativeInfinity,Double.NegativeInfinity);
+        private BoundingBox overallBoundingBox = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity,double.PositiveInfinity,
+                                                                    double.NegativeInfinity,double.NegativeInfinity,double.NegativeInfinity);
         private Dictionary<MonoBehaviour, BoundingBox> boundingBoxes = new Dictionary<MonoBehaviour, BoundingBox>();
-        //private List<BoundingBox> otherBoundingBoxes = new List<BoundingBox>();
         private ManualResetEvent waiterForBoundingBoxUpdate = new ManualResetEvent(false);
+
+        private ConcurrentRenderer pRenderer;
+
+        private Camera userCamera;
 
         // Use this for initialization
         void Start() {
+            pRenderer = new ConcurrentRenderer(minNodeSize, pointBudget);
+            userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         }
 
         public void RegisterController(MonoBehaviour controller) {
@@ -57,6 +65,25 @@ namespace Controllers {
                 hasMovedToOrigin = true;
                 waiterForBoundingBoxUpdate.Set();
             }
+            if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
+                float screenHeight = userCamera.pixelRect.height;
+                Vector3 cameraPositionF = userCamera.transform.position;
+                float fieldOfView = userCamera.fieldOfView;
+                Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
+                pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum);
+                pRenderer.UpdateRenderingQueue();
+                pRenderer.StartUpdatingPoints();
+            } else {
+                pRenderer.UpdateGameObjects(meshConfiguration);
+            }
+        }
+
+        public void AddRootNode(Node node) {
+            pRenderer.AddRootNode(node);
+        }
+        
+        public void OnApplicationQuit() {
+            pRenderer.ShutDown();
         }
     }
 }

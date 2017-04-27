@@ -22,7 +22,7 @@ namespace Loading {
         //Points that are supposed to be deleted. Normal Queue (but threadsafe)
         private ThreadSafeQueue<Node> toDelete;
 
-        private Node rootNode;
+        private List<Node> rootNodes;
 
         private float screenHeight;
         private float fieldOfView;
@@ -31,22 +31,19 @@ namespace Loading {
 
         private double minNodeSize;
         private uint pointBudget;
+        
 
-        //private CloudRenderState renderState;
-
-        private PointCloudMetaData metaData;
-        private string cloudPath;
-
-        public ConcurrentRenderer(Node rootNode, PointCloudMetaData metaData, string cloudPath, int minNodeSize, uint pointBudget /*CloudRenderState renderState*/) {
+        public ConcurrentRenderer(int minNodeSize, uint pointBudget) {
             toRender = new HeapPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
             notToRender = new HashSet<Node>();
-            this.rootNode = rootNode;
+            rootNodes = new List<Node>();
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
-            //this.renderState = renderState;
-            this.metaData = metaData;
-            this.cloudPath = cloudPath;
+        }
+
+        public void AddRootNode(Node rootNode) {
+            rootNodes.Add(rootNode);
         }
 
         public bool IsLoadingPoints() {
@@ -60,27 +57,33 @@ namespace Loading {
             this.frustum = frustum;
         }
 
-        /* Updates the queues of nodes to be rendered / deleted. Important: Update camera data before!
-         */
+        /* Updates the queues of nodes to be rendered / deleted. Important: Update camera data before!*/
+         
         public void UpdateRenderingQueue() {
             if (loadingPoints) {
                 throw new InvalidOperationException("Renderer is not ready for filling. Still loading points.");
             }
+            if (rootNodes.Count == 0) return;
             Vector3d cameraPosition = new Vector3d(cameraPositionF);
-            //renderState.ClearQueues()
             toRender.Clear();
             toDelete.Clear();
             notToRender.Clear();
             Queue<Node> toCheck = new Queue<Node>();
-            toCheck.Enqueue(rootNode);
-            double radius = rootNode.BoundingBox.Radius();
-            int lastLevel = rootNode.GetLevel();//= 0
+            foreach (Node rootNode in rootNodes) {
+                toCheck.Enqueue(rootNode);
+            }
+            double radius = rootNodes[0].BoundingBox.Radius();
+            int lastLevel = rootNodes[0].GetLevel();//= 0
             //Check all nodes - Breadth first
             while (toCheck.Count != 0 && !shuttingDown) {
                 Node currentNode = toCheck.Dequeue();
-                if (currentNode.GetLevel() != lastLevel) {
+                if (currentNode.GetLevel() > lastLevel) {
                     radius /= 2;
                     ++lastLevel;
+                } else if (currentNode.GetLevel() < lastLevel) {
+                    //Should not happen, but just in case...
+                    lastLevel = currentNode.GetLevel();
+                    radius = currentNode.BoundingBox.Radius();
                 }
 
                 //if (renderingPoints + currentNode.PointCount < pointBudget)   //TODO: PointCount currently not available. Fix after fixing of converter
@@ -135,6 +138,8 @@ namespace Loading {
             }
         }
 
+
+
         /* Loads points which have to be loaded in a new thread
          */
         public void StartUpdatingPoints() {
@@ -152,13 +157,13 @@ namespace Loading {
                     uint amount = n.PointCount;
                     //PointCount might already be sad from loading the points before
                     if (amount == 0) {
-                        CloudLoader.LoadPointsForNode(cloudPath, metaData, n);
+                        CloudLoader.LoadPointsForNode(n);
                         amount = n.PointCount;
                     }
                     if (renderingPoints + amount < pointBudget) {
                         renderingPoints += amount;
                         if (!n.HasPointsToRender()) {
-                            CloudLoader.LoadPointsForNode(cloudPath, metaData, n);
+                            CloudLoader.LoadPointsForNode(n);
                         }
                         if (!n.HasGameObjects()) {
                             n.SetReadyForGameObjectCreation();
@@ -172,11 +177,13 @@ namespace Loading {
                     }
                 }
                 loadingPoints = false;
+                Debug.Log("Loaded " + renderingPoints + " points");
             } catch (Exception ex) {
                 Debug.LogError(ex);
                 loadingPoints = false;
             }
         }
+
 
         public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
             int MAX_NODES_CREATE_PER_FRAME = 15;

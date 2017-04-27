@@ -16,29 +16,31 @@ namespace Loading {
                 jsonfile = reader.ReadToEnd();
                 reader.Close();
             }
-            return PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
+            PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
+            metaData.cloudPath = cloudPath;
+            return metaData;
         }
 
         /* Loads the complete Hierarchy and ALL points from the pointcloud described in the PointCloudMetaData
          */
         public static Node LoadPointCloud(string cloudPath, PointCloudMetaData metaData) {
             string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
-            Node rootNode = new Node("", metaData.boundingBox, null);
+            Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             LoadAllPoints(dataRPath, metaData, rootNode);
             return rootNode;
         }
 
-        public static Node LoadHierarchyOnly(string cloudPath, PointCloudMetaData metaData) {
-            string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
-            Node rootNode = new Node("", metaData.boundingBox, null);
+        public static Node LoadHierarchyOnly(PointCloudMetaData metaData) {
+            string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
+            Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             return rootNode;
         }
 
-        public static void LoadPointsForNode(string cloudPath, PointCloudMetaData metaData, Node node) {
-            string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
-            LoadPoints(dataRPath, metaData, node);
+        public static void LoadPointsForNode(Node node) {
+            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "\\r\\";
+            LoadPoints(dataRPath, node.MetaData, node);
         }
 
         /* Loads the complete hierarchy of the given node. Creates all the children and their data. Points are not yet stored in there.
@@ -69,7 +71,7 @@ namespace Loading {
                     //check bits
                     if ((configuration & (1 << j)) != 0) {
                         //This is done twice for some nodes
-                        Node child = new Node(n.Name + j, calculateBoundingBox(n.BoundingBox, j), n);
+                        Node child = new Node(n.Name + j, metaData, calculateBoundingBox(n.BoundingBox, j), n);
                         n.SetChild(j, child);
                         nextNodes.Enqueue(child);
                     }
