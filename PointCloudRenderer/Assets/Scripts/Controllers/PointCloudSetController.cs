@@ -32,8 +32,8 @@ namespace Controllers {
 
         // Use this for initialization
         void Start() {
-            pRenderer = new ConcurrentRenderer(minNodeSize, pointBudget);
             userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            pRenderer = new ConcurrentRenderer(minNodeSize, pointBudget, userCamera);
         }
 
         public void RegisterController(MonoBehaviour controller) {
@@ -67,11 +67,6 @@ namespace Controllers {
             }
             if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
                 Debug.Log("Updating!");
-                float screenHeight = userCamera.pixelRect.height;
-                Vector3 cameraPositionF = userCamera.transform.position;
-                float fieldOfView = userCamera.fieldOfView;
-                Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
-                pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum, userCamera.worldToCameraMatrix * userCamera.projectionMatrix);
                 pRenderer.UpdateRenderingQueue(meshConfiguration);
                 pRenderer.StartUpdatingPoints();
             } else {

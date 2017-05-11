@@ -25,11 +25,7 @@ namespace Loading {
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 
         //Camera Info
-        private float screenHeight;         
-        private float fieldOfView;          
-        private Vector3 cameraPositionF;    
-        private Plane[] frustum;
-        private Matrix4x4 vpMatrix;
+        private Camera camera;
 
         private double minNodeSize; //Min projected node size
         private uint pointBudget;   //Point Budget
@@ -41,7 +37,7 @@ namespace Loading {
         private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
 
-        public ConcurrentRenderer(int minNodeSize, uint pointBudget) {
+        public ConcurrentRenderer(int minNodeSize, uint pointBudget, Camera camera) {
             toRender = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new ListPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
@@ -49,6 +45,7 @@ namespace Loading {
             rootNodes = new List<Node>();
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
+            this.camera = camera;
         }
 
         public void AddRootNode(Node rootNode) {
@@ -60,16 +57,8 @@ namespace Loading {
             return loadingPoints;
         }
 
-        public void SetCameraInfo(float screenHeight, float fieldOfView, Vector3 cameraPosition, Plane[] frustum, Matrix4x4 vpMatrix) {
-            this.screenHeight = screenHeight;
-            this.fieldOfView = fieldOfView;
-            this.cameraPositionF = cameraPosition;
-            this.frustum = frustum;
-            this.vpMatrix = vpMatrix;
-        }
-
         /* Updates the rendering collections. Traverses the hierarchies and checks for each node, weither it is in the view frustum and weither the min node size is alright.
-         * GameObjects of Nodes that fail this test are deleted right away, so this method should be called from the main thread! Also, the camera information should be updated via SetCameraInfo before calling this method.
+         * GameObjects of Nodes that fail this test are deleted right away, so this method should be called from the main thread!
          * This method can only be called if the renderer is not currently loading points.
          * The RenderingPointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
          * If shuttingDown is set to true while this method is running, the traversal simply stops. The state of the renderer might be inconsistent afterward and will not be usable anymore.
@@ -83,15 +72,22 @@ namespace Loading {
             }
             if (rootNodes.Count == 0) return;
             renderingPointCount = 0;
-            Vector3d cameraPosition = new Vector3d(cameraPositionF);
+            //Camera Data
+            Vector3d cameraPosition = new Vector3d(camera.transform.position);
+            float screenHeight = camera.pixelRect.height;
+            float fieldOfView = camera.fieldOfView;
+            Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(camera);
+            //Clearing Queues
             toRender.Clear();
             toDelete.Clear();
             notToRender.Clear();
             alreadyRendered.Clear();
+            //Initializing Checking-Queue
             Queue<Node> toCheck = new Queue<Node>();
             foreach (Node rootNode in rootNodes) {
                 toCheck.Enqueue(rootNode);
             }
+            //Radius & Level
             double radius = rootNodes[0].BoundingBox.Radius();
             int lastLevel = rootNodes[0].GetLevel();//= 0
             //Check all nodes - Breadth first
@@ -116,10 +112,11 @@ namespace Loading {
                     double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
                     double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
                     if (projectedSize >= minNodeSize) {
-                        //Calculate centrality. TODO: Doesn't work correctly
-                        Vector3 projected = vpMatrix * currentNode.BoundingBox.Center().ToFloatVector();
-                        projected = projected / projected.z;
-                        double priority = projectedSize / projected.magnitude;
+                        //Calculate centrality. TODO: Approach works, but maybe theres a better way of combining the two factors
+                        Vector3 pos = currentNode.BoundingBox.Center().ToFloatVector();
+                        Vector3 projected = camera.WorldToViewportPoint(pos);
+                        projected = (projected * 2) - new Vector3(1, 1, 0);
+                        double priority = projectedSize / Math.Sqrt(Math.Pow(projected.x, 2) + Math.Pow(projected.y, 2));
                         //Object has no GameObjects -> Enqueue for GO-Creation
                         //Object has GameObjects -> Also Enqueue for GO-Creation. Will be checked later. Enqueue for possible GO-Removal
                         toRender.Enqueue(currentNode, priority);
