@@ -16,7 +16,8 @@ namespace Loading {
         private bool loadingPoints = false;
         private bool shuttingDown = false;
 
-        private PriorityQueue<double, Node> toRender;
+        private PriorityQueue<double, Node> toRenderNew;
+        private PriorityQueue<double, Node> alreadyRendered;
         //Points in toRender, that should not be rendered because they would exceed the point budget
         private HashSet<Node> notToRender;
         //Points that are supposed to be deleted. Normal Queue (but threadsafe)
@@ -37,7 +38,8 @@ namespace Loading {
         
 
         public ConcurrentRenderer(int minNodeSize, uint pointBudget) {
-            toRender = new HeapPriorityQueue<double, Node>();
+            toRenderNew = new HeapPriorityQueue<double, Node>();
+            alreadyRendered = new HeapPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
             notToRender = new HashSet<Node>();
             rootNodes = new List<Node>();
@@ -62,16 +64,18 @@ namespace Loading {
         }
 
         /* Updates the queues of nodes to be rendered / deleted. Important: Update camera data before!*/
-         
-        public void UpdateRenderingQueue() {
+         //Sets RenderingPointCount to number of points visible after calling this method
+        public void UpdateRenderingQueue(MeshConfiguration config) {
             if (loadingPoints) {
                 throw new InvalidOperationException("Renderer is not ready for filling. Still loading points.");
             }
             if (rootNodes.Count == 0) return;
+            renderingPointCount = 0;
             Vector3d cameraPosition = new Vector3d(cameraPositionF);
-            toRender.Clear();
+            toRenderNew.Clear();
             toDelete.Clear();
             notToRender.Clear();
+            alreadyRendered.Clear();
             Queue<Node> toCheck = new Queue<Node>();
             foreach (Node rootNode in rootNodes) {
                 toCheck.Enqueue(rootNode);
@@ -94,7 +98,7 @@ namespace Loading {
                 //Is Node inside frustum?
                 if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject())) {
                     Vector3d center = currentNode.BoundingBox.Center();
-                    double distance = center.distance(cameraPosition); //TODO: Maybe other point?
+                    double distance = center.distance(cameraPosition);
                     double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
                     double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
                     if (projectedSize >= minNodeSize) {
@@ -102,48 +106,56 @@ namespace Loading {
                         projected = projected / projected.z;
                         double priority = projectedSize / projected.magnitude;
                         if (!currentNode.HasGameObjects()) {
-                            toRender.Enqueue(currentNode, priority);
+                            toRenderNew.Enqueue(currentNode, priority);
+                        } else {
+                            alreadyRendered.Enqueue(currentNode, -priority);
+                            renderingPointCount += currentNode.PointCount;
                         }
                         foreach (Node child in currentNode) {
                             toCheck.Enqueue(child);
                         }
                     } else {
-                        if (currentNode.HasGameObjects()) {
-                            SetNodeToBeDeleted(currentNode);
-                        }
+                        //if (currentNode.HasGameObjects()) {
+                            SetNodeToBeDeleted(currentNode, config);
+                        //}
                     }
                 } else {
-                    if (currentNode.HasGameObjects()) {
-                        SetNodeToBeDeleted(currentNode);
-                    }
+                    //if (currentNode.HasGameObjects()) {
+                        SetNodeToBeDeleted(currentNode, config);
+                    //}
                 }
             }
         }
 
-        /* Puts the given node into the toDelete-Queue as well as all its children. However, the children are put first into the queue, because they should be removed first.
+        /* Deletes the GOs of the given node as well as all its children.
          */
-        private void SetNodeToBeDeleted(Node currentNode) {
+        private void SetNodeToBeDeleted(Node currentNode, MeshConfiguration config) {
             //Remove lower LOD-Objects first!
             Queue<Node> childrenToCheck = new Queue<Node>();
-            Stack<Node> newNodesToDelete = new Stack<Node>(); //<- saved in a stack because the order in the queue will be reverse
-            newNodesToDelete.Push(currentNode);
+            //Stack<Node> newNodesToDelete = new Stack<Node>(); //<- saved in a stack because the order in the queue will be reverse
+            //newNodesToDelete.Push(currentNode);
+            if (currentNode.HasGameObjects()) {
+                currentNode.RemoveGameObjects(config);
+            }
             foreach (Node child in currentNode) {
                 childrenToCheck.Enqueue(child);
             }
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    newNodesToDelete.Push(child);
-                    foreach (Node childchild in child) {
-                        childrenToCheck.Enqueue(childchild);
-                    }
+                    //newNodesToDelete.Push(child);
+                    child.RemoveGameObjects(config);
+                }
+                foreach (Node childchild in child) {
+                    childrenToCheck.Enqueue(childchild);
                 }
             }
-            while (newNodesToDelete.Count != 0) {
+            /*while (newNodesToDelete.Count != 0) {
                 Node n = newNodesToDelete.Pop();
                 renderingPointCount -= n.PointCount;
-                toDelete.Enqueue(n);
-            }
+                //toDelete.Enqueue(n);
+                n.RemoveGameObjects(config);
+            }*/
         }
 
 
@@ -159,7 +171,7 @@ namespace Loading {
         public void UpdateLoadedPoints() {
             try {
                 loadingPoints = true;
-                foreach (Node n in toRender) {
+                foreach (Node n in toRenderNew) {
                     if (shuttingDown) return;
                     uint amount = n.PointCount;
                     //PointCount might already be sad from loading the points before
@@ -167,20 +179,26 @@ namespace Loading {
                         CloudLoader.LoadPointsForNode(n);
                         amount = n.PointCount;
                     }
-                    if (renderingPointCount + amount < pointBudget) {
+                    while (renderingPointCount + amount > pointBudget && !alreadyRendered.IsEmpty()) {
+                        Node u = alreadyRendered.Dequeue();
+                        toDelete.Enqueue(u);//Direktes Löschen hier nicht möglich, daher über toDelete
+                        renderingPointCount -= u.PointCount;
+                    }
+                    if (renderingPointCount + amount <= pointBudget) {
                         renderingPointCount += amount;
                         if (!n.HasPointsToRender()) {
                             CloudLoader.LoadPointsForNode(n);
                         }
-                        if (!n.HasGameObjects()) {
+                        //Vorbedingung ist, dass toRenderNew nur Nodes enthält, die noch keine GOs besitzen!!
+                        //if (!n.HasGameObjects()) {
                             n.SetReadyForGameObjectCreation();
-                        }
+                        //}
                     } else {
                         //toRender.Remove(n); //TODO: Very ugly, fix with converter fix
                         notToRender.Add(n); //This way we do not need to remove something from the queue (would be expensive)
-                        if (n.HasGameObjects()) {
+                        /*if (n.HasGameObjects()) { //Kann nicht der Fall sein
                             toDelete.Enqueue(n);
-                        }
+                        }*/
                     }
                 }
                 loadingPoints = false;
@@ -195,16 +213,16 @@ namespace Loading {
         public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
             int MAX_NODES_CREATE_PER_FRAME = 15;
             int MAX_NODES_DELETE_PER_FRAME = 10;
-            for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
-                Node n = toRender.Peek();
+            for (int i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRenderNew.IsEmpty(); i++) {
+                Node n = toRenderNew.Peek();
                 if (notToRender.Contains(n)) {
                     notToRender.Remove(n);
-                    toRender.Dequeue();
+                    toRenderNew.Dequeue();
                 } else if (n.IsWaitingForReadySet()) //Still waiting for point rendering
                 {
                     break;
                 } else if (n.IsReadyForGameObjectCreation()) {
-                    toRender.Dequeue();
+                    toRenderNew.Dequeue();
                     n.CreateGameObjects(meshConfiguration);
                 }
             }
@@ -218,7 +236,7 @@ namespace Loading {
         }
 
         public bool HasNodesToRender() {
-            return !toRender.IsEmpty();
+            return !toRenderNew.IsEmpty();
         }
 
         public bool HasNodesToDelete() {

@@ -66,12 +66,13 @@ namespace Controllers {
                 waiterForBoundingBoxUpdate.Set();
             }
             if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
+                Debug.Log("Updating!");
                 float screenHeight = userCamera.pixelRect.height;
                 Vector3 cameraPositionF = userCamera.transform.position;
                 float fieldOfView = userCamera.fieldOfView;
                 Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(userCamera);
                 pRenderer.SetCameraInfo(screenHeight, fieldOfView, cameraPositionF, frustum, userCamera.worldToCameraMatrix * userCamera.projectionMatrix);
-                pRenderer.UpdateRenderingQueue();
+                pRenderer.UpdateRenderingQueue(meshConfiguration);
                 pRenderer.StartUpdatingPoints();
             } else {
                 pRenderer.UpdateGameObjects(meshConfiguration);
