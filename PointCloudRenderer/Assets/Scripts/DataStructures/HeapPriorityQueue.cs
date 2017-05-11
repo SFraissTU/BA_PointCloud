@@ -75,8 +75,15 @@ namespace DataStructures {
 
         //Complexity: O(logn)
         public override T Dequeue() {
+            I p;
+            return Dequeue(out p);
+        }
+
+        //Removes and returns the element with the highest priority from the queue. The priority is given through the parameter. Throws an InvalidOperationExcpetion if no element exists
+        public override T Dequeue(out I priority) {
             lock (locker) {
                 if (count == 0) throw new InvalidOperationException("Queue is empty!");
+                priority = heapArray[0].priority;
                 T max = heapArray[0].element;
                 --count;
                 heapArray[0] = heapArray[count];

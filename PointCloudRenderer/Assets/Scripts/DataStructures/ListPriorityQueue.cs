@@ -33,6 +33,21 @@ namespace DataStructures {
             }
         }
 
+        //Removes and returns the element with the highest priority from the queue. The priority is given through the parameter. Throws an InvalidOperationExcpetion if no element exists
+        public override T Dequeue(out I priority) {
+            lock (list) {
+                if (list.Count == 0) {
+                    throw new InvalidOperationException("Queue is empty!");
+                }
+                assertSorting();
+                KeyValuePair<I, T> pair = list.First.Value;
+                T element = pair.Value;
+                priority = pair.Key;
+                list.RemoveFirst();
+                return element;
+            }
+        }
+
         //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
         //Complexity: Worst Case: O(nlogn) (Assuming thats the sorting complexity), Best Case (when already sorted): O(1)
         public override T Peek() {
@@ -117,6 +132,19 @@ namespace DataStructures {
                     }
                     node = node.Next;
                 } 
+            }
+        }
+
+        //Removes the element with the least priority from the queue and returns it
+        public T Pop() {
+            lock (list) {
+                if (list.Count == 0) {
+                    throw new InvalidOperationException("Queue is empty!");
+                }
+                assertSorting();
+                T element = list.Last.Value.Value;
+                list.RemoveLast();
+                return element;
             }
         }
 

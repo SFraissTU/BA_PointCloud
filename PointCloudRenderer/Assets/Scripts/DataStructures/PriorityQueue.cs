@@ -14,6 +14,9 @@ namespace DataStructures
         //Removes and returns the element with the highest priority from the queue. Throws an InvalidOperationException if no element exists
         public abstract T Dequeue();
 
+        //Removes and returns the element with the highest priority from the queue. The priority is given through the parameter. Throws an InvalidOperationExcpetion if no element exists
+        public abstract T Dequeue(out I priority);
+
         //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
         public abstract T Peek();
 

@@ -45,19 +45,21 @@ namespace DataStructures
         //Complexity: O(logn)
         public override T Dequeue()
         {
-            lock (dictionary)
-            {
-                foreach (KeyValuePair<IWrapper, TWrapper> entry in dictionary)
-                {
+            I p;
+            return Dequeue(out p);
+        }
+
+        //Removes and returns the element with the highest priority from the queue. The priority is given through the parameter. Throws an InvalidOperationExcpetion if no element exists
+        public override T Dequeue(out I priority) {
+            lock (dictionary) {
+                foreach (KeyValuePair<IWrapper, TWrapper> entry in dictionary) {
                     TWrapper twr = entry.Value;
                     --count;
-                    if (twr == twr.last)
-                    {
+                    priority = entry.Key.priority;
+                    if (twr == twr.last) {
                         dictionary.Remove(entry.Key);
                         return twr.element;
-                    }
-                    else
-                    {
+                    } else {
                         //Remove next one from list
                         TWrapper toreturn = twr.next;
                         toreturn.next.last = toreturn.last;
