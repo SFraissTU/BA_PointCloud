@@ -28,9 +28,6 @@ namespace CloudData
         private Node parent;
         //PointCount, read from hierarchy-file
         private uint pointCount = 0;
-        //This flag is true iff vertices and colors to store exist, no game objects exist and SetReadyForGameObjectCreation() has been called
-        //If this is true, CreateGameObjects can be called
-        private bool readyFlag = false;
 
         //List containing the gameobjects resembling this node
         private List<GameObject> gameObjects = new List<GameObject>();
@@ -53,10 +50,6 @@ namespace CloudData
         //A gameobject can be created, if no gameobject is created yet, vertices and colors are set, and SetReadyForGameObjectCreation() has been called
         public void CreateGameObjects(MeshConfiguration configuration)
         {
-            if (!readyFlag)
-            {
-                throw new InvalidOperationException("Not ready for GameObject creation!");
-            }
             int max = configuration.GetMaximumPointsPerMesh();
             int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
             int index = 0; //name index
@@ -72,7 +65,6 @@ namespace CloudData
             }
             verticesToStore = null;
             colorsToStore = null;
-            readyFlag = false;
         }
 
         /* Creates a box game object with the shape of the bounding box of this node
@@ -109,37 +101,7 @@ namespace CloudData
             }
             gameObjects.Clear();
         }
-
-        /* Wether CreateGameObjects can be called without an exception.
-         * GameObjects can be created if no gameObjects for this node already exist, vertices and colors are set, and SetReadyForGameObjectCreation() has been called
-         */
-        public bool IsReadyForGameObjectCreation()
-        {
-            return readyFlag && gameObjects.Count == 0 && verticesToStore != null && colorsToStore != null;
-        }
-
-        /* Enables the creation of GameObjects, iff no GameObjects already exist and vertices and colors are set
-         */
-        public void SetReadyForGameObjectCreation()
-        {
-            if (gameObjects.Count != 0)
-            {
-                throw new ArgumentException("GameObjects already created!");
-            }
-            if (verticesToStore == null || colorsToStore == null) //TODO: PointCount
-            {
-                throw new ArgumentException("No or invalid point data stored!");
-            }
-            readyFlag = true;
-        }
-
-        /* True, iff no GameObjects are existing yet and at least a call to SetReadyForGameObjectCreation() is needed to enable creating them
-         */
-        public bool IsWaitingForReadySet()
-        {
-            return gameObjects.Count == 0 && !readyFlag;
-        }
-
+        
         /* Sets the point data to be stored.
          * Throws an exception if gameobjects already exist or vertices or colors are null or their length do not match
          */

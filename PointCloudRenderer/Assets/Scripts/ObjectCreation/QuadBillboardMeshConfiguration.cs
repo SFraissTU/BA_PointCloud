@@ -20,7 +20,7 @@ namespace ObjectCreation {
             material = new Material(Shader.Find("Custom/QuadBillboardShader"));
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
-            userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            userCamera = Camera.main;
             goCache = new GameObjectCache();
         }
 

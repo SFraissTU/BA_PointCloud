@@ -22,7 +22,7 @@ namespace ObjectCreation
             material = new Material(Shader.Find("Custom/QuadShader"));
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
-            Rect screen = GameObject.Find("Main Camera").GetComponent<Camera>().pixelRect;
+            Rect screen = Camera.main.pixelRect;
             material.SetInt("_ScreenWidth", (int)screen.width);
             material.SetInt("_ScreenHeight", (int)screen.height);
             goCache = new GameObjectCache();

@@ -33,8 +33,9 @@ namespace Controllers {
 
         // Use this for initialization
         void Start() {
-            userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            userCamera = Camera.main;
             pRenderer = new ConcurrentOneTimeRenderer(minNodeSize, pointBudget, userCamera);
+            if (!moveToOrigin) hasMovedToOrigin = true;
         }
         
         //Register a Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
@@ -65,8 +66,7 @@ namespace Controllers {
         // Update is called once per frame
         void Update() {
             lock (boundingBoxes) {
-                if (moveToOrigin && !hasMovedToOrigin && !boundingBoxes.ContainsValue(null)) {
-                    Debug.Log(overallBoundingBox);
+                if (!hasMovedToOrigin && !boundingBoxes.ContainsValue(null)) {
                     Vector3d moving = overallBoundingBox.DistanceToOrigin();
                     foreach (BoundingBox bb in boundingBoxes.Values) {
                         bb.MoveAlong(moving);
@@ -74,6 +74,12 @@ namespace Controllers {
                     overallBoundingBox.MoveAlong(moving);
                     hasMovedToOrigin = true;
                     waiterForBoundingBoxUpdate.Set();
+                }
+            }
+            lock (pRenderer) {
+                //Checking, weither all RootNodes are there
+                if (pRenderer.GetRootNodeCount() != boundingBoxes.Count) {
+                    return;
                 }
             }
             if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
@@ -85,8 +91,11 @@ namespace Controllers {
             }
         }
 
+        //Call this before setting the bounding boxes
         public void AddRootNode(Node node) {
-            pRenderer.AddRootNode(node);
+            lock (pRenderer) {
+                pRenderer.AddRootNode(node);
+            }
         }
         
         public void OnApplicationQuit() {
