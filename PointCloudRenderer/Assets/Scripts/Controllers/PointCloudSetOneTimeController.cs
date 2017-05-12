@@ -40,19 +40,23 @@ namespace Controllers {
         //Register a Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
         //The whole cloud will be moved and rendered as soon as for every registered controller the bounding box is given via UpdateBoundingBox
         public void RegisterController(MonoBehaviour controller) {
-            boundingBoxes[controller] = null;
+            lock (boundingBoxes) {
+                boundingBoxes[controller] = null;
+            }
         }
 
         //Sets the bounding box of a given Cloud-Controller. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update),
         //so this method should be called in an extra thread
         public void UpdateBoundingBox(MonoBehaviour controller, BoundingBox boundingBox) {
-            boundingBoxes[controller] = boundingBox;
-            overallBoundingBox.Lx = Math.Min(overallBoundingBox.Lx, boundingBox.Lx);
-            overallBoundingBox.Ly = Math.Min(overallBoundingBox.Ly, boundingBox.Ly);
-            overallBoundingBox.Lz = Math.Min(overallBoundingBox.Lz, boundingBox.Lz);
-            overallBoundingBox.Ux = Math.Max(overallBoundingBox.Ux, boundingBox.Ux);
-            overallBoundingBox.Uy = Math.Max(overallBoundingBox.Uy, boundingBox.Uy);
-            overallBoundingBox.Uz = Math.Max(overallBoundingBox.Uz, boundingBox.Uz);
+            lock (boundingBoxes) {
+                boundingBoxes[controller] = boundingBox;
+                overallBoundingBox.Lx = Math.Min(overallBoundingBox.Lx, boundingBox.Lx);
+                overallBoundingBox.Ly = Math.Min(overallBoundingBox.Ly, boundingBox.Ly);
+                overallBoundingBox.Lz = Math.Min(overallBoundingBox.Lz, boundingBox.Lz);
+                overallBoundingBox.Ux = Math.Max(overallBoundingBox.Ux, boundingBox.Ux);
+                overallBoundingBox.Uy = Math.Max(overallBoundingBox.Uy, boundingBox.Uy);
+                overallBoundingBox.Uz = Math.Max(overallBoundingBox.Uz, boundingBox.Uz);
+            }
             if (moveToOrigin) {
                 waiterForBoundingBoxUpdate.WaitOne();
             }
@@ -60,14 +64,17 @@ namespace Controllers {
 
         // Update is called once per frame
         void Update() {
-            if (moveToOrigin && !hasMovedToOrigin && !boundingBoxes.ContainsValue(null)) {
-                Vector3d moving = overallBoundingBox.DistanceToOrigin();
-                foreach (BoundingBox bb in boundingBoxes.Values) {
-                    bb.MoveAlong(moving);
+            lock (boundingBoxes) {
+                if (moveToOrigin && !hasMovedToOrigin && !boundingBoxes.ContainsValue(null)) {
+                    Debug.Log(overallBoundingBox);
+                    Vector3d moving = overallBoundingBox.DistanceToOrigin();
+                    foreach (BoundingBox bb in boundingBoxes.Values) {
+                        bb.MoveAlong(moving);
+                    }
+                    overallBoundingBox.MoveAlong(moving);
+                    hasMovedToOrigin = true;
+                    waiterForBoundingBoxUpdate.Set();
                 }
-                overallBoundingBox.MoveAlong(moving);
-                hasMovedToOrigin = true;
-                waiterForBoundingBoxUpdate.Set();
             }
             if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
                 Debug.Log("Updating!");
