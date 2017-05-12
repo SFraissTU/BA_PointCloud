@@ -9,9 +9,10 @@ using UnityEngine;
 
 namespace Controllers {
 
-    /* Contains options for a set of PointClouds
+    /* This enabled loading several PointClouds at the same time. The configured options work globally.
+     * This class uses a ConcurrentOneTimeRenderer, so only when the user presses "X", the cloud is reloaded
      */
-    public class PointCloudSetController : MonoBehaviour {
+    public class PointCloudSetOneTimeController : MonoBehaviour {
 
         public uint pointBudget;
         public int minNodeSize;
@@ -26,21 +27,24 @@ namespace Controllers {
         private Dictionary<MonoBehaviour, BoundingBox> boundingBoxes = new Dictionary<MonoBehaviour, BoundingBox>();
         private ManualResetEvent waiterForBoundingBoxUpdate = new ManualResetEvent(false);
 
-        private ConcurrentRenderer pRenderer;
+        private ConcurrentOneTimeRenderer pRenderer;
 
         private Camera userCamera;
 
         // Use this for initialization
         void Start() {
             userCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-            pRenderer = new ConcurrentRenderer(minNodeSize, pointBudget, userCamera);
+            pRenderer = new ConcurrentOneTimeRenderer(minNodeSize, pointBudget, userCamera);
         }
-
+        
+        //Register a Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
+        //The whole cloud will be moved and rendered as soon as for every registered controller the bounding box is given via UpdateBoundingBox
         public void RegisterController(MonoBehaviour controller) {
             boundingBoxes[controller] = null;
-            Debug.Log("Registering Controller");
         }
 
+        //Sets the bounding box of a given Cloud-Controller. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update),
+        //so this method should be called in an extra thread
         public void UpdateBoundingBox(MonoBehaviour controller, BoundingBox boundingBox) {
             boundingBoxes[controller] = boundingBox;
             overallBoundingBox.Lx = Math.Min(overallBoundingBox.Lx, boundingBox.Lx);

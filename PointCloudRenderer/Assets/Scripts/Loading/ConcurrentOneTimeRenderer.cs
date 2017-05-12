@@ -10,9 +10,13 @@ using System.Threading;
 using UnityEngine;
 
 namespace Loading {
-    /* This class is responsible for the HierarchyTraversal (determining which nodes are to be seen and which not), loading the new nodes concurrent to the main thread and creating the gameobjects
+    /* This class is responsible for the HierarchyTraversal (determining which nodes are to be seen and which not), loading the new nodes concurrent to the main thread and creating the gameobjects.
+     * How to use:
+     * If the rendered nodes should be adapted to the current view, call UpdateRenderingQueue (this cannot be done again until the point loading is finished). This updates the rendering queue
+     * To start loading the points in the rendering queue in a new thread call StartUpdatingPoints
+     * To create or delete GameObjects call UpdateGameObjects per Frame
      */
-    public class ConcurrentRenderer {
+    public class ConcurrentOneTimeRenderer {
         private bool loadingPoints = false; //true, iff there are still nodes scheduled to be loaded
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
@@ -37,7 +41,7 @@ namespace Loading {
         private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
 
-        public ConcurrentRenderer(int minNodeSize, uint pointBudget, Camera camera) {
+        public ConcurrentOneTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
             toRender = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new ListPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
