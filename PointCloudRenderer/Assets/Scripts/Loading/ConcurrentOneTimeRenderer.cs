@@ -121,10 +121,11 @@ namespace Loading {
                     double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
                     if (projectedSize >= minNodeSize) {
                         //Calculate centrality. TODO: Approach works, but maybe theres a better way of combining the two factors
+                        //TODO: Centrality ignored, because it created unwanted results. Put back in later after discussion with supervisor
                         Vector3 pos = currentNode.BoundingBox.Center().ToFloatVector();
                         Vector3 projected = camera.WorldToViewportPoint(pos);
                         projected = (projected * 2) - new Vector3(1, 1, 0);
-                        double priority = projectedSize / Math.Sqrt(Math.Pow(projected.x, 2) + Math.Pow(projected.y, 2));
+                        double priority = projectedSize;// Math.Sqrt(Math.Pow(projected.x, 2) + Math.Pow(projected.y, 2));
                         //Object has no GameObjects -> Enqueue for Loading
                         //Object has GameObjects -> Also Enqueue for Loading. Will be checked later. Enqueue for possible GO-Removal
                         toLoad.Enqueue(currentNode, priority);
@@ -210,6 +211,10 @@ namespace Loading {
                                 CloudLoader.LoadPointsForNode(n);
                             }
                             toRender.Enqueue(n, priority);
+                        } else {
+                            //Stop Loading
+                            //AlreadyRendered is empty, so no nodes are visible
+                            toLoad.Clear();
                         }
                     }
                 }
