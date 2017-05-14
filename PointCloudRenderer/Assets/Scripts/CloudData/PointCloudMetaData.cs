@@ -17,7 +17,10 @@ namespace CloudData
         public double spacing;
         public double scale;
         public int hierarchyStepSize;
+        [NonSerialized]
         public string cloudPath;
+        [NonSerialized]
+        public string cloudName;
 
         public static PointCloudMetaData ReadFromJson(string json, bool moveToOrigin)
         {

@@ -28,6 +28,7 @@ namespace Controllers {
         private ManualResetEvent waiterForBoundingBoxUpdate = new ManualResetEvent(false);
 
         private ConcurrentOneTimeRenderer pRenderer;
+        //private SingleThreadedOneTimeRenderer pRenderer;
 
         private Camera userCamera;
 
@@ -82,7 +83,7 @@ namespace Controllers {
                     return;
                 }
             }
-            if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender() && !pRenderer.HasNodesToDelete()) {
+            if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender()/* && !pRenderer.HasNodesToDelete()*/) {
                 Debug.Log("Updating!");
                 pRenderer.UpdateRenderingQueue(meshConfiguration);
                 pRenderer.StartUpdatingPoints();

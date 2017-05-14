@@ -18,6 +18,7 @@ namespace Loading {
             }
             PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
             metaData.cloudPath = cloudPath;
+            metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("\\") + 1);
             return metaData;
         }
 

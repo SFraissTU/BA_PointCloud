@@ -59,7 +59,7 @@ namespace CloudData
                 Color[] colors = colorsToStore.Take(amount).ToArray(); ;
                 verticesToStore = verticesToStore.Skip(amount).ToArray();
                 colorsToStore = colorsToStore.Skip(amount).ToArray();
-                gameObjects.Add(configuration.CreateGameObject("r" + name + "_" + index, vertices, colors, boundingBox));
+                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
                 amount = Math.Min(max, verticesToStore.Length);
                 index++;
             }
