@@ -71,6 +71,17 @@ namespace DataStructures
             }
         }
 
+        public override I MaxPriority() {
+            lock (dictionary) {
+                foreach (KeyValuePair<IWrapper, TWrapper> entry in dictionary) {
+                    TWrapper twr = entry.Value;
+                    I priority = entry.Key.priority;
+                    return priority;
+                }
+                throw new InvalidOperationException("Queue is empty!");
+            }
+        }
+
         //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
         //Complexity: O(logn)
         public override T Peek()

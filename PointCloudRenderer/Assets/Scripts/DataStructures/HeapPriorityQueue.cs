@@ -93,6 +93,13 @@ namespace DataStructures {
             }
         }
 
+        public override I MaxPriority() {
+            lock (locker) {
+                if (count == 0) throw new InvalidOperationException("Queue is empty!");
+                return heapArray[0].priority;
+            }
+        }
+
         //Complexity: O(logn)
         public override void Enqueue(T element, I priority) {
             lock (locker) {

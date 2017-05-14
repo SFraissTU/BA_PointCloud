@@ -16,7 +16,7 @@ namespace Loading {
      * To start loading the points in the rendering queue in a new thread call StartUpdatingPoints
      * To create or delete GameObjects call UpdateGameObjects per Frame
      */
-    public class SingleThreadedOneTimeRenderer {
+    public class SingleThreadedOneTimeRenderer : AbstractRenderer {
         private bool loadingPoints = false; //true, iff there are still nodes scheduled to be loaded
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
@@ -132,32 +132,33 @@ namespace Loading {
                         }
                     } else {
                         //This node or its children might be visible
-                        SetNodeToBeDeleted(currentNode, config);
+                        DeleteNote(currentNode, config);
                     }
                 } else {
                     //This node or its children might be visible
-                    SetNodeToBeDeleted(currentNode, config);
+                    DeleteNote(currentNode, config);
                 }
             }
         }
 
         /* Deletes the GOs of the given node as well as all its children.
          */
-        private void SetNodeToBeDeleted(Node currentNode, MeshConfiguration config) {
+        private void DeleteNote(Node currentNode, MeshConfiguration config) {
+            //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
                 currentNode.RemoveGameObjects(config);
-            }
-            foreach (Node child in currentNode) {
-                childrenToCheck.Enqueue(child);
+                foreach (Node child in currentNode) {
+                    childrenToCheck.Enqueue(child);
+                }
             }
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
                     child.RemoveGameObjects(config);
-                }
-                foreach (Node childchild in child) {
-                    childrenToCheck.Enqueue(childchild);
+                    foreach (Node childchild in child) {
+                        childrenToCheck.Enqueue(childchild);
+                    }
                 }
             }
         }
@@ -218,6 +219,10 @@ namespace Loading {
 
         public bool HasNodesToRender() {
             return !toLoad.IsEmpty();
+        }
+
+        public bool HasNodesToDelete() {
+            return false;
         }
     }
 }

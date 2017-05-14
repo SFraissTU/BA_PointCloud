@@ -48,6 +48,17 @@ namespace DataStructures {
             }
         }
 
+        public override I MaxPriority() {
+            lock (list) {
+                if (list.Count == 0) {
+                    throw new InvalidOperationException("Queue is empty!");
+                }
+                assertSorting();
+                KeyValuePair<I, T> pair = list.First.Value;
+                return pair.Key;
+            }
+        }
+
         //Returns the element with the highest priority from the queue without removing it. Throws an InvalidOperationException if no element exists
         //Complexity: Worst Case: O(nlogn) (Assuming thats the sorting complexity), Best Case (when already sorted): O(1)
         public override T Peek() {

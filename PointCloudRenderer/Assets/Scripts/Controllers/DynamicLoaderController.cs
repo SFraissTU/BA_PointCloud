@@ -18,7 +18,7 @@ namespace Controllers {
         //Path to the folder in which the cloud.js is
         public string cloudPath;
 
-        public PointCloudSetOneTimeController setController;
+        public AbstractPointSetController setController;
 
 
         // Use this for initialization

@@ -6,25 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using UnityEngine;
 
 namespace Loading {
-    /* This class is responsible for the HierarchyTraversal (determining which nodes are to be seen and which not), loading the new nodes concurrent to the main thread and creating the gameobjects.
-     * How to use:
-     * If the rendered nodes should be adapted to the current view, call UpdateRenderingQueue (this cannot be done again until the point loading is finished). This updates the rendering queue
-     * To start loading the points in the rendering queue in a new thread call StartUpdatingPoints
-     * To create or delete GameObjects call UpdateGameObjects per Frame
-     */
-    public class ConcurrentOneTimeRenderer : AbstractRenderer {
+    class SingleThreadedMultiTimeRenderer : AbstractRenderer {
+
         private bool loadingPoints = false; //true, iff there are still nodes scheduled to be loaded
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
         //Rendering Collections
         private PriorityQueue<double, Node> toLoad;                 //Priority Queue of nodes in the view frustum that exceed the minimum size. It doesn't matter if GameObjects are created yet. PointBudget-Correctness has yet to be checked
-        private PriorityQueue<double, Node> toRender;               //Priority Queue of nodes that are loaded and ready for GO-Creation and do not have GOs yet
-        private ListPriorityQueue<double, Node> alreadyRendered;    //Priority Queue of nodes in the view frustum that exceed the minimum size, for which GameObjects already exists. Nodes with higher priority are more likely to be removed in case its pointcount blocks the rendering of a more important node. A List Priority Queue is chosen, because we have to remove elements from both sides
-        private ThreadSafeQueue<Node> toDelete;                     //Queue of Points that are supposed to be deleted (used because some neccessary deletions are noticed outside the main thread, which is the only one who can remove GameObjects)
+        private PriorityQueue<double, Node> alreadyRendered;    //Priority Queue of nodes in the view frustum that exceed the minimum size, for which GameObjects already exists. Nodes with higher priority are more likely to be removed in case its pointcount blocks the rendering of a more important node. A List Priority Queue is chosen, because we have to remove elements from both sides
 
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 
@@ -33,19 +25,17 @@ namespace Loading {
 
         private double minNodeSize; //Min projected node size
         private uint pointBudget;   //Point Budget
-        
+
         private uint renderingPointCount = 0;   //Number of points being in GameObjects right now
 
         //Frame-Limits, see UpdateGameObjects
-        private const int MAX_NODES_CREATE_PER_FRAME = 15;
+        private const int MAX_NODES_CREATE_PER_FRAME = 5;
         private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
 
-        public ConcurrentOneTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
+        public SingleThreadedMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
             toLoad = new HeapPriorityQueue<double, Node>();
-            toRender = new HeapPriorityQueue<double, Node>();
-            alreadyRendered = new ListPriorityQueue<double, Node>();
-            toDelete = new ThreadSafeQueue<Node>();
+            alreadyRendered = new HeapPriorityQueue<double, Node>();
             rootNodes = new List<Node>();
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
@@ -87,8 +77,6 @@ namespace Loading {
             Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(camera);
             //Clearing Queues
             toLoad.Clear();
-            toRender.Clear();
-            toDelete.Clear();
             alreadyRendered.Clear();
             //Initializing Checking-Queue
             Queue<Node> toCheck = new Queue<Node>();
@@ -122,16 +110,18 @@ namespace Loading {
                     if (projectedSize >= minNodeSize) {
                         //Calculate centrality. TODO: Approach works, but maybe theres a better way of combining the two factors
                         //TODO: Centrality ignored, because it created unwanted results. Put back in later after discussion with supervisor
+                        //The priority-order would not resemble the size (see DeleteNode). Children would be rendered before their parents
                         Vector3 pos = currentNode.BoundingBox.Center().ToFloatVector();
                         Vector3 projected = camera.WorldToViewportPoint(pos);
                         projected = (projected * 2) - new Vector3(1, 1, 0);
                         double priority = projectedSize;// Math.Sqrt(Math.Pow(projected.x, 2) + Math.Pow(projected.y, 2));
                         //Object has no GameObjects -> Enqueue for Loading
-                        //Object has GameObjects -> Also Enqueue for Loading. Will be checked later. Enqueue for possible GO-Removal
-                        toLoad.Enqueue(currentNode, priority);
+                        //Object has GameObjects -> Enqueue for possible GO-Removal
                         if (currentNode.HasGameObjects()) {
-                            alreadyRendered.Enqueue(currentNode, priority);
+                            alreadyRendered.Enqueue(currentNode, -priority); //inverse. less important ones come first
                             renderingPointCount += currentNode.PointCount;
+                        } else {
+                            toLoad.Enqueue(currentNode, priority);
                         }
                         foreach (Node child in currentNode) {
                             toCheck.Enqueue(child);
@@ -170,91 +160,64 @@ namespace Loading {
         }
 
 
-        /* Loads points which have to be loaded in a new thread
-         */
-        public void StartUpdatingPoints() {
-            new Thread(UpdateLoadedPoints).Start();
-        }
-
-        /* Loads point which have to be loaded. Ideally this should run parallel to the main thread (started by StartUpdatingPoints).
-         * The toRenderNew-Queue is iterated and points are loaded if neccessary. PointCount and PointBudget are checked. Nodes that are not needed anymore will be marked for deletion (toDelete-Queue)
-         */
-        public void UpdateLoadedPoints() {
-            try {
-                loadingPoints = true;
-                while (!toLoad.IsEmpty()) {
-                    if (shuttingDown) return;
-                    double priority;
-                    Node n = toLoad.Dequeue(out priority);
-                    if (n.HasGameObjects()) {
-                        //Remove already rendered element with highest priority (this element) from alreadyrendered-queue, so it might not be deleted!
-                        //It could be that this element was already removed. However as the removal starts from the other side of the list, this can only be the case if the queue is empty
-                        if (!alreadyRendered.IsEmpty()) {
-                            alreadyRendered.Dequeue();
-                        }
-                        //Already in PointCount!
-                    } else {
-                        uint amount = n.PointCount;
-                        //PointCount might already be there from loading the points before
-                        if (amount == 0) {
-                            CloudLoader.LoadPointsForNode(n);
-                            amount = n.PointCount;
-                        }
-                        //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
-                        while (renderingPointCount + amount > pointBudget && !alreadyRendered.IsEmpty()) {
-                            Node u = alreadyRendered.Pop(); //Get element with lowest priority
-                            toDelete.Enqueue(u);//Direct Deleting not possible here, so scheduling for later
-                            renderingPointCount -= u.PointCount;
-                        }
-                        if (renderingPointCount + amount <= pointBudget) {
-                            renderingPointCount += amount;
-                            if (!n.HasPointsToRender()) {
-                                CloudLoader.LoadPointsForNode(n);
-                            }
-                            toRender.Enqueue(n, priority);
-                        } else {
-                            //Stop Loading
-                            //AlreadyRendered is empty, so no nodes are visible
-                            toLoad.Clear();
-                        }
-                    }
-                }
-                loadingPoints = false;
-                Debug.Log("Loaded " + renderingPointCount + " points");
-            } catch (Exception ex) {
-                Debug.LogError(ex);
-                loadingPoints = false;
-            }
-        }
-
         /* Creates new GameObjects for nodes that are scheduled to be rendered. This has to be called from the main thread.
          * Up to MAX_NDOES_CREATE_PER_FRAME are created in one frame. Up to MAX_NODES_DELETE_PER_FRAME are deleted in a frame except during Hierachy Traversal (updateRenderingQueue), where no limit is given
          */
         public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
             if (shuttingDown) return;
             int i;
-            for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
-                Node n = toRender.Dequeue();
-                //Create GameObjects
-                n.CreateGameObjects(meshConfiguration);
+            for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toLoad.IsEmpty(); i++) {
+                double nPriority;
+                Node n = toLoad.Dequeue(out nPriority);
+                //n doesn't have GameObjects
+                uint amount = n.PointCount;
+                //PointCount might already be there from loading the points before
+                if (amount == 0) {
+                    CloudLoader.LoadPointsForNode(n);
+                    amount = n.PointCount;
+                }
+                //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
+                while (renderingPointCount + amount > pointBudget && !alreadyRendered.IsEmpty()) {
+                    double arPriority = -alreadyRendered.MaxPriority();
+                    if (arPriority < nPriority) {
+                        Node u = alreadyRendered.Dequeue(); //Get element with lowest priority
+                        u.RemoveGameObjects(meshConfiguration);
+                        renderingPointCount -= u.PointCount;
+                    } else {
+                        break;
+                    }
+                }
+                if (renderingPointCount + amount <= pointBudget) {
+                    renderingPointCount += amount;
+                    if (!n.HasPointsToRender()) {
+                        CloudLoader.LoadPointsForNode(n);
+                    }
+                    //Create GameObjects
+                    n.CreateGameObjects(meshConfiguration);
+                } else {
+                    //Stop Loading
+                    //AlreadyRendered is empty, so no nodes are visible
+                    toLoad.Clear();
+                }
             }
-            //FPSOutputController.NoteFPS(i == 0);
-            //toDelete only contains nodes that where there last frame, are in the view frustum, but would exheed the point budget
-            for (int j = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
-                toDelete.Dequeue().RemoveGameObjects(meshConfiguration);
-            }
+            //FPSOutputController.NoteFPS(toLoad.IsEmpty());
         }
+        
 
         public void ShutDown() {
             shuttingDown = true;
         }
 
         public bool HasNodesToRender() {
-            return !toRender.IsEmpty();
+            return !toLoad.IsEmpty();
+        }
+
+        public void StartUpdatingPoints() {
+            //nothing
         }
 
         public bool HasNodesToDelete() {
-            return !toDelete.IsEmpty();
+            return false;
         }
     }
 }
