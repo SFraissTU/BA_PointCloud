@@ -25,7 +25,9 @@ namespace Controllers {
         protected override void Start() {
             userCamera = Camera.main;
             pRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            //pRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
             base.Start();
+            pRenderer.StartUpdatingPoints();
         }
 
         // Update is called once per frame

@@ -32,6 +32,7 @@ namespace Controllers {
         //For printing FPS constantly
 
         public float outputInterval = 1;
+        public AbstractPointSetController pointset = null;
 
         private float accTime = 0;
 
@@ -47,6 +48,9 @@ namespace Controllers {
                 Debug.Log("FPS: " + (1 / dT));
                 while (accTime > outputInterval) {
                     accTime -= outputInterval;
+                }
+                if (pointset != null) {
+                    Debug.Log("PointCount: " + pointset.GetPointCount());
                 }
             }
         }

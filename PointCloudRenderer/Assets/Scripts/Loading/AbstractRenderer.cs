@@ -16,5 +16,6 @@ namespace Loading {
         void ShutDown();
         bool HasNodesToRender();
         bool HasNodesToDelete();
+        uint GetPointCount();
     }
 }

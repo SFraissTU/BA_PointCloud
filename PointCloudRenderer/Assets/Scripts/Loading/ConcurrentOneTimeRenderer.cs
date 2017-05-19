@@ -256,5 +256,9 @@ namespace Loading {
         public bool HasNodesToDelete() {
             return !toDelete.IsEmpty();
         }
+
+        public uint GetPointCount() {
+            return renderingPointCount;
+        }
     }
 }

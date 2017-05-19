@@ -89,5 +89,9 @@ namespace Controllers {
         public void OnApplicationQuit() {
             pRenderer.ShutDown();
         }
+
+        public uint GetPointCount() {
+            return pRenderer.GetPointCount();
+        }
     }
 }

@@ -9,9 +9,9 @@ namespace ObjectCreation
     class QuadMeshConfiguration : MeshConfiguration
     {
         //Size of the quad/circle
-        public float pointRadius;
+        public float pointRadius = 10;
         //wether the quads should be rendered as circles or not
-        public bool renderCircles;
+        public bool renderCircles = false;
 
         private Material material;
 
