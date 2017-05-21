@@ -15,8 +15,8 @@ namespace Loading {
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
         //Rendering Collections
-        private PriorityQueue<double, Node> toLoad;                 //Priority Queue of nodes in the view frustum that exceed the minimum size. It doesn't matter if GameObjects are created yet. PointBudget-Correctness has yet to be checked
-        private PriorityQueue<double, Node> alreadyRendered;    //Priority Queue of nodes in the view frustum that exceed the minimum size, for which GameObjects already exists. Nodes with higher priority are more likely to be removed in case its pointcount blocks the rendering of a more important node. A List Priority Queue is chosen, because we have to remove elements from both sides
+        private PriorityQueue<double, Node> toLoad;             //Priority Queue of nodes in the view frustum that exceed the minimum size. n doesn' have if GameObjects yet. PointBudget-Correctness has yet to be checked
+        private PriorityQueue<double, Node> alreadyRendered;    //Priority Queue of nodes in the view frustum that exceed the minimum size, for which GameObjects already exists. Nodes with higher priority are more likely to be removed in case its pointcount blocks the rendering of a more important node.
 
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 

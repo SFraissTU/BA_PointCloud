@@ -1,4 +1,6 @@
-﻿Shader "Custom/PointShader"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/PointShader"
 {
 	/*
 	This shader renders the given vertices as points with the given color.
@@ -30,7 +32,7 @@
 
 			VertexOutput vert(VertexInput v) {
 				VertexOutput o;
-				o.position = mul(UNITY_MATRIX_MVP, v.position);
+				o.position = UnityObjectToClipPos(v.position);
 				o.color = v.color;
 				return o;
 			}

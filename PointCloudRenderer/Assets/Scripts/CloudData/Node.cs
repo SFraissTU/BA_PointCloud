@@ -29,6 +29,9 @@ namespace CloudData
         //PointCount, read from hierarchy-file
         private uint pointCount = 0;
 
+        //Can be used by the renderer, doesn't have to be!
+        private byte nodeStatus = CloudData.NodeStatus.INVISIBLE;
+
         //List containing the gameobjects resembling this node
         private List<GameObject> gameObjects = new List<GameObject>();
 
@@ -118,6 +121,11 @@ namespace CloudData
             verticesToStore = vertices;
             colorsToStore = colors;
             pointCount = (uint)vertices.Length;
+        }
+
+        public void ForgetPoints() {
+            verticesToStore = null;
+            colorsToStore = null;
         }
 
         /* Wether there are points which can be used for the creation of a game object
@@ -250,7 +258,17 @@ namespace CloudData
         public PointCloudMetaData MetaData {
             get { return metaData; }
         }
-        
+
+        public byte NodeStatus {
+            get {
+                return nodeStatus;
+            }
+
+            set {
+                nodeStatus = value;
+            }
+        }
+
         public override string ToString()
         {
             return "Node: r" + Name;

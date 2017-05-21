@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace DataStructures {
     public class HeapPriorityQueue<I, T> : PriorityQueue<I, T> where I : IComparable<I> {
@@ -16,16 +17,20 @@ namespace DataStructures {
         }
 
         public HeapPriorityQueue(int capacity) {
-            initialCapacity = capacity;
-            heapArray = new Entry[capacity];
+            lock (locker) {
+                initialCapacity = capacity;
+                heapArray = new Entry[capacity];
+            }
         }
 
-        public HeapPriorityQueue(HeapPriorityQueue<I,T> original) {
-            initialCapacity = original.initialCapacity;
-            count = original.count;
-            heapArray = new Entry[original.heapArray.Length];
-            for (int i = 0; i < heapArray.Length; i++) {
-                heapArray[i] = original.heapArray[i];
+        public HeapPriorityQueue(HeapPriorityQueue<I, T> original) {
+            lock (locker) {
+                initialCapacity = original.initialCapacity;
+                count = original.count;
+                heapArray = new Entry[original.heapArray.Length];
+                for (int i = 0; i < heapArray.Length; i++) {
+                    heapArray[i] = original.heapArray[i];
+                }
             }
         }
 
@@ -62,7 +67,9 @@ namespace DataStructures {
 
         public override int Count {
             get {
-                return count;
+                lock (locker) {
+                    return count;
+                }
             }
         }
 

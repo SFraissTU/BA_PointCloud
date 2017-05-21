@@ -1,4 +1,6 @@
-﻿Shader "Custom/QuadGeomShader"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/QuadGeomShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.
@@ -50,7 +52,7 @@
 
 				VertexMiddle vert(VertexInput v) {
 					VertexMiddle o;
-					o.position = mul(UNITY_MATRIX_MVP, v.position);
+					o.position = UnityObjectToClipPos(v.position);
 					o.color = v.color;
 					return o;
 				}

@@ -1,4 +1,6 @@
-﻿Shader "Custom/QuadShader"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/QuadShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color. The uv-coordinates are given as offset-vectors ((-1,-1), (-1,1) etc.) which then are multiplied with the wanted point size.
@@ -44,7 +46,7 @@
 
 			VertexOutput vert(VertexInput v) {
 				VertexOutput o;
-				o.position = mul(UNITY_MATRIX_MVP, v.position);
+				o.position = UnityObjectToClipPos(v.position);
 				o.position.x += v.uv.x * o.position.w * _PointSize / _ScreenWidth;
 				o.position.y += v.uv.y * o.position.w * _PointSize / _ScreenHeight;
 				o.color = v.color;

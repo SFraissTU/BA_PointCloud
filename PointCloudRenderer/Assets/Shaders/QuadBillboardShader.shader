@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Custom/QuadBillboardShader"
 {
@@ -69,25 +71,25 @@ Shader "Custom/QuadBillboardShader"
 				out1.color = input[0].color;
 				out1.uv = float2(-1.0f, 1.0f);
 				out1.position += (-input[0].R + input[0].U);
-				out1.position = mul(UNITY_MATRIX_MVP, out1.position);
+				out1.position = UnityObjectToClipPos(out1.position);
 				VertexOutput out2;
 				out2.position = input[0].position;
 				out2.color = input[0].color;
 				out2.uv = float2(1.0f, 1.0f);
 				out2.position += (input[0].R + input[0].U);
-				out2.position = mul(UNITY_MATRIX_MVP, out2.position);
+				out2.position = UnityObjectToClipPos(out2.position);
 				VertexOutput out3;
 				out3.position = input[0].position;
 				out3.color = input[0].color;
 				out3.uv = float2(1.0f, -1.0f);
 				out3.position += (input[0].R - input[0].U);
-				out3.position = mul(UNITY_MATRIX_MVP, out3.position);
+				out3.position = UnityObjectToClipPos(out3.position);
 				VertexOutput out4;
 				out4.position = input[0].position;
 				out4.color = input[0].color;
 				out4.uv = float2(-1.0f, -1.0f);
 				out4.position += (-input[0].R - input[0].U);
-				out4.position = mul(UNITY_MATRIX_MVP, out4.position);
+				out4.position = UnityObjectToClipPos(out4.position);
 				outputStream.Append(out1);
 				outputStream.Append(out2);
 				outputStream.Append(out4);

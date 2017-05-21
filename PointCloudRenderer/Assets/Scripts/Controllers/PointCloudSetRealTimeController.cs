@@ -24,8 +24,8 @@ namespace Controllers {
         // Use this for initialization
         protected override void Start() {
             userCamera = Camera.main;
-            pRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
-            //pRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            //pRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            pRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
             base.Start();
             pRenderer.StartUpdatingPoints();
         }
