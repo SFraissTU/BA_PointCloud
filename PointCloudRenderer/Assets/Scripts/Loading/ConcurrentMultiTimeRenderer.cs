@@ -129,9 +129,12 @@ namespace Loading {
                             switch (currentNode.NodeStatus) {
                                 case NodeStatus.INVISIBLE:
                                 case NodeStatus.TOLOAD:
-                                case NodeStatus.TODELETE:
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
                                     newToLoad.Enqueue(currentNode, priority);
+                                    break;
+                                case NodeStatus.TODELETE:
+                                    currentNode.NodeStatus = NodeStatus.RENDERED;
+                                    newAlreadyLoaded.Enqueue(currentNode, -priority);
                                     break;
                                 default:
                                     //LOADING, TORENDER, RENDERED: Add to alreadyLoaded!
@@ -212,17 +215,20 @@ namespace Loading {
                 loadingPoints = true;
                 while (!shuttingDown) {
                     //Debug.Log("ULP Obtaining Lock");
-                    lock (toLoadLock) { //Locking over toLoad because toLoad might be cleared and we do not want to clear the new stuff (replacement in traversal)
+                    Monitor.Enter(toLoadLock); { //Locking over toLoad because toLoad might be cleared and we do not want to clear the new stuff (replacement in traversal)
                         //Debug.Log("ULP Obtained Lock");
                         if (toLoad.IsEmpty()) {
                             //Debug.Log("ULP Returning Lock");
+                            Monitor.Exit(toLoadLock);
                             continue;
                         }
+                        var oldToLoad = toLoad;
                         double nPriority;
                         Node n = toLoad.Dequeue(out nPriority);
                         lock (n) {
                             if (n.NodeStatus != NodeStatus.TOLOAD) {
                                 //Debug.Log("ULP Returning Lock");
+                                Monitor.Exit(toLoadLock);
                                 continue;
                             } else {
                                 n.NodeStatus = NodeStatus.LOADING;
@@ -231,7 +237,9 @@ namespace Loading {
                         uint amount = n.PointCount;
                         //PointCount might already be there from loading the points before
                         if (amount == 0) {
-                            CloudLoader.LoadPointsForNode(n);
+                            Monitor.Exit(toLoadLock);
+                            CloudLoader.LoadPointsForNode(n);   //TODO: Think about whether this is valid
+                            Monitor.Enter(toLoadLock);
                             amount = n.PointCount;
                         }
                         //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
@@ -270,8 +278,10 @@ namespace Loading {
                         }
                         if (renderingPointCount + amount <= pointBudget) {
                             renderingPointCount += amount;
+                            Monitor.Exit(toLoadLock);
                             if (!n.HasPointsToRender()) {
-                                CloudLoader.LoadPointsForNode(n); //TODO: Achtung: wenn Punkte in toRender geschmissen werden, aber ehe der GO-Erzeugung entfernt werden (durch URQ), bleiben sie geladen!
+                                //Problem: Exception can occur, because GameObject might not have been deleted yet (probably fixed)
+                                CloudLoader.LoadPointsForNode(n);
                             }
                             lock (n) {
                                 switch (n.NodeStatus) {
@@ -298,7 +308,10 @@ namespace Loading {
                             //If one note cannot be rendered, the following notes shouldn't be rendered either
                             //Stop Loading
                             //AlreadyRendered is empty, so no nodes are visible
-                            toLoad.Clear(); //Locking over toLoad removes synchronization problems with the traversal
+                            if (toLoad == oldToLoad) { //If it has been replaced during loading, we will not clear it
+                                toLoad.Clear(); //Locking over toLoad removes synchronization problems with the traversal
+                            }
+                            Monitor.Exit(toLoadLock);
                         }
                         //Debug.Log("Loaded Node: " + n + ", " + DateTime.Now);
                         //Debug.Log("ULP Returning Lock");
