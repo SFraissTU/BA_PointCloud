@@ -153,14 +153,16 @@ namespace Loading {
                     //This node or its children might be visible
                     DeleteNode(currentNode, config);
                 }
+            }
 
-                lock (toLoadLock) { //Synchronisation with UpdateLoadingPoints
-                    alreadyLoaded.Clear();
-                    alreadyLoaded = newAlreadyLoaded;
-                    toLoad.Clear();
-                    toLoad = newToLoad;
-                }
-                
+            //Debug.Log("URQ Obtaining Lock");
+            lock (toLoadLock) { //Synchronisation with UpdateLoadingPoints
+                //Debug.Log("URQ Obtained Lock");
+                alreadyLoaded.Clear();
+                alreadyLoaded = newAlreadyLoaded;
+                toLoad.Clear();
+                toLoad = newToLoad;
+                //Debug.Log("URQ Returning Lock");
             }
         }
 
@@ -209,14 +211,18 @@ namespace Loading {
             try {
                 loadingPoints = true;
                 while (!shuttingDown) {
+                    //Debug.Log("ULP Obtaining Lock");
                     lock (toLoadLock) { //Locking over toLoad because toLoad might be cleared and we do not want to clear the new stuff (replacement in traversal)
+                        //Debug.Log("ULP Obtained Lock");
                         if (toLoad.IsEmpty()) {
+                            //Debug.Log("ULP Returning Lock");
                             continue;
                         }
                         double nPriority;
                         Node n = toLoad.Dequeue(out nPriority);
                         lock (n) {
                             if (n.NodeStatus != NodeStatus.TOLOAD) {
+                                //Debug.Log("ULP Returning Lock");
                                 continue;
                             } else {
                                 n.NodeStatus = NodeStatus.LOADING;
@@ -294,6 +300,8 @@ namespace Loading {
                             //AlreadyRendered is empty, so no nodes are visible
                             toLoad.Clear(); //Locking over toLoad removes synchronization problems with the traversal
                         }
+                        //Debug.Log("Loaded Node: " + n + ", " + DateTime.Now);
+                        //Debug.Log("ULP Returning Lock");
                     }
                 }
                 loadingPoints = false;
