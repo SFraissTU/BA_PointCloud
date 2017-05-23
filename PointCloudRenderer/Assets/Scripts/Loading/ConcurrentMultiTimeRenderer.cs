@@ -34,9 +34,10 @@ namespace Loading {
         private double minNodeSize; //Min projected node size
         private uint pointBudget;   //Point Budget
 
-        private uint renderingPointCount = 0;   //Number of points being in GameObjects right now
+        private uint renderingPointCount = 0;   //Number of points being in nodes in state TORENDER or RENDERED
 
         private object toLoadLock = new object();
+        private object pointCountLock = new object();
 
         //Frame-Limits, see UpdateGameObjects
         private const int MAX_NODES_CREATE_PER_FRAME = 15;
@@ -111,6 +112,7 @@ namespace Loading {
                 //TODO: PointCount currently not available. Fix after fixing of converter
                 //Is Node inside frustum?
                 if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject())) {
+                    //CheckPointCount("URQ3PRE");
                     //Calculate projected size
                     Vector3d center = currentNode.BoundingBox.Center();
                     double distance = center.distance(cameraPosition);
@@ -129,12 +131,16 @@ namespace Loading {
                             switch (currentNode.NodeStatus) {
                                 case NodeStatus.INVISIBLE:
                                 case NodeStatus.TOLOAD:
+                                    //CheckPointCount("URQ3aPRE");
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
                                     newToLoad.Enqueue(currentNode, priority);
                                     break;
                                 case NodeStatus.TODELETE:
-                                    currentNode.NodeStatus = NodeStatus.RENDERED;
-                                    newAlreadyLoaded.Enqueue(currentNode, -priority);
+                                    lock (pointCountLock) {
+                                        currentNode.NodeStatus = NodeStatus.RENDERED;
+                                        newAlreadyLoaded.Enqueue(currentNode, -priority);
+                                        renderingPointCount += currentNode.PointCount;
+                                    }
                                     break;
                                 default:
                                     //LOADING, TORENDER, RENDERED: Add to alreadyLoaded!
@@ -188,15 +194,19 @@ namespace Loading {
                             child.RemoveGameObjects(config);
                             break;
                     }
-                    if (child.NodeStatus >= NodeStatus.TORENDER) {
-                        renderingPointCount -= child.PointCount;
-                    }
-                    if (child.NodeStatus >= NodeStatus.TOLOAD) {    //Loading of the children has to be aborted as well
-                        foreach (Node childchild in child) {
-                            childrenToCheck.Enqueue(childchild);
+                    int oldStatus = child.NodeStatus;
+                    lock (pointCountLock) {
+                        uint oldPointCount = renderingPointCount;
+                        child.NodeStatus = NodeStatus.INVISIBLE;
+                        if (oldStatus == NodeStatus.TORENDER || oldStatus == NodeStatus.RENDERED) {
+                            renderingPointCount -= child.PointCount;
+                        }
+                        if (oldStatus >= NodeStatus.TOLOAD) {    //Loading of the children has to be aborted as well
+                            foreach (Node childchild in child) {
+                                childrenToCheck.Enqueue(childchild);
+                            }
                         }
                     }
-                    child.NodeStatus = NodeStatus.INVISIBLE;
                 }
             }
         }
@@ -243,7 +253,9 @@ namespace Loading {
                             amount = n.PointCount;
                         }
                         //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
+                        Monitor.Enter(pointCountLock);
                         while (renderingPointCount + amount > pointBudget && !alreadyLoaded.IsEmpty()) {
+                            Monitor.Exit(pointCountLock);
                             //AL could contain nodes that have been set to invisible by now (in hierarchy traversal). -> Locking neccessary (but already locked with toLoad above)
                             Node u;
                             double arPriority;
@@ -253,18 +265,20 @@ namespace Loading {
                             } else {
                                 continue;
                             }
-
+                            
                             lock (u) {
                                 if (u.NodeStatus == NodeStatus.TORENDER || u.NodeStatus == NodeStatus.RENDERED) {
                                     if (arPriority < nPriority) {
                                         alreadyLoaded.Dequeue(); //Get element with lowest priority
                                         if (u.NodeStatus == NodeStatus.TORENDER || u.NodeStatus == NodeStatus.RENDERED) {
-                                            renderingPointCount -= u.PointCount;
-                                            if (u.NodeStatus == NodeStatus.TORENDER) {
-                                                u.NodeStatus = NodeStatus.INVISIBLE; //Will not be rendered
-                                            } else /* RENDERED */ {
-                                                toDelete.Enqueue(u);
-                                                u.NodeStatus = NodeStatus.TODELETE;
+                                            lock (pointCountLock) {
+                                                renderingPointCount -= u.PointCount;
+                                                if (u.NodeStatus == NodeStatus.TORENDER) {
+                                                    u.NodeStatus = NodeStatus.INVISIBLE; //Will not be rendered
+                                                } else /* RENDERED */ {
+                                                    toDelete.Enqueue(u);
+                                                    u.NodeStatus = NodeStatus.TODELETE;
+                                                }
                                             }
                                         }
                                     } else {
@@ -275,9 +289,10 @@ namespace Loading {
                                     alreadyLoaded.Dequeue();
                                 }
                             }
+                            Monitor.Enter(pointCountLock);
                         }
                         if (renderingPointCount + amount <= pointBudget) {
-                            renderingPointCount += amount;
+                            Monitor.Exit(pointCountLock);
                             Monitor.Exit(toLoadLock);
                             if (!n.HasPointsToRender()) {
                                 //Problem: Exception can occur, because GameObject might not have been deleted yet (probably fixed)
@@ -287,24 +302,23 @@ namespace Loading {
                                 switch (n.NodeStatus) {
                                     case NodeStatus.LOADING:
                                         toRender.Enqueue(n);
-                                        n.NodeStatus = NodeStatus.TORENDER;
+                                        lock (pointCountLock) {
+                                            n.NodeStatus = NodeStatus.TORENDER;
+                                            renderingPointCount += amount;
+                                        }
                                         break;
                                     case NodeStatus.INVISIBLE:
                                     case NodeStatus.RENDERED:
                                         n.ForgetPoints();
-                                        renderingPointCount -= amount;
                                         break;
                                     default:
                                         //Undefined. Should not happen
                                         Debug.LogError("Invalid Node Status");
                                         break;
                                 }
-                                if (n.NodeStatus == NodeStatus.LOADING) {
-                                    toRender.Enqueue(n);
-                                    n.NodeStatus = NodeStatus.TORENDER;
-                                } 
                             }
                         } else {
+                            Monitor.Exit(pointCountLock);
                             //If one note cannot be rendered, the following notes shouldn't be rendered either
                             //Stop Loading
                             //AlreadyRendered is empty, so no nodes are visible
@@ -348,6 +362,33 @@ namespace Loading {
                     if (n.NodeStatus == NodeStatus.TODELETE) {
                         n.RemoveGameObjects(meshConfiguration);
                         n.NodeStatus = NodeStatus.INVISIBLE;
+                    }
+                }
+            }
+        }
+
+        //This method is for test purposes only. It checks weither the pointcount is correct
+        private void CheckPointCount(string identifier) {
+            lock (toLoadLock) {
+                lock (pointCountLock) {
+                    uint correctPointCount = 0;
+                    Queue<Node> toCheck = new Queue<Node>();
+                    foreach (Node root in rootNodes) {
+                        toCheck.Enqueue(root);
+                    }
+                    while (toCheck.Count != 0) {
+                        Node n = toCheck.Dequeue();
+                        if (n.NodeStatus == NodeStatus.TORENDER || n.NodeStatus == NodeStatus.RENDERED) {
+                            correctPointCount += n.PointCount;
+                        }
+                        foreach (Node child in n) {
+                            toCheck.Enqueue(child);
+                        }
+                    }
+                    if (correctPointCount != renderingPointCount) {
+                        Debug.LogError("ALARM! ALARM! @" + identifier + ": Real: " + correctPointCount + " vs. Wrong: " + renderingPointCount);
+                        ShutDown();
+                        throw new Exception("Correct PC: " + correctPointCount);
                     }
                 }
             }
