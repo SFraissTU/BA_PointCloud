@@ -131,16 +131,14 @@ namespace Loading {
                             switch (currentNode.NodeStatus) {
                                 case NodeStatus.INVISIBLE:
                                 case NodeStatus.TOLOAD:
-                                    //CheckPointCount("URQ3aPRE");
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
                                     newToLoad.Enqueue(currentNode, priority);
                                     break;
                                 case NodeStatus.TODELETE:
-                                    lock (pointCountLock) {
-                                        currentNode.NodeStatus = NodeStatus.RENDERED;
-                                        newAlreadyLoaded.Enqueue(currentNode, -priority);
-                                        renderingPointCount += currentNode.PointCount;
-                                    }
+                                    currentNode.NodeStatus = NodeStatus.TOLOAD;
+                                    newToLoad.Enqueue(currentNode, priority);
+                                    //Note: This has to be done, as we do not want to increase the pointcount in here because of synchronisation problems with the other thread
+                                    //These lines mean, that nodes can be in TOLOAD, that are already rendered!!! Keep that in mind!
                                     break;
                                 default:
                                     //LOADING, TORENDER, RENDERED: Add to alreadyLoaded!
@@ -196,7 +194,6 @@ namespace Loading {
                     }
                     int oldStatus = child.NodeStatus;
                     lock (pointCountLock) {
-                        uint oldPointCount = renderingPointCount;
                         child.NodeStatus = NodeStatus.INVISIBLE;
                         if (oldStatus == NodeStatus.TORENDER || oldStatus == NodeStatus.RENDERED) {
                             renderingPointCount -= child.PointCount;
@@ -247,8 +244,9 @@ namespace Loading {
                         uint amount = n.PointCount;
                         //PointCount might already be there from loading the points before
                         if (amount == 0) {
+                            //Not happening for nodes that were ore are already loaded
                             Monitor.Exit(toLoadLock);
-                            CloudLoader.LoadPointsForNode(n);   //TODO: Think about whether this is valid
+                            CloudLoader.LoadPointsForNode(n);
                             Monitor.Enter(toLoadLock);
                             amount = n.PointCount;
                         }
@@ -294,7 +292,7 @@ namespace Loading {
                         if (renderingPointCount + amount <= pointBudget) {
                             Monitor.Exit(pointCountLock);
                             Monitor.Exit(toLoadLock);
-                            if (!n.HasPointsToRender()) {
+                            if (!n.HasPointsToRender() && !n.HasGameObjects()) {
                                 //Problem: Exception can occur, because GameObject might not have been deleted yet (probably fixed)
                                 CloudLoader.LoadPointsForNode(n);
                             }
@@ -303,7 +301,11 @@ namespace Loading {
                                     case NodeStatus.LOADING:
                                         toRender.Enqueue(n);
                                         lock (pointCountLock) {
-                                            n.NodeStatus = NodeStatus.TORENDER;
+                                            if (!n.HasGameObjects()) {
+                                                n.NodeStatus = NodeStatus.TORENDER;
+                                            } else {
+                                                n.NodeStatus = NodeStatus.RENDERED;
+                                            }
                                             renderingPointCount += amount;
                                         }
                                         break;
@@ -319,6 +321,17 @@ namespace Loading {
                             }
                         } else {
                             Monitor.Exit(pointCountLock);
+                            lock (n) {
+                                if (n.HasPointsToRender()) {
+                                    n.ForgetPoints();
+                                }
+                                if (n.HasGameObjects()) {
+                                    toDelete.Enqueue(n);
+                                    n.NodeStatus = NodeStatus.TODELETE;
+                                } else {
+                                    n.NodeStatus = NodeStatus.INVISIBLE;
+                                }
+                            }
                             //If one note cannot be rendered, the following notes shouldn't be rendered either
                             //Stop Loading
                             //AlreadyRendered is empty, so no nodes are visible
