@@ -183,15 +183,8 @@ namespace Loading {
                 Node child = childrenToCheck.Dequeue();
                 
                 lock (child) {
-                    switch (child.NodeStatus) {
-                        case NodeStatus.TORENDER:
-                            child.ForgetPoints();
-                            break;
-                        case NodeStatus.RENDERED:
-                        case NodeStatus.TODELETE:
-                            child.RemoveGameObjects(config);
-                            break;
-                    }
+                    child.ForgetPoints();
+                    child.RemoveGameObjects(config);
                     int oldStatus = child.NodeStatus;
                     lock (pointCountLock) {
                         child.NodeStatus = NodeStatus.INVISIBLE;
@@ -311,11 +304,9 @@ namespace Loading {
                                         break;
                                     case NodeStatus.INVISIBLE:
                                     case NodeStatus.RENDERED:
+                                    case NodeStatus.TOLOAD:
+                                    case NodeStatus.TODELETE:
                                         n.ForgetPoints();
-                                        break;
-                                    default:
-                                        //Undefined. Should not happen
-                                        Debug.LogError("Invalid Node Status");
                                         break;
                                 }
                             }
