@@ -15,15 +15,19 @@ Projects:
 
 * PointCloudRenderer: Main-Project.  
 	This project is able to load a pointcloud in the Potree-format.
+	
 	Assets/Scenes/OneTimeScene.unity:
-	There are two ways of rendering in this file:
-	- Static Rendering: The PointCloud is loaded completely in the beginning and for every node a GameObject is created.
-		This can be testet with the object "PointCloudLoader" in the scene.
-	- Semi-Dynamic Rendering: Several PointClouds can be loaded. In the scene, the objects "CloudA", "CloudB" and so on definde several clouds to be loaded in this way.
-		The hierarchies are loaded in the beginning. When you press "X", it is checked, which parts of the clouds are seen and for those GameObjects are created.
-		The loading happens in an own thread. The object "CloudList" defines the PointBudget and the Min Projected Node Size. Also you can move the whole cloud to the origin with this object.
-		You can also choose between using Multithreading or not.
+	
+		There are two ways of rendering in this file:
+			- Static Rendering: The PointCloud is loaded completely in the beginning and for every node a GameObject is created.
+				This can be testet with the object "PointCloudLoader" in the scene.
+			- Semi-Dynamic Rendering: Several PointClouds can be loaded. In the scene, the objects "CloudA", "CloudB" and so on definde several clouds to be loaded in this way.
+				The hierarchies are loaded in the beginning. When you press "X", it is checked, which parts of the clouds are seen and for those GameObjects are created.
+				The loading happens in an own thread. The object "CloudList" defines the PointBudget and the Min Projected Node Size. Also you can move the whole cloud to the origin with this object.
+				You can also choose between using Multithreading or not.
+		
 	Assets/Scenes/DemoScene.unity (Main-Scene!!):
+	
 		This scene demonstrates Real-Time-Rendering: The PointCloud is constantly loaded according to your camera position.
 		Four cloudes are in the scene. In the object "CloudList" you can define the PointBudget and the Min Projected Node Size.
 		You can also choose between using Multithreading or not.
