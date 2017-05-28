@@ -13,18 +13,28 @@ Projects:
   
   The used PointCloud is an upscaled version of the Lion-PointCloud. It is also subsampled because the original cloud file was too big for github. So there are only ~880.000 points instead of 4 million.
 
-* PointCloudRenderer: Main-Project. Open Assets/Scenes/DemoScene.unity!
-  This project is able to load a pointcloud in the Potree-format. The whole cloud is loaded and rendered.
-  There are two ways of rendering right now:
-  - Static Rendering: The PointCloud is loaded completely in the beginning and for every node a GameObject is created.
-	This can be testet with the object "PointCloudLoader" in the scene.
-  - Semi-Dynamic Rendering: Several PointClouds can be loaded. In the scene, the objects "CloudA", "CloudB" and so on definde several clouds to be loaded in this way.
-    The hierarchies are loaded in the beginning. When you press "X", it is checked, which parts of the clouds are seen and for those GameObjects are created.
-	The loading happens in an own thread. The object "CloudList" defines the PointBudget and the Min Projected Node Size. Also you can move the whole cloud to the origin with this object.
+* PointCloudRenderer: Main-Project.  
+	This project is able to load a pointcloud in the Potree-format.
+	Assets/Scenes/OneTimeScene.unity:
+	There are two ways of rendering in this file:
+	- Static Rendering: The PointCloud is loaded completely in the beginning and for every node a GameObject is created.
+		This can be testet with the object "PointCloudLoader" in the scene.
+	- Semi-Dynamic Rendering: Several PointClouds can be loaded. In the scene, the objects "CloudA", "CloudB" and so on definde several clouds to be loaded in this way.
+		The hierarchies are loaded in the beginning. When you press "X", it is checked, which parts of the clouds are seen and for those GameObjects are created.
+		The loading happens in an own thread. The object "CloudList" defines the PointBudget and the Min Projected Node Size. Also you can move the whole cloud to the origin with this object.
+		You can also choose between using Multithreading or not.
+	Assets/Scenes/DemoScene.unity (Main-Scene!!):
+		This scene demonstrates Real-Time-Rendering: The PointCloud is constantly loaded according to your camera position.
+		Four cloudes are in the scene. In the object "CloudList" you can define the PointBudget and the Min Projected Node Size.
+		You can also choose between using Multithreading or not.
   
-  In both methods you can also choose a MeshConfiguration by clicking on the small circle beside the textfield. Three configurations are provided:
+  In all methods you can also choose a MeshConfiguration by clicking on the small circle beside the textfield. The following configurations are provided:
   * DefaultPointMeshConfiguration: Draws the points as single 1px-points.
-  * RectQuadMeshConfiguration: Draws the points as squares. The size is changeable in the inspector of this object.
-  * CircleQuadMeshConfiguration: Draws the points as circles. The size is changeable in the inspector of this object.
+  * 4_RectQuadMeshConfiguration: Draws the points as squares. The size on screen is changeable in the inspector of this object. Implemented by giving every point 4 times to the vertex shader to create quads.
+  * 4_CircleQuadMeshConfiguration: Draws the points as circles. The size on screen is changeable in the inspector of this object. Implemented by giving every point 4 times to the vertex shader to create quads.
+  * GEO_RectQuadMeshConfiguration: Draws the points as squares. The size on screen is changeable in the inspector of this object. Implemented using the geometry shader.
+  * GEO_CircleQuadMeshConfiguration: Draws the points as circles. The size on screen is changeable in the inspector of this object. Implemented using the geometry shader.
+  * Bill_RectQuadMeshConfiguration: Draws the points as screen-faced squares. The size in the world is changeable in the inspector of this object. Implemented using the geometry shader.
+  * Bill_CircleQuadMeshConfiguration: Draws the points as screen-faced circles. The size in the world is changeable in the inspector of this object. Implemented using the geometry shader.
   
 * Tests: Used to test several classes in the other projects.
