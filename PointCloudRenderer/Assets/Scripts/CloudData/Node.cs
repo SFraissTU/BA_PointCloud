@@ -29,8 +29,9 @@ namespace CloudData
         //PointCount, read from hierarchy-file
         private uint pointCount = 0;
 
-        //Can be used by the renderer, doesn't have to be!
-        private byte nodeStatus = CloudData.NodeStatus.INVISIBLE;
+        //A status flag. Can be used by the renderer, doesn't have to be!
+        //The meaning and use of the NodeStatus is therefore dependent from the used renderer and does not have to be used consistently
+        private byte nodeStatus = CloudData.NodeStatus.UNDEFINED;
 
         //List containing the gameobjects resembling this node
         private List<GameObject> gameObjects = new List<GameObject>();
@@ -50,7 +51,7 @@ namespace CloudData
 
         //Creates the Game Object(s) containing the points of this node
         //Does not happen in the constructor, as gameobjects should be created on the main thread (valled via update)
-        //A gameobject can be created, if no gameobject is created yet, vertices and colors are set, and SetReadyForGameObjectCreation() has been called
+        //Vertices and Colors have to be set before. Vertices and Colors are forgotten after the creation of the GameObjects
         public void CreateGameObjects(MeshConfiguration configuration)
         {
             int max = configuration.GetMaximumPointsPerMesh();
@@ -123,6 +124,8 @@ namespace CloudData
             pointCount = (uint)vertices.Length;
         }
 
+        /* Deletes the loaded Vertex- and Color-Information (Vertex-Count stays stored however)
+         */
         public void ForgetPoints() {
             verticesToStore = null;
             colorsToStore = null;

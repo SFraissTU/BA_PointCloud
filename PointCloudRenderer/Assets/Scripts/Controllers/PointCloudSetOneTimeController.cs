@@ -9,8 +9,8 @@ using UnityEngine;
 
 namespace Controllers {
 
-    /* This enabled loading several PointClouds at the same time. The configured options work globally.
-     * This class uses a ConcurrentOneTimeRenderer, so only when the user presses "X", the cloud is reloaded
+    /* 
+     * This class uses a OneTimeRenderer, so only when the user presses "X", the cloud is reloaded according to the current camera position. The next loading can only be started when the current loading is completely finished.
      */
     public class PointCloudSetOneTimeController : AbstractPointSetController {
 
@@ -18,25 +18,28 @@ namespace Controllers {
         public int minNodeSize;
         //Defines the type of PointCloud (Points, Quads, Circles)
         public MeshConfiguration meshConfiguration;
-        
+        public bool multithreaded = true;
+
         private Camera userCamera;
 
         // Use this for initialization
-        protected override void Start() {
+        protected override void Initialize() {
             userCamera = Camera.main;
-            pRenderer = new ConcurrentOneTimeRenderer(minNodeSize, pointBudget, userCamera);
-            base.Start();
+            if (multithreaded) {
+                PointRenderer = new ConcurrentOneTimeRenderer(minNodeSize, pointBudget, userCamera);
+            } else {
+                PointRenderer = new SingleThreadedOneTimeRenderer(minNodeSize, pointBudget, userCamera);
+            }
         }
         
         // Update is called once per frame
         void Update() {
             if (!CheckReady()) return;
-            if (!pRenderer.IsLoadingPoints() && Input.GetKey(KeyCode.X) && !pRenderer.HasNodesToRender()/* && !pRenderer.HasNodesToDelete()*/) {
+            if (PointRenderer.IsReadyForUpdate() && Input.GetKey(KeyCode.X)) {
                 Debug.Log("Updating!");
-                pRenderer.UpdateRenderingQueue(meshConfiguration);
-                pRenderer.StartUpdatingPoints();
+                PointRenderer.UpdateVisibleNodes(meshConfiguration);
             } else {
-                pRenderer.UpdateGameObjects(meshConfiguration);
+                PointRenderer.UpdateGameObjects(meshConfiguration);
             }
         }
     }

@@ -9,9 +9,17 @@ using System.Text;
 using UnityEngine;
 
 namespace Loading {
+    /* This renderer is a MultiTimeRenderer, meaning the visibility check can be done any time.
+     * It is SingleThreaded, meaning the loading happens on the main thread!
+     * 
+     * How to use:
+     * If the rendered nodes should be adapted to the current view, call UpdateVisibleNodes (this cannot be done again until the point loading is finished). This updates the rendering queue.
+     * To load and create GameObjects call UpdateGameObjects once per Frame.
+     * 
+     * Note: This renderer does not make use of the NodeStatus-Property
+     */
     class SingleThreadedMultiTimeRenderer : AbstractRenderer {
-
-        private bool loadingPoints = false; //true, iff there are still nodes scheduled to be loaded
+        
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
         //Rendering Collections
@@ -30,9 +38,9 @@ namespace Loading {
 
         //Frame-Limits, see UpdateGameObjects
         private const int MAX_NODES_CREATE_PER_FRAME = 5;
-        private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
-
+        /* Creates a new SingleThreadedMultiTimeRenderer.
+         */
         public SingleThreadedMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
             toLoad = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new HeapPriorityQueue<double, Node>();
@@ -50,21 +58,20 @@ namespace Loading {
             return rootNodes.Count;
         }
 
-        //true, iff there are still nodes scheduled to be loaded
-        public bool IsLoadingPoints() {
-            return loadingPoints;
+        /* Returns weither a call of UpdateVisibleNodes is allowed right now, which is always the case except after shuttingDown. */
+        public bool IsReadyForUpdate() {
+            return !shuttingDown;
         }
 
-        /* Updates the rendering collections. Traverses the hierarchies and checks for each node, weither it is in the view frustum and weither the min node size is alright.
+        /* This method checks which nodes of the PointCloud are visible and adjusts the rendering collections accordingly.
+         * Traverses the hierarchies and checks for each node, weither it is in the view frustum and weither the min node size is alright.
          * GameObjects of Nodes that fail this test are deleted right away, so this method should be called from the main thread!
-         * This method can only be called if the renderer is not currently loading points.
-         * The RenderingPointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
+         * config is the MeshConfiguration used for GameObject-Creation (null is not allowed). This is needed because GameObjects might be deleted. 
+         * Points are only scheduled for loading in this method and are not loaded yet.
+         * The PointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
          * If shuttingDown is set to true while this method is running, the traversal simply stops. The state of the renderer might be inconsistent afterward and will not be usable anymore.
          */
-        public void UpdateRenderingQueue(MeshConfiguration config) {
-            if (loadingPoints) {
-                throw new InvalidOperationException("Renderer is not ready for filling. Still loading points.");
-            }
+        public void UpdateVisibleNodes(MeshConfiguration config) {
             if (shuttingDown) {
                 return;
             }
@@ -159,10 +166,10 @@ namespace Loading {
             }
         }
 
-
-        /* Creates new GameObjects for nodes that are scheduled to be rendered. This has to be called from the main thread.
-         * Up to MAX_NDOES_CREATE_PER_FRAME are created in one frame. Up to MAX_NODES_DELETE_PER_FRAME are deleted in a frame except during Hierachy Traversal (updateRenderingQueue), where no limit is given
-         */
+        /* Loads the points and creates new GameObjects for nodes that are scheduled to be rendered. This has to be called from the main thread.
+         * Up to MAX_NDOES_CREATE_PER_FRAME are loaded and created in one frame.
+         * Should be called every frame in the main thread, because GameObject-Creation happens here.
+         * meshConfiguration is the MeshConfiguration used for GameObject-Creation (null is not allowed). */
         public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
             if (shuttingDown) return;
             int i;
@@ -207,19 +214,7 @@ namespace Loading {
         public void ShutDown() {
             shuttingDown = true;
         }
-
-        public bool HasNodesToRender() {
-            return !toLoad.IsEmpty();
-        }
-
-        public void StartUpdatingPoints() {
-            //nothing
-        }
-
-        public bool HasNodesToDelete() {
-            return false;
-        }
-
+        
         public uint GetPointCount() {
             return renderingPointCount;
         }

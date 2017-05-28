@@ -9,8 +9,7 @@ using UnityEngine;
 
 namespace Controllers {
 
-    /* This enabled loading several PointClouds at the same time. The configured options work globally.
-     * This class uses a ConcurrentOneTimeRenderer, so only when the user presses "X", the cloud is reloaded
+    /* This PointSetController updates the loading queue every frame, so at every frame the nodes which should be loaded are adapted to the current camera position.
      */
     public class PointCloudSetRealTimeController : AbstractPointSetController {
 
@@ -18,23 +17,25 @@ namespace Controllers {
         public int minNodeSize;
         //Defines the type of PointCloud (Points, Quads, Circles)
         public MeshConfiguration meshConfiguration;
+        public bool multithreaded = true;
 
         private Camera userCamera;
 
         // Use this for initialization
-        protected override void Start() {
+        protected override void Initialize() {
             userCamera = Camera.main;
-            //pRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
-            pRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
-            base.Start();
-            pRenderer.StartUpdatingPoints();
+            if (multithreaded) {
+                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            } else {
+                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            }
         }
 
         // Update is called once per frame
         void Update() {
             if (!CheckReady()) return;
-            pRenderer.UpdateRenderingQueue(meshConfiguration);
-            pRenderer.UpdateGameObjects(meshConfiguration);
+            PointRenderer.UpdateVisibleNodes(meshConfiguration);
+            PointRenderer.UpdateGameObjects(meshConfiguration);
         }
     }
 }

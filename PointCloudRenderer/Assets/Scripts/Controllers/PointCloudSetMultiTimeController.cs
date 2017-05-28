@@ -9,8 +9,7 @@ using UnityEngine;
 
 namespace Controllers {
 
-    /* This enabled loading several PointClouds at the same time. The configured options work globally.
-     * This class uses a ConcurrentOneTimeRenderer, so only when the user presses "X", the cloud is reloaded
+    /* When the user presses "X", the cloud is reloaded according to the current camera position. "X" can be pressed anytime, even if the current loading has not been finished.
      */
     public class PointCloudSetMultiTimeController : AbstractPointSetController {
 
@@ -18,16 +17,18 @@ namespace Controllers {
         public int minNodeSize;
         //Defines the type of PointCloud (Points, Quads, Circles)
         public MeshConfiguration meshConfiguration;
+        public bool multithreaded = true;
 
         private Camera userCamera;
 
         // Use this for initialization
-        protected override void Start() {
+        protected override void Initialize() {
             userCamera = Camera.main;
-            //pRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
-            pRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
-            pRenderer.StartUpdatingPoints();
-            base.Start();
+            if (multithreaded) {
+                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            } else {
+                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+            }
         }
         
 
@@ -39,11 +40,11 @@ namespace Controllers {
             if (Input.GetKey(KeyCode.X)) {
                 if (lastX == 0) {
                     Debug.Log("Updating!");
-                    pRenderer.UpdateRenderingQueue(meshConfiguration);
+                    PointRenderer.UpdateVisibleNodes(meshConfiguration);
                     lastX = 1;
                 }
             } else {
-                pRenderer.UpdateGameObjects(meshConfiguration);
+                PointRenderer.UpdateGameObjects(meshConfiguration);
                 if (lastX != 0) {
                     lastX = (lastX + 1) % 10;   //Nur alle 10 Frames X drücken ermöglichen
                 }

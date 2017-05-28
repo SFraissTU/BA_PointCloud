@@ -10,11 +10,14 @@ using System.Threading;
 using UnityEngine;
 
 namespace Loading {
-    /* This class is responsible for the HierarchyTraversal (determining which nodes are to be seen and which not), loading the new nodes concurrent to the main thread and creating the gameobjects.
+    /* This renderer is a OneTimeRenderer, meaning it only can check the visibility of the nodes again after all currently visible nodes have been loaded.
+     * It is SingleThreaded, meaning the loading happens on the main thread!
+     * 
      * How to use:
-     * If the rendered nodes should be adapted to the current view, call UpdateRenderingQueue (this cannot be done again until the point loading is finished). This updates the rendering queue
-     * To start loading the points in the rendering queue in a new thread call StartUpdatingPoints
-     * To create or delete GameObjects call UpdateGameObjects per Frame
+     * If the rendered nodes should be adapted to the current view, call UpdateVisibleNodes (this cannot be done again until the point loading is finished). This updates the rendering queue.
+     * To load and create GameObjects call UpdateGameObjects once per Frame.
+     * 
+     * Note: This renderer does not make use of the NodeStatus-Property
      */
     public class SingleThreadedOneTimeRenderer : AbstractRenderer {
         private bool loadingPoints = false; //true, iff there are still nodes scheduled to be loaded
@@ -36,9 +39,9 @@ namespace Loading {
 
         //Frame-Limits, see UpdateGameObjects
         private const int MAX_NODES_CREATE_PER_FRAME = 15;
-        private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
-
+        /* Creates a new SingleThreadedOneTimeRenderer.
+         */
         public SingleThreadedOneTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
             toLoad = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new ListPriorityQueue<double, Node>();
@@ -48,26 +51,32 @@ namespace Loading {
             this.camera = camera;
         }
 
+        /* Registers the root node of a pointcloud in the renderer, so it will be considered in future visibility checks and GameObject creations.
+         * The given rootNode may not be null! */
         public void AddRootNode(Node rootNode) {
             rootNodes.Add(rootNode);
         }
 
+        /* Returns how man root nodes have been added */
         public int GetRootNodeCount() {
             return rootNodes.Count;
         }
 
-        //true, iff there are still nodes scheduled to be loaded
-        public bool IsLoadingPoints() {
-            return loadingPoints;
+        /* Returns weither a call of UpdateVisibleNodes is allowed right now. This is mainly important for the OneTimeRenderers. */
+        public bool IsReadyForUpdate() {
+            return !shuttingDown && !loadingPoints && toLoad.IsEmpty();
         }
 
-        /* Updates the rendering collections. Traverses the hierarchies and checks for each node, weither it is in the view frustum and weither the min node size is alright.
+        /* This method checks which nodes of the PointCloud are visible and adjusts the rendering collections accordingly.
+         * Traverses the hierarchies and checks for each node, weither it is in the view frustum and weither the min node size is alright.
          * GameObjects of Nodes that fail this test are deleted right away, so this method should be called from the main thread!
-         * This method can only be called if the renderer is not currently loading points.
-         * The RenderingPointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
+         * This method can only be called if the renderer is currently not loading points (see method IsReadyForUpdate)
+         * config is the MeshConfiguration used for GameObject-Creation (null is not allowed). This is needed because GameObjects might be deleted. 
+         * Points are only scheduled for loading in this method and are not loaded yet.
+         * The PointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
          * If shuttingDown is set to true while this method is running, the traversal simply stops. The state of the renderer might be inconsistent afterward and will not be usable anymore.
          */
-        public void UpdateRenderingQueue(MeshConfiguration config) {
+        public void UpdateVisibleNodes(MeshConfiguration config) {
             if (loadingPoints) {
                 throw new InvalidOperationException("Renderer is not ready for filling. Still loading points.");
             }
@@ -104,8 +113,7 @@ namespace Loading {
                     lastLevel = currentNode.GetLevel();
                     radius = currentNode.BoundingBox.Radius();
                 }
-
-                //TODO: PointCount currently not available. Fix after fixing of converter
+                
                 //Is Node inside frustum?
                 if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject())) {
                     //Calculate projected size
@@ -162,11 +170,11 @@ namespace Loading {
                 }
             }
         }
-        
 
-        /* Creates new GameObjects for nodes that are scheduled to be rendered. This has to be called from the main thread.
-         * Up to MAX_NDOES_CREATE_PER_FRAME are created in one frame. Up to MAX_NODES_DELETE_PER_FRAME are deleted in a frame except during Hierachy Traversal (updateRenderingQueue), where no limit is given
-         */
+        /* Loads the points and creates new GameObjects for nodes that are scheduled to be rendered. This has to be called from the main thread.
+         * Up to MAX_NDOES_CREATE_PER_FRAME are loaded and created in one frame.
+         * Should be called every frame in the main thread, because GameObject-Creation happens here.
+         * meshConfiguration is the MeshConfiguration used for GameObject-Creation (null is not allowed). */
         public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
             if (shuttingDown) return;
             int i;
@@ -209,20 +217,8 @@ namespace Loading {
             //FPSOutputController.NoteFPS(i == 0);
         }
 
-        public void StartUpdatingPoints() {
-            //nothing
-        }
-
         public void ShutDown() {
             shuttingDown = true;
-        }
-
-        public bool HasNodesToRender() {
-            return !toLoad.IsEmpty();
-        }
-
-        public bool HasNodesToDelete() {
-            return false;
         }
 
         public uint GetPointCount() {

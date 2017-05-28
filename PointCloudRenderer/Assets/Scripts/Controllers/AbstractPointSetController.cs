@@ -8,10 +8,13 @@ using System.Threading;
 using UnityEngine;
 
 namespace Controllers {
-    public class AbstractPointSetController : MonoBehaviour {
+    /* Super class for all PointSet-Controllers. A PointSetController enables the loading of several point clouds at once.
+     * This enabled loading several PointClouds at the same time. The configured options work globally for all point clouds.
+     * The part that this abstract class is responsible for is the waiting for every Cloud to register itself at the PointSet and to move it to the origin, if so wanted by the user.
+     */
+    public abstract class AbstractPointSetController : MonoBehaviour {
 
         public bool moveToOrigin = true;
-        //Defines the type of PointCloud (Points, Quads, Circles)
 
         //For origin-moving:
         private bool hasMovedToOrigin = false;
@@ -20,14 +23,20 @@ namespace Controllers {
         private Dictionary<MonoBehaviour, BoundingBox> boundingBoxes = new Dictionary<MonoBehaviour, BoundingBox>();
         private ManualResetEvent waiterForBoundingBoxUpdate = new ManualResetEvent(false);
 
-        protected AbstractRenderer pRenderer;
+        private AbstractRenderer pRenderer;
 
-        // Use this for initialization
-        protected virtual void Start() {
+        void Start() {
             if (!moveToOrigin) hasMovedToOrigin = true;
+            Initialize();
+            if (pRenderer == null) {
+                throw new InvalidOperationException("PointRenderer has not been set!");
+            }
         }
 
-        //Register a Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
+        //Override this instead of Start!! Make sure to set the PointRenderer in here!!!
+        protected abstract void Initialize();
+
+        //Register a PointCloud-Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
         //The whole cloud will be moved and rendered as soon as for every registered controller the bounding box is given via UpdateBoundingBox
         public void RegisterController(MonoBehaviour controller) {
             lock (boundingBoxes) {
@@ -52,6 +61,15 @@ namespace Controllers {
             }
         }
 
+        //Adds a rootNode to the renderer.
+        public void AddRootNode(Node node) {
+            lock (pRenderer) {
+                pRenderer.AddRootNode(node);
+            }
+        }
+
+        /* Returns true, if all the nodes are registered, have been moved to the center and the renderer is loaded
+         */
         protected bool CheckReady() {
             lock (boundingBoxes) {
                 if (!hasMovedToOrigin) {
@@ -77,21 +95,24 @@ namespace Controllers {
             return true;
         }
 
-
-
-        //Call this before setting the bounding boxes
-        public void AddRootNode(Node node) {
-            lock (pRenderer) {
-                pRenderer.AddRootNode(node);
-            }
-        }
-
         public void OnApplicationQuit() {
             pRenderer.ShutDown();
         }
 
         public uint GetPointCount() {
             return pRenderer.GetPointCount();
+        }
+
+        public AbstractRenderer PointRenderer {
+            get {
+                return pRenderer;
+            }
+
+            set {
+                if (value != null) {
+                    pRenderer = value;
+                }
+            }
         }
     }
 }

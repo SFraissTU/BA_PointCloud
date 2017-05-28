@@ -60,7 +60,6 @@ namespace Controllers {
 
         /*
          * Stops the loading of the file if the application is closed
-         * TODO: This doesn't have any consequence right now
          */
         private void OnApplicationQuit() {
             fileLoading = false;
