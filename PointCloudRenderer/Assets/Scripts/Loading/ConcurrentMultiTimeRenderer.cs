@@ -24,9 +24,9 @@ namespace Loading {
 
         //Rendering Collections
         //Important note about the rendering collections: The nodes in each queue fulfilled the conditions of that queue at enqueuing time. However, they might not do anymore at dequeueing time. So the NodeStatus has to always be checked!!!
-        private PriorityQueue<double, Node> toLoad;                 //Priority Queue of nodes in the view frustum that exceed the minimum size. No GameObjects are created yet. PointBudget-Correctness has yet to be checked
+        private PriorityQueue<LoadingPriority, Node> toLoad;                 //Priority Queue of nodes in the view frustum that exceed the minimum size. No GameObjects are created yet. PointBudget-Correctness has yet to be checked
         private ThreadSafeQueue<Node> toRender;                     //Queue of nodes that are loaded and ready for GO-Creation and do not have GOs yet (No Priority Queue - Order might not be 100% correct...)
-        private PriorityQueue<double, Node> alreadyLoaded;          //Priority Queue of nodes which are in state TORENDER or RENDERED. Nodes with higher priority are more likely to be removed in case its pointcount blocks the rendering of a more important node.
+        private PriorityQueue<LoadingPriority, Node> alreadyLoaded;          //Priority Queue of nodes which are in state TORENDER or RENDERED. Nodes with higher priority are more likely to be removed in case its pointcount blocks the rendering of a more important node.
         private ThreadSafeQueue<Node> toDelete;                     //Queue of Points that are supposed to be deleted (used because some neccessary deletions are noticed outside the main thread, which is the only one who can remove GameObjects)
 
         private List<Node> rootNodes;   //List of root nodes of the point clouds
@@ -49,9 +49,9 @@ namespace Loading {
         /* Creates a new ConcurrentMultiTimeRenderer. Already starts the Loading-Thread!!!
          */
         public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
-            toLoad = new HeapPriorityQueue<double, Node>();
+            toLoad = new HeapPriorityQueue<LoadingPriority, Node>();
             toRender = new ThreadSafeQueue<Node>();
-            alreadyLoaded = new ListPriorityQueue<double, Node>();
+            alreadyLoaded = new ListPriorityQueue<LoadingPriority, Node>();
             toDelete = new ThreadSafeQueue<Node>();
             rootNodes = new List<Node>();
             this.minNodeSize = minNodeSize;
@@ -91,9 +91,10 @@ namespace Loading {
             float screenHeight = camera.pixelRect.height;
             float fieldOfView = camera.fieldOfView;
             Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(camera);
+            Vector3d camToScreenCenterDir = new Vector3d(camera.transform.forward);
             //Clearing Queues
-            PriorityQueue<double, Node> newToLoad = new HeapPriorityQueue<double, Node>();
-            PriorityQueue<double, Node> newAlreadyLoaded = new HeapPriorityQueue<double, Node>();
+            PriorityQueue<LoadingPriority, Node> newToLoad = new HeapPriorityQueue<LoadingPriority, Node>();
+            PriorityQueue<LoadingPriority, Node> newAlreadyLoaded = new HeapPriorityQueue<LoadingPriority, Node>();
             //Initializing Checking-Queue
             Queue<Node> toCheck = new Queue<Node>();
             foreach (Node rootNode in rootNodes) {
@@ -123,12 +124,11 @@ namespace Loading {
                     double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
                     double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
                     if (projectedSize >= minNodeSize) {
-                        //Calculate centrality. TODO: Approach works, but maybe theres a better way of combining the two factors
-                        //TODO: Centrality ignored, because it created unwanted results. Put back in later after discussion with supervisor
-                        //Vector3 pos = currentNode.BoundingBox.Center().ToFloatVector();
-                        //Vector3 projected = camera.WorldToViewportPoint(pos);
-                        //projected = (projected * 2) - new Vector3(1, 1, 0);
-                        double priority = projectedSize;// Math.Sqrt(Math.Pow(projected.x, 2) + Math.Pow(projected.y, 2));
+                        Vector3d camToNodeCenterDir = (center - cameraPosition).Normalize();
+                        double angle = Math.Acos(camToScreenCenterDir * camToNodeCenterDir);
+                        double angleWeight = Math.Abs(angle) + 1.0;
+                        angleWeight = Math.Pow(angle, 2);
+                        double priority = projectedSize / angleWeight;
 
                         //Node should be loaded. So, let's check the status:
                         lock (currentNode) {
@@ -137,11 +137,11 @@ namespace Loading {
                                 case NodeStatus.INVISIBLE:
                                 case NodeStatus.TOLOAD:
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
-                                    newToLoad.Enqueue(currentNode, priority);
+                                    newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.GetLevel(), priority));
                                     break;
                                 case NodeStatus.TODELETE:
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
-                                    newToLoad.Enqueue(currentNode, priority);
+                                    newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.GetLevel(), priority));
                                     //Note: This has to be done, as we do not want to increase the pointcount in here because of synchronisation problems with the other thread
                                     //These lines mean, that nodes can be in TOLOAD, that are already rendered!!! Keep that in mind!
                                     break;
@@ -149,7 +149,7 @@ namespace Loading {
                                     //LOADING, TORENDER, RENDERED: Add to alreadyLoaded!
                                     //Note: LOADING-Nodes are added too, just in case loading should be finished during hierarchy traversal.
                                     //So the status has to be checked later again! Also if loading finishes after traversal, the node might be two times in aL
-                                    newAlreadyLoaded.Enqueue(currentNode, -priority);
+                                    newAlreadyLoaded.Enqueue(currentNode, new LoadingPriority(-currentNode.GetLevel(), -priority));
                                     break;
                             }
                         }
@@ -216,7 +216,7 @@ namespace Loading {
                         continue;
                     }
                     var oldToLoad = toLoad;
-                    double nPriority;
+                    LoadingPriority nPriority;
                     Node n = toLoad.Dequeue(out nPriority);
                     lock (n) {
                         if (n.NodeStatus != NodeStatus.TOLOAD) {
@@ -241,7 +241,7 @@ namespace Loading {
                         Monitor.Exit(pointCountLock);
                         //AL could contain nodes that have been set to invisible by now (in hierarchy traversal). -> Locking neccessary (but already locked with toLoad above)
                         Node u;
-                        double arPriority;
+                        LoadingPriority arPriority;
                         if (!alreadyLoaded.IsEmpty()) {
                             u = alreadyLoaded.Peek();
                             arPriority = -alreadyLoaded.MaxPriority();

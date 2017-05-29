@@ -96,7 +96,9 @@ namespace Controllers {
         }
 
         public void OnApplicationQuit() {
-            pRenderer.ShutDown();
+            if (pRenderer != null) {
+                pRenderer.ShutDown();
+            }
         }
 
         public uint GetPointCount() {
