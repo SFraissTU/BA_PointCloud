@@ -51,24 +51,29 @@ namespace CloudData
 
         //Creates the Game Object(s) containing the points of this node
         //Does not happen in the constructor, as gameobjects should be created on the main thread (valled via update)
-        //Vertices and Colors have to be set before. Vertices and Colors are forgotten after the creation of the GameObjects
+        //Vertices and Colors have to be set before. Vertices and Colors are removed from this object after the creation of the GameObjects
         public void CreateGameObjects(MeshConfiguration configuration)
         {
             int max = configuration.GetMaximumPointsPerMesh();
-            int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
-            int index = 0; //name index
-            while (amount > 0)
-            {
-                Vector3[] vertices = verticesToStore.Take(amount).ToArray();
-                Color[] colors = colorsToStore.Take(amount).ToArray(); ;
-                verticesToStore = verticesToStore.Skip(amount).ToArray();
-                colorsToStore = colorsToStore.Skip(amount).ToArray();
-                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
-                amount = Math.Min(max, verticesToStore.Length);
-                index++;
+            if (verticesToStore.Length <= max) {
+                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name, verticesToStore, colorsToStore, boundingBox));
+                verticesToStore = null;
+                colorsToStore = null;
+            } else { 
+                int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
+                int index = 0; //name index
+                while (amount > 0) {
+                    Vector3[] vertices = verticesToStore.Take(amount).ToArray();
+                    Color[] colors = colorsToStore.Take(amount).ToArray(); ;
+                    verticesToStore = verticesToStore.Skip(amount).ToArray();
+                    colorsToStore = colorsToStore.Skip(amount).ToArray();
+                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
+                    amount = Math.Min(max, verticesToStore.Length);
+                    index++;
+                }
+                verticesToStore = null;
+                colorsToStore = null;
             }
-            verticesToStore = null;
-            colorsToStore = null;
         }
 
         /* Creates a box game object with the shape of the bounding box of this node
@@ -94,14 +99,37 @@ namespace CloudData
             }
         }
 
-        /* Removes the gameobjects again. To create them again, you once again have to set the vertices and colors and call SetReadyForGameObjectCreation()
+        /* Removes the gameobjects again.
          * Given MeshConfiguration should be the same that has been used for creation
          */
-        public void RemoveGameObjects(MeshConfiguration configuration)
+        public void RemoveGameObjects(MeshConfiguration configuration, bool restorePoints)
         {
-            foreach (GameObject go in gameObjects)
-            {
-                configuration.RemoveGameObject(go);
+            if (gameObjects.Count == 1) {
+                Vector3[] vertices;
+                Color[] colors;
+                configuration.RemoveGameObject(gameObjects[0], out vertices, out colors);
+                if (restorePoints) {
+                    verticesToStore = vertices;
+                    colorsToStore = colors;
+                }
+            } else if (gameObjects.Count > 1) {
+                if (restorePoints) {
+                    verticesToStore = new Vector3[pointCount];
+                    colorsToStore = new Color[pointCount];
+                }
+                int offset = 0;
+                foreach (GameObject go in gameObjects) {
+                    Vector3[] vertices;
+                    Color[] colors;
+                    configuration.RemoveGameObject(go, out vertices, out colors);
+                    if (restorePoints) {
+                        for (int i = 0; i < vertices.Length; i++) {
+                            verticesToStore[offset + i] = vertices[i];
+                            colorsToStore[offset + i] = colors[i];
+                        }
+                    }
+                    offset += vertices.Length;
+                }
             }
             gameObjects.Clear();
         }

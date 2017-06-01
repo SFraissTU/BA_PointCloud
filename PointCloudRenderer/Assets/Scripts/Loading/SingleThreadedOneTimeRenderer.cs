@@ -155,7 +155,7 @@ namespace Loading {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
-                currentNode.RemoveGameObjects(config);
+                currentNode.RemoveGameObjects(config, false);
                 foreach (Node child in currentNode) {
                     childrenToCheck.Enqueue(child);
                 }
@@ -163,7 +163,7 @@ namespace Loading {
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    child.RemoveGameObjects(config);
+                    child.RemoveGameObjects(config, false);
                     foreach (Node childchild in child) {
                         childrenToCheck.Enqueue(childchild);
                     }
@@ -197,7 +197,7 @@ namespace Loading {
                     //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
                     while (renderingPointCount + amount > pointBudget && !alreadyRendered.IsEmpty()) {
                         Node u = alreadyRendered.Pop(); //Get element with lowest priority
-                        u.RemoveGameObjects(meshConfiguration);
+                        u.RemoveGameObjects(meshConfiguration, false);
                         renderingPointCount -= u.PointCount;
                     }
                     if (renderingPointCount + amount <= pointBudget) {

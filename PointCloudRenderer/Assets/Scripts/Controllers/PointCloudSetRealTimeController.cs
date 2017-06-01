@@ -18,6 +18,7 @@ namespace Controllers {
         //Defines the type of PointCloud (Points, Quads, Circles)
         public MeshConfiguration meshConfiguration;
         public bool multithreaded = true;
+        public uint cacheSizeInPoints = 0;
 
         private Camera userCamera;
 
@@ -25,7 +26,7 @@ namespace Controllers {
         protected override void Initialize() {
             userCamera = Camera.main;
             if (multithreaded) {
-                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera, LRUCache.CacheFromPointCount(cacheSizeInPoints));
             } else {
                 PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
             }

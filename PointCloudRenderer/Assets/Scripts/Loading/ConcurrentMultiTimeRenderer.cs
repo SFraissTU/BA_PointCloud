@@ -31,6 +31,8 @@ namespace Loading {
 
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 
+        private LRUCache cache;
+
         //Camera Info
         private Camera camera;
 
@@ -48,7 +50,7 @@ namespace Loading {
 
         /* Creates a new ConcurrentMultiTimeRenderer. Already starts the Loading-Thread!!!
          */
-        public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
+        public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, LRUCache cache) {
             toLoad = new HeapPriorityQueue<LoadingPriority, Node>();
             toRender = new ThreadSafeQueue<Node>();
             alreadyLoaded = new ListPriorityQueue<LoadingPriority, Node>();
@@ -57,6 +59,7 @@ namespace Loading {
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
             this.camera = camera;
+            this.cache = cache;
             new Thread(UpdateLoadedPoints).Start();
         }
 
@@ -185,9 +188,12 @@ namespace Loading {
                 Node child = childrenToCheck.Dequeue();
                 
                 lock (child) {
-                    child.ForgetPoints();
-                    child.RemoveGameObjects(config);
                     int oldStatus = child.NodeStatus;
+                    if (child.HasGameObjects() || oldStatus >= NodeStatus.TORENDER) {   //Note that even TOLOAD and LOADING might have GOs because of TODELETE -> TOLOAD in UVN
+                        child.RemoveGameObjects(config, true);
+                        //cache.Insert(child);
+                        child.ForgetPoints();
+                    }
                     lock (pointCountLock) {
                         child.NodeStatus = NodeStatus.INVISIBLE;
                         if (oldStatus == NodeStatus.TORENDER || oldStatus == NodeStatus.RENDERED) {
@@ -227,13 +233,15 @@ namespace Loading {
                         }
                     }
                     uint amount = n.PointCount;
+                    bool firstLoaded = false; //Wether the node has been loaded for the first time
                     //PointCount might already be there from loading the points before
                     if (amount == 0) {
-                        //Not happening for nodes that were ore are already loaded
+                        //Not happening for nodes that were once are already loaded. So also no cache-checking neccessary
                         Monitor.Exit(toLoadLock);
                         CloudLoader.LoadPointsForNode(n);
                         Monitor.Enter(toLoadLock);
                         amount = n.PointCount;
+                        firstLoaded = true;
                     }
                     //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
                     Monitor.Enter(pointCountLock);
@@ -277,16 +285,22 @@ namespace Loading {
                     if (renderingPointCount + amount <= pointBudget) {
                         Monitor.Exit(pointCountLock);
                         Monitor.Exit(toLoadLock);
-                        if (!n.HasPointsToRender() && !n.HasGameObjects()) {
-                            //Problem: Exception can occur, because GameObject might not have been deleted yet (probably fixed)
-                            CloudLoader.LoadPointsForNode(n);
+                        //LOADING OR RECEIVING FROM CACHE vvvvv
+                        //TODO: SYNCHRONISATION
+                        if (!n.HasGameObjects()) {
+                            if (!firstLoaded) { //if firstLoaded, nodes have been loaded before and are not in the cache!
+                                //cache.Withdraw(n); //Will only be withdrawn if it exists in cache
+                                if (!n.HasPointsToRender()) {
+                                    CloudLoader.LoadPointsForNode(n);
+                                }
+                            }
                         }
                         lock (n) {
                             switch (n.NodeStatus) {
                                 case NodeStatus.LOADING:
-                                    toRender.Enqueue(n);
                                     lock (pointCountLock) {
                                         if (!n.HasGameObjects()) {
+                                            toRender.Enqueue(n);
                                             n.NodeStatus = NodeStatus.TORENDER;
                                         } else {
                                             n.NodeStatus = NodeStatus.RENDERED;
@@ -296,8 +310,11 @@ namespace Loading {
                                     break;
                                 case NodeStatus.UNDEFINED:
                                 case NodeStatus.INVISIBLE:
-                                case NodeStatus.RENDERED:
                                 case NodeStatus.TOLOAD:
+                                    //cache.Insert(n);
+                                    n.ForgetPoints();
+                                    break;
+                                case NodeStatus.RENDERED:
                                 case NodeStatus.TODELETE:
                                     n.ForgetPoints();
                                     break;
@@ -306,13 +323,15 @@ namespace Loading {
                     } else {
                         Monitor.Exit(pointCountLock);
                         lock (n) {
-                            if (n.HasPointsToRender()) {
-                                n.ForgetPoints();
-                            }
                             if (n.HasGameObjects()) {
                                 toDelete.Enqueue(n);
                                 n.NodeStatus = NodeStatus.TODELETE;
+                                n.ForgetPoints();   //If there are gameobjects the points will be restored at deletion time anyway (in case a cache exists)
                             } else {
+                                if (n.HasPointsToRender()) {
+                                    //cache.Insert(n);
+                                    n.ForgetPoints();
+                                }
                                 n.NodeStatus = NodeStatus.INVISIBLE;
                             }
                         }
@@ -352,7 +371,9 @@ namespace Loading {
                 Node n = toDelete.Dequeue();
                 lock (n) {
                     if (n.NodeStatus == NodeStatus.TODELETE) {
-                        n.RemoveGameObjects(meshConfiguration);
+                        n.RemoveGameObjects(meshConfiguration, true);
+                        //cache.Insert(n);
+                        n.ForgetPoints();
                         n.NodeStatus = NodeStatus.INVISIBLE;
                     }
                 }

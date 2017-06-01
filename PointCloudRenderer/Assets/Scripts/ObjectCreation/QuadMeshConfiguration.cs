@@ -72,7 +72,10 @@ namespace ObjectCreation
             return 16250;
         }
 
-        public override void RemoveGameObject(GameObject gameObject) {
+        public override void RemoveGameObject(GameObject gameObject, out Vector3[] vertexData, out Color[] colorData) {
+            Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+            vertexData = mesh.vertices;
+            colorData = mesh.colors;
             Destroy(gameObject);
         }
     }

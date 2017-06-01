@@ -25,7 +25,7 @@ namespace Controllers {
         protected override void Initialize() {
             userCamera = Camera.main;
             if (multithreaded) {
-                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera, LRUCache.CacheFromPointCount(0));
             } else {
                 PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
             }
