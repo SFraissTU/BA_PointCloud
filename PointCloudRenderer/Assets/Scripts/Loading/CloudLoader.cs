@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 namespace Loading {
@@ -117,19 +118,14 @@ namespace Loading {
         /* Loads the points for just that one node
          */
         private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
-            /*byte[] data;
-            if (node.Name.Length < metaData.hierarchyStepSize)
-            {
-                data = File.ReadAllBytes(dataRPath + "r" + node.Name + ".bin");
-            }
-            else
-            {
-               data = File.ReadAllBytes(dataRPath + "\\" + node.Name + "\\r" + node.Name + ".bin");
-            }*/
+
             byte[] data = FindAndLoadFile(dataRPath, metaData, node.Name, ".bin");
-            int pointByteSize = 24;//TODO: Is this always the case?
+            int pointByteSize = 16;//TODO: Is this always the case? Why is r2404.bin only 16 bytes???
             int numPoints = data.Length / pointByteSize;
             int offset = 0;
+            if (numPoints == 0) {
+                Debug.LogError("NumPoints = 0");
+            }
 
             Vector3[] vertices = new Vector3[numPoints];
             Color[] colors = new Color[numPoints];

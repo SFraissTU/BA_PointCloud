@@ -45,7 +45,7 @@ namespace Loading {
         private object pointCountLock = new object();       //MutEx-Object. All access to renderingPointCount should be done while locking over this object
 
         //Frame-Limits, see UpdateGameObjects
-        private const int MAX_NODES_CREATE_PER_FRAME = 15;
+        private const int MAX_NODES_CREATE_PER_FRAME = 25;
         private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
         /* Creates a new ConcurrentMultiTimeRenderer. Already starts the Loading-Thread!!!
@@ -190,14 +190,13 @@ namespace Loading {
                 lock (child) {
                     int oldStatus = child.NodeStatus;
                     if (child.HasGameObjects() || oldStatus >= NodeStatus.TORENDER) {   //Note that even TOLOAD and LOADING might have GOs because of TODELETE -> TOLOAD in UVN
-                        child.RemoveGameObjects(config, true);
-                        //cache.Insert(child);
-                        child.ForgetPoints();
+                        child.RemoveGameObjects(config);
+                        cache.Insert(child);
                     }
                     lock (pointCountLock) {
                         child.NodeStatus = NodeStatus.INVISIBLE;
                         if (oldStatus == NodeStatus.TORENDER || oldStatus == NodeStatus.RENDERED) {
-                            renderingPointCount -= child.PointCount;
+                            renderingPointCount -= (uint)child.PointCount;
                         }
                         if (oldStatus >= NodeStatus.TOLOAD) {    //Loading of the children has to be aborted as well
                             foreach (Node childchild in child) {
@@ -232,10 +231,10 @@ namespace Loading {
                             n.NodeStatus = NodeStatus.LOADING;
                         }
                     }
-                    uint amount = n.PointCount;
+                    int amount = n.PointCount;
                     bool firstLoaded = false; //Wether the node has been loaded for the first time
                     //PointCount might already be there from loading the points before
-                    if (amount == 0) {
+                    if (amount == -1) {
                         //Not happening for nodes that were once are already loaded. So also no cache-checking neccessary
                         Monitor.Exit(toLoadLock);
                         CloudLoader.LoadPointsForNode(n);
@@ -263,7 +262,7 @@ namespace Loading {
                                     alreadyLoaded.Dequeue(); //Get element with lowest priority
                                     if (u.NodeStatus == NodeStatus.TORENDER || u.NodeStatus == NodeStatus.RENDERED) {
                                         lock (pointCountLock) {
-                                            renderingPointCount -= u.PointCount;
+                                            renderingPointCount -= (uint)u.PointCount;
                                             if (u.NodeStatus == NodeStatus.TORENDER) {
                                                 u.NodeStatus = NodeStatus.INVISIBLE; //Will not be rendered
                                             } else /* RENDERED */ {
@@ -289,7 +288,7 @@ namespace Loading {
                         //TODO: SYNCHRONISATION
                         if (!n.HasGameObjects()) {
                             if (!firstLoaded) { //if firstLoaded, nodes have been loaded before and are not in the cache!
-                                //cache.Withdraw(n); //Will only be withdrawn if it exists in cache
+                                cache.Withdraw(n); //Will only be withdrawn if it exists in cache
                                 if (!n.HasPointsToRender()) {
                                     CloudLoader.LoadPointsForNode(n);
                                 }
@@ -305,14 +304,13 @@ namespace Loading {
                                         } else {
                                             n.NodeStatus = NodeStatus.RENDERED;
                                         }
-                                        renderingPointCount += amount;
+                                        renderingPointCount += (uint)amount;
                                     }
                                     break;
                                 case NodeStatus.UNDEFINED:
                                 case NodeStatus.INVISIBLE:
                                 case NodeStatus.TOLOAD:
-                                    //cache.Insert(n);
-                                    n.ForgetPoints();
+                                    cache.Insert(n);
                                     break;
                                 case NodeStatus.RENDERED:
                                 case NodeStatus.TODELETE:
@@ -326,11 +324,9 @@ namespace Loading {
                             if (n.HasGameObjects()) {
                                 toDelete.Enqueue(n);
                                 n.NodeStatus = NodeStatus.TODELETE;
-                                n.ForgetPoints();   //If there are gameobjects the points will be restored at deletion time anyway (in case a cache exists)
                             } else {
                                 if (n.HasPointsToRender()) {
-                                    //cache.Insert(n);
-                                    n.ForgetPoints();
+                                    cache.Insert(n);
                                 }
                                 n.NodeStatus = NodeStatus.INVISIBLE;
                             }
@@ -371,9 +367,8 @@ namespace Loading {
                 Node n = toDelete.Dequeue();
                 lock (n) {
                     if (n.NodeStatus == NodeStatus.TODELETE) {
-                        n.RemoveGameObjects(meshConfiguration, true);
-                        //cache.Insert(n);
-                        n.ForgetPoints();
+                        n.RemoveGameObjects(meshConfiguration);
+                        cache.Insert(n);
                         n.NodeStatus = NodeStatus.INVISIBLE;
                     }
                 }
@@ -392,7 +387,7 @@ namespace Loading {
                     while (toCheck.Count != 0) {
                         Node n = toCheck.Dequeue();
                         if (n.NodeStatus == NodeStatus.TORENDER || n.NodeStatus == NodeStatus.RENDERED) {
-                            correctPointCount += n.PointCount;
+                            correctPointCount += (uint)n.PointCount;
                         }
                         foreach (Node child in n) {
                             toCheck.Enqueue(child);

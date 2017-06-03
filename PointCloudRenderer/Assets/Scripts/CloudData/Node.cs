@@ -27,7 +27,7 @@ namespace CloudData
         //Parent-element. May be null at the root.
         private Node parent;
         //PointCount, read from hierarchy-file
-        private uint pointCount = 0;
+        private int pointCount = -1;
 
         //A status flag. Can be used by the renderer, doesn't have to be!
         //The meaning and use of the NodeStatus is therefore dependent from the used renderer and does not have to be used consistently
@@ -57,22 +57,21 @@ namespace CloudData
             int max = configuration.GetMaximumPointsPerMesh();
             if (verticesToStore.Length <= max) {
                 gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name, verticesToStore, colorsToStore, boundingBox));
-                verticesToStore = null;
-                colorsToStore = null;
             } else { 
                 int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
                 int index = 0; //name index
+                Vector3[] restVertices = verticesToStore;
+                Color[] restColors = colorsToStore;
                 while (amount > 0) {
-                    Vector3[] vertices = verticesToStore.Take(amount).ToArray();
-                    Color[] colors = colorsToStore.Take(amount).ToArray(); ;
-                    verticesToStore = verticesToStore.Skip(amount).ToArray();
-                    colorsToStore = colorsToStore.Skip(amount).ToArray();
+                    Vector3[] vertices = restVertices.Take(amount).ToArray();
+                    Color[] colors = restColors.Take(amount).ToArray(); ;
+                    restVertices = restVertices.Skip(amount).ToArray();
+                    restColors = restColors.Skip(amount).ToArray();
                     gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
                     amount = Math.Min(max, verticesToStore.Length);
                     index++;
                 }
-                verticesToStore = null;
-                colorsToStore = null;
+                //VERTICES AND COLORS ARE NOT DELETED!
             }
         }
 
@@ -99,37 +98,9 @@ namespace CloudData
             }
         }
 
-        /* Removes the gameobjects again.
-         * Given MeshConfiguration should be the same that has been used for creation
-         */
-        public void RemoveGameObjects(MeshConfiguration configuration, bool restorePoints)
-        {
-            if (gameObjects.Count == 1) {
-                Vector3[] vertices;
-                Color[] colors;
-                configuration.RemoveGameObject(gameObjects[0], out vertices, out colors);
-                if (restorePoints) {
-                    verticesToStore = vertices;
-                    colorsToStore = colors;
-                }
-            } else if (gameObjects.Count > 1) {
-                if (restorePoints) {
-                    verticesToStore = new Vector3[pointCount];
-                    colorsToStore = new Color[pointCount];
-                }
-                int offset = 0;
-                foreach (GameObject go in gameObjects) {
-                    Vector3[] vertices;
-                    Color[] colors;
-                    configuration.RemoveGameObject(go, out vertices, out colors);
-                    if (restorePoints) {
-                        for (int i = 0; i < vertices.Length; i++) {
-                            verticesToStore[offset + i] = vertices[i];
-                            colorsToStore[offset + i] = colors[i];
-                        }
-                    }
-                    offset += vertices.Length;
-                }
+        public void RemoveGameObjects(MeshConfiguration configuration) {
+            foreach (GameObject go in gameObjects) {
+                configuration.RemoveGameObject(go);
             }
             gameObjects.Clear();
         }
@@ -149,7 +120,7 @@ namespace CloudData
             }
             verticesToStore = vertices;
             colorsToStore = colors;
-            pointCount = (uint)vertices.Length;
+            pointCount = vertices.Length;
         }
 
         /* Deletes the loaded Vertex- and Color-Information (Vertex-Count stays stored however)
@@ -278,7 +249,7 @@ namespace CloudData
         }
 
         //Number of points given the last time SetPoints was called. Or 0 if it hasn't been called
-        public uint PointCount
+        public int PointCount
         {
             get
             {

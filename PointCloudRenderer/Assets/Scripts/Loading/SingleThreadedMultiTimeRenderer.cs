@@ -126,7 +126,7 @@ namespace Loading {
                         //Object has GameObjects -> Enqueue for possible GO-Removal
                         if (currentNode.HasGameObjects()) {
                             alreadyRendered.Enqueue(currentNode, -priority); //inverse. less important ones come first
-                            renderingPointCount += currentNode.PointCount;
+                            renderingPointCount += (uint)currentNode.PointCount;
                         } else {
                             toLoad.Enqueue(currentNode, priority);
                         }
@@ -150,7 +150,7 @@ namespace Loading {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
-                currentNode.RemoveGameObjects(config, false);
+                currentNode.RemoveGameObjects(config);
                 foreach (Node child in currentNode) {
                     childrenToCheck.Enqueue(child);
                 }
@@ -158,7 +158,7 @@ namespace Loading {
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    child.RemoveGameObjects(config, false);
+                    child.RemoveGameObjects(config);
                     foreach (Node childchild in child) {
                         childrenToCheck.Enqueue(childchild);
                     }
@@ -177,9 +177,9 @@ namespace Loading {
                 double nPriority;
                 Node n = toLoad.Dequeue(out nPriority);
                 //n doesn't have GameObjects
-                uint amount = n.PointCount;
+                int amount = n.PointCount;
                 //PointCount might already be there from loading the points before
-                if (amount == 0) {
+                if (amount == -1) {
                     CloudLoader.LoadPointsForNode(n);
                     amount = n.PointCount;
                 }
@@ -188,19 +188,20 @@ namespace Loading {
                     double arPriority = -alreadyRendered.MaxPriority();
                     if (arPriority < nPriority) {
                         Node u = alreadyRendered.Dequeue(); //Get element with lowest priority
-                        u.RemoveGameObjects(meshConfiguration, false);
-                        renderingPointCount -= u.PointCount;
+                        u.RemoveGameObjects(meshConfiguration);
+                        renderingPointCount -= (uint)u.PointCount;
                     } else {
                         break;
                     }
                 }
                 if (renderingPointCount + amount <= pointBudget) {
-                    renderingPointCount += amount;
+                    renderingPointCount += (uint)amount;
                     if (!n.HasPointsToRender()) {
                         CloudLoader.LoadPointsForNode(n);
                     }
                     //Create GameObjects
                     n.CreateGameObjects(meshConfiguration);
+                    n.ForgetPoints();
                 } else {
                     //Stop Loading
                     //AlreadyRendered is empty, so no nodes are visible

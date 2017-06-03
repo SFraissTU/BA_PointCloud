@@ -35,12 +35,12 @@ namespace Loading {
             lock (queue) {
                 while (currentPointCount + node.PointCount > maxPoints && !queue.IsEmpty()) {
                     Node old = queue.Dequeue();
-                    currentPointCount -= old.PointCount;
+                    currentPointCount -= (uint)old.PointCount;
                     old.ForgetPoints();
                 }
                 if (currentPointCount + node.PointCount <= maxPoints) {
                     queue.Enqueue(node);
-                    currentPointCount += node.PointCount;
+                    currentPointCount += (uint)node.PointCount;
                 } else {
                     node.ForgetPoints();
                 }
@@ -53,8 +53,7 @@ namespace Loading {
             lock (queue) {
                 if (queue.Contains(node)) {
                     queue.Remove(node);
-                    currentPointCount -= node.PointCount;
-                    Debug.Log(currentPointCount);
+                    currentPointCount -= (uint)node.PointCount;
                 }
             }
         }
