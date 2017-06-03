@@ -49,14 +49,6 @@ namespace Loading {
          * dataRPath is the path of the R-folder
          */
         private static void LoadHierarchy(string dataRPath, PointCloudMetaData metaData, Node root) {
-            /*byte[] data;
-            if (root.Name.Length < metaData.hierarchyStepSize)
-            {
-                data = File.ReadAllBytes(dataRPath + "r" + root.Name + ".hrc");
-            } else
-            {
-                data = File.ReadAllBytes(dataRPath + "\\" + root.Name + "\\r" + root.Name + ".hrc");
-            }*/
             byte[] data = FindAndLoadFile(dataRPath, metaData, root.Name, ".hrc");
             int nodeByteSize = 5;
             int numNodes = data.Length / nodeByteSize;
@@ -120,12 +112,9 @@ namespace Loading {
         private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
 
             byte[] data = FindAndLoadFile(dataRPath, metaData, node.Name, ".bin");
-            int pointByteSize = 16;//TODO: Is this always the case? Why is r2404.bin only 16 bytes???
+            int pointByteSize = 16;//TODO: Is this always the case?
             int numPoints = data.Length / pointByteSize;
             int offset = 0;
-            if (numPoints == 0) {
-                Debug.LogError("NumPoints = 0");
-            }
 
             Vector3[] vertices = new Vector3[numPoints];
             Color[] colors = new Color[numPoints];
