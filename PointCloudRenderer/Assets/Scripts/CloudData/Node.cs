@@ -28,6 +28,7 @@ namespace CloudData
         private Node parent;
         //PointCount, read from hierarchy-file
         private int pointCount = -1;
+        private bool gosActive = true;
 
         //A status flag. Can be used by the renderer, doesn't have to be!
         //The meaning and use of the NodeStatus is therefore dependent from the used renderer and does not have to be used consistently
@@ -98,11 +99,30 @@ namespace CloudData
             }
         }
 
-        public void RemoveGameObjects(MeshConfiguration configuration) {
+        public void RemoveGameObjects() {
             foreach (GameObject go in gameObjects) {
-                configuration.RemoveGameObject(go);
+                UnityEngine.Object.Destroy(go);
             }
             gameObjects.Clear();
+            gosActive = true;
+        }
+
+        public void DeactivateGameObjects() {
+            foreach (GameObject go in gameObjects) {
+                go.SetActive(false);
+            }
+            gosActive = false;
+        }
+
+        public void ReactivateGameObjects() {
+            foreach (GameObject go in gameObjects) {
+                go.SetActive(true);
+            }
+            gosActive = true;
+        }
+
+        public bool AreGameObjectsActive() {
+            return gosActive;
         }
         
         /* Sets the point data to be stored.

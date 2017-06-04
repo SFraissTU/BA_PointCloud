@@ -71,9 +71,5 @@ namespace ObjectCreation
         {
             return 16250;
         }
-
-        public override void RemoveGameObject(GameObject gameObject) {
-            Destroy(gameObject);
-        }
     }
 }

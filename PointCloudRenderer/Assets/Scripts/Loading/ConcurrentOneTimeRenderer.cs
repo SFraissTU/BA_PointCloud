@@ -166,7 +166,7 @@ namespace Loading {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
-                currentNode.RemoveGameObjects(config);
+                currentNode.RemoveGameObjects();
                 foreach (Node child in currentNode) {
                     childrenToCheck.Enqueue(child);
                 }
@@ -174,7 +174,7 @@ namespace Loading {
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    child.RemoveGameObjects(config);
+                    child.RemoveGameObjects();
                     foreach (Node childchild in child) {
                         childrenToCheck.Enqueue(childchild);
                     }
@@ -249,7 +249,7 @@ namespace Loading {
             }
             //toDelete only contains nodes that where there last frame, are in the view frustum, but would exheed the point budget
             for (int j = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
-                toDelete.Dequeue().RemoveGameObjects(meshConfiguration);
+                toDelete.Dequeue().RemoveGameObjects();
             }
         }
 

@@ -51,9 +51,5 @@ namespace ObjectCreation {
         public override int GetMaximumPointsPerMesh() {
             return 65000;
         }
-
-        public override void RemoveGameObject(GameObject gameObject) {
-            Destroy(gameObject);
-        }
     }
 }
