@@ -117,17 +117,9 @@ namespace Loading {
         /* Loads the points for just that one node
          */
         private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
-            /*byte[] data;
-            if (node.Name.Length < metaData.hierarchyStepSize)
-            {
-                data = File.ReadAllBytes(dataRPath + "r" + node.Name + ".bin");
-            }
-            else
-            {
-               data = File.ReadAllBytes(dataRPath + "\\" + node.Name + "\\r" + node.Name + ".bin");
-            }*/
+            
             byte[] data = FindAndLoadFile(dataRPath, metaData, node.Name, ".bin");
-            int pointByteSize = 24;//TODO: Is this always the case?
+            int pointByteSize = 16;//TODO: Is this always the case?
             int numPoints = data.Length / pointByteSize;
             int offset = 0;
 
