@@ -2,7 +2,7 @@
 
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Custom/QuadBillboardShader"
+Shader "Custom/ParaboloidWorldSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.
@@ -45,6 +45,12 @@ Shader "Custom/QuadBillboardShader"
 				float4 position : SV_POSITION;
 				float4 color : COLOR;
 				float2 uv : TEXCOORD0;
+				float distance : POINTSIZE;
+			};
+
+			struct FragmentOutput {
+				float4 color : SV_TARGET;
+				float depth : SV_DEPTH;
 			};
 
 			float _PointSize;
@@ -70,24 +76,28 @@ Shader "Custom/QuadBillboardShader"
 				out1.color = input[0].color;
 				out1.uv = float2(-1.0f, 1.0f);
 				out1.position += (-input[0].R + input[0].U);
+				out1.distance = mul(UNITY_MATRIX_VP, out1.position).z / mul(UNITY_MATRIX_VP, out1.position).w;
 				out1.position = UnityObjectToClipPos(out1.position);
 				VertexOutput out2;
 				out2.position = input[0].position;
 				out2.color = input[0].color;
 				out2.uv = float2(1.0f, 1.0f);
 				out2.position += (input[0].R + input[0].U);
+				out2.distance = mul(UNITY_MATRIX_VP, out2.position).z / mul(UNITY_MATRIX_VP, out2.position).w;
 				out2.position = UnityObjectToClipPos(out2.position);
 				VertexOutput out3;
 				out3.position = input[0].position;
 				out3.color = input[0].color;
 				out3.uv = float2(1.0f, -1.0f);
 				out3.position += (input[0].R - input[0].U);
+				out3.distance = mul(UNITY_MATRIX_VP, out3.position).z / mul(UNITY_MATRIX_VP, out3.position).w;
 				out3.position = UnityObjectToClipPos(out3.position);
 				VertexOutput out4;
 				out4.position = input[0].position;
 				out4.color = input[0].color;
 				out4.uv = float2(-1.0f, -1.0f);
 				out4.position += (-input[0].R - input[0].U);
+				out4.distance = mul(UNITY_MATRIX_VP, out4.position).z / mul(UNITY_MATRIX_VP, out4.position).w;
 				out4.position = UnityObjectToClipPos(out4.position);
 				outputStream.Append(out1);
 				outputStream.Append(out2);
@@ -95,11 +105,22 @@ Shader "Custom/QuadBillboardShader"
 				outputStream.Append(out3);
 			}
 
-			float4 frag(VertexOutput o) : COLOR{
-				if (_Circles >= 0.5 && o.uv.x*o.uv.x + o.uv.y*o.uv.y > 1) {
+			FragmentOutput frag(VertexOutput o) {
+				FragmentOutput fragout;
+				float uvlen = o.uv.x*o.uv.x + o.uv.y*o.uv.y;
+				if (_Circles >= 0.5 && uvlen > 1) {
 					discard;
 				}
-				return o.color;
+				fragout.depth = o.distance;// -(1 - uvlen) * _PointSize;
+				if (uvlen > 0.5) {
+					fragout.color = o.color;
+				}
+				else {
+					fragout.color = fragout.depth * 500;
+				}
+				//fragout.color = fragout.depth / 1000;
+				fragout.depth = 1;
+				return fragout;
 			}
 
 			ENDCG
