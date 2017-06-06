@@ -1,15 +1,17 @@
-﻿using System;
-using CloudData;
+﻿using CloudData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace ObjectCreation {
-    /* Renders every point as a 1px-Point
-     */
-    class QuadBillboardMeshConfiguration : MeshConfiguration {
+    class ParaboloidGeoMeshConfiguration : MeshConfiguration {
         //Size of the quad/circle
         public float pointRadius = 10;
         //wether the quads should be rendered as circles or not
         public bool renderCircles = false;
+        public bool worldSize = true;//TODO
 
         private Material material;
         private GameObjectCache goCache;
@@ -17,7 +19,7 @@ namespace ObjectCreation {
         private Camera userCamera;
 
         public void Start() {
-            material = new Material(Shader.Find("Custom/QuadBillboardShader"));
+            material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
             userCamera = Camera.main;
