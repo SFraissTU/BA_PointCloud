@@ -35,10 +35,10 @@ namespace ObjectCreation {
 
         public void Update() {
             if (screenSize) {
-                Matrix4x4 inv = (mainCamera.projectionMatrix * mainCamera.worldToCameraMatrix).inverse;
-                material.SetMatrix("_InverseProjMatrix", inv);
+                Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
+                material.SetMatrix("_InverseProjMatrix", invP);
+                material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
             }
-            material.SetVector("_CameraPos", mainCamera.transform.position);
         }
 
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {

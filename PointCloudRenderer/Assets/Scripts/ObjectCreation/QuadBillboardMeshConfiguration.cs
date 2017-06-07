@@ -14,20 +14,11 @@ namespace ObjectCreation {
         private Material material;
         private GameObjectCache goCache;
 
-        private Camera userCamera;
-
         public void Start() {
             material = new Material(Shader.Find("Custom/QuadBillboardShader"));
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
-            userCamera = Camera.main;
             goCache = new GameObjectCache();
-        }
-
-        public void Update() {
-            material.SetVector("_CameraPos", userCamera.transform.position);
-            System.Random r = new System.Random();
-            material.SetFloat("_Color", (float)r.NextDouble());
         }
 
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {

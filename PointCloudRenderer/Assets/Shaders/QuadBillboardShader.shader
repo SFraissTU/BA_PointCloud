@@ -48,14 +48,13 @@ Shader "Custom/QuadBillboardShader"
 			};
 
 			float _PointSize;
-			float3 _CameraPos;
 			int _Circles;
 
 			VertexMiddle vert(VertexInput v) {
 				VertexMiddle o;
 				o.position = v.position;
 				o.color = v.color;
-				float3 view = (float3(mul(unity_ObjectToWorld, v.position) - _CameraPos));
+				float3 view = (float3(mul(unity_ObjectToWorld, v.position) - _WorldSpaceCameraPos));
 				float3 upvec = normalize(UNITY_MATRIX_IT_MV[1].xyz);
 				float3 R = normalize(cross(view, upvec));
 				o.U = float4(normalize(cross(R, view)) * _PointSize, 0);
