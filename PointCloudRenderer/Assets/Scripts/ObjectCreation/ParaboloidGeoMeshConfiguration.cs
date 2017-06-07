@@ -15,19 +15,22 @@ namespace ObjectCreation {
 
         private Material material;
         private GameObjectCache goCache;
-
-        private Camera userCamera;
+        
 
         public void Start() {
-            material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
+            if (worldSize) {
+                material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
+            } else {
+                material = new Material(Shader.Find("Custom/ParaboloidGeoScreenSizeShader"));
+                Rect screen = Camera.main.pixelRect;
+                material.SetInt("_ScreenWidth", (int)screen.width);
+                material.SetInt("_ScreenHeight", (int)screen.height);
+                material.SetFloat("_FOV", Camera.main.fieldOfView * Mathf.Deg2Rad);
+                material.SetMatrix("_InverseProjMatrix", GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, true).inverse);
+            }
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
-            userCamera = Camera.main;
             goCache = new GameObjectCache();
-        }
-
-        public void Update() {
-            material.SetVector("_CameraPos", userCamera.transform.position);
         }
 
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {

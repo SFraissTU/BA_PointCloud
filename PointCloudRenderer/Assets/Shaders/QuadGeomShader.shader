@@ -89,10 +89,6 @@ Shader "Custom/QuadGeomShader"
 					outputStream.Append(out2);
 					outputStream.Append(out4);
 					outputStream.Append(out3);
-					/*outputStream.RestartStrip();
-					outputStream.Append(out1);
-					outputStream.Append(out3);*/
-					//outputStream.RestartStrip();
 				}
 
 				float4 frag(VertexOutput o) : COLOR{

@@ -1,8 +1,5 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-Shader "Custom/ParaboloidGeoWorldSizeShader"
+﻿
+Shader "Custom/ParaboloidGeoScreenSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.
@@ -36,9 +33,7 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 			struct VertexMiddle {
 				float4 position : SV_POSITION;
 				float4 color : COLOR;
-				float4 R : NORMAL0;
-				float4 U : NORMAL1;
-				float4 N : NORMAL2;
+				float size : POINTSIZE;
 			};
 
 			struct VertexOutput
@@ -49,28 +44,32 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 			};
 
 			float _PointSize;
+			int _ScreenWidth;
+			int _ScreenHeight;
+			float _FOV;
 			int _Circles;
+			float4x4 _InverseProjMatrix;
 
 			VertexMiddle vert(VertexInput v) {
 				VertexMiddle o;
-				o.position = v.position;
 				o.color = v.color;
-				float3 view = (float3(mul(unity_ObjectToWorld, v.position) - _WorldSpaceCameraPos));
-				float3 upvec = normalize(UNITY_MATRIX_IT_MV[1].xyz);
-				float3 R = normalize(cross(view, upvec));
-				o.U = float4(normalize(cross(R, view)) * _PointSize, 0);
-				o.R = -float4(R * _PointSize, 0);
-				o.N = float4(normalize(view), 0) * _PointSize;
+				float4 viewpos = mul(UNITY_MATRIX_MV, v.position);
+				o.position = mul(UNITY_MATRIX_P, viewpos);
+				float slope = tan(_FOV / 2);
+				o.size = _PointSize * slope * viewpos.z * 2 / _ScreenHeight;
 				return o;
 			}
 
-			VertexOutput createParaboloidPoint(VertexMiddle input, float u, float v) {
+			VertexOutput createParaboloidPoint(VertexMiddle input, float xsize, float ysize, float zsize, float u, float v) {
 				VertexOutput nPoint;
 				nPoint.position = input.position;
-				nPoint.position += u*input.R;
-				nPoint.position += v*input.U;
-				nPoint.position -= (1 - (u*u + v*v))*input.N;
-				nPoint.position = UnityObjectToClipPos(nPoint.position);
+				nPoint.position.x += u*xsize*input.position.w;
+				nPoint.position.y += v*ysize*input.position.w;
+				nPoint.position /= nPoint.position.w;
+				float4 viewposition = mul(_InverseProjMatrix, nPoint.position);
+				viewposition /= viewposition.w;
+				viewposition.z -= (1 - (u*u + v*v))*zsize;
+				nPoint.position = mul(UNITY_MATRIX_P, viewposition);
 				nPoint.color = input.color;
 				nPoint.uv = float2(u, v);
 				return nPoint;
@@ -78,41 +77,44 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 
 			[maxvertexcount(68)]
 			void geom(point VertexMiddle input[1], inout TriangleStream<VertexOutput> outputStream) {
+				float xsize = _PointSize / _ScreenWidth;
+				float ysize = _PointSize / _ScreenHeight;
+
 				float sqr = sqrt(2) / 2;
 
-				VertexOutput middle = createParaboloidPoint(input[0], 0, 0);
+				VertexOutput middle = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, 0);
 				//inner ring
-				VertexOutput ir1 = createParaboloidPoint(input[0], 0.25, 0);
-				VertexOutput ir2 = createParaboloidPoint(input[0], sqr*0.25, sqr*0.25);
-				VertexOutput ir3 = createParaboloidPoint(input[0], 0, 0.25);
-				VertexOutput ir4 = createParaboloidPoint(input[0], -sqr*0.25, sqr*0.25);
-				VertexOutput ir5 = createParaboloidPoint(input[0], -0.25, 0);
-				VertexOutput ir6 = createParaboloidPoint(input[0], -sqr*0.25, -sqr*0.25);
-				VertexOutput ir7 = createParaboloidPoint(input[0], 0, -0.25);
-				VertexOutput ir8 = createParaboloidPoint(input[0], sqr*0.25, -sqr*0.25);
+				VertexOutput ir1 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0.25, 0);
+				VertexOutput ir2 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, sqr*0.25, sqr*0.25);
+				VertexOutput ir3 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, 0.25);
+				VertexOutput ir4 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -sqr*0.25, sqr*0.25);
+				VertexOutput ir5 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -0.25, 0);
+				VertexOutput ir6 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -sqr*0.25, -sqr*0.25);
+				VertexOutput ir7 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, -0.25);
+				VertexOutput ir8 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, sqr*0.25, -sqr*0.25);
 				//middle ring
-				VertexOutput mr1 = createParaboloidPoint(input[0], 0.5, 0);
-				VertexOutput mr2 = createParaboloidPoint(input[0], sqr*0.5, sqr*0.5);
-				VertexOutput mr3 = createParaboloidPoint(input[0], 0, 0.5);
-				VertexOutput mr4 = createParaboloidPoint(input[0], -sqr*0.5, sqr*0.5);
-				VertexOutput mr5 = createParaboloidPoint(input[0], -0.5, 0);
-				VertexOutput mr6 = createParaboloidPoint(input[0], -sqr*0.5, -sqr*0.5);
-				VertexOutput mr7 = createParaboloidPoint(input[0], 0, -0.5);
-				VertexOutput mr8 = createParaboloidPoint(input[0], sqr*0.5, -sqr*0.5);
+				VertexOutput mr1 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0.5, 0);
+				VertexOutput mr2 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, sqr*0.5, sqr*0.5);
+				VertexOutput mr3 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, 0.5);
+				VertexOutput mr4 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -sqr*0.5, sqr*0.5);
+				VertexOutput mr5 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -0.5, 0);
+				VertexOutput mr6 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -sqr*0.5, -sqr*0.5);
+				VertexOutput mr7 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, -0.5);
+				VertexOutput mr8 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, sqr*0.5, -sqr*0.5);
 				//outer ring
-				VertexOutput or1 = createParaboloidPoint(input[0], 1, 0);
-				VertexOutput or2 = createParaboloidPoint(input[0], sqr*1, sqr*1);
-				VertexOutput or3 = createParaboloidPoint(input[0], 0, 1);
-				VertexOutput or4 = createParaboloidPoint(input[0], -sqr*1, sqr*1);
-				VertexOutput or5 = createParaboloidPoint(input[0], -1, 0);
-				VertexOutput or6 = createParaboloidPoint(input[0], -sqr*1, -sqr*1);
-				VertexOutput or7 = createParaboloidPoint(input[0], 0, -1);
-				VertexOutput or8 = createParaboloidPoint(input[0], sqr*1, -sqr*1);
+				VertexOutput or1 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 1, 0);
+				VertexOutput or2 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, sqr*1, sqr*1);
+				VertexOutput or3 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, 1);
+				VertexOutput or4 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -sqr*1, sqr*1);
+				VertexOutput or5 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -1, 0);
+				VertexOutput or6 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -sqr*1, -sqr*1);
+				VertexOutput or7 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 0, -1);
+				VertexOutput or8 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, sqr*1, -sqr*1);
 				//edges
-				VertexOutput e11 = createParaboloidPoint(input[0], 1, 1);
-				VertexOutput em11 = createParaboloidPoint(input[0], -1, 1);
-				VertexOutput em1m1 = createParaboloidPoint(input[0], -1, -1);
-				VertexOutput e1m1 = createParaboloidPoint(input[0], 1, -1);
+				VertexOutput e11 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 1, 1);
+				VertexOutput em11 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -1, 1);
+				VertexOutput em1m1 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, -1, -1);
+				VertexOutput e1m1 = createParaboloidPoint(input[0], xsize, ysize, input[0].size, 1, -1);
 				
 				//Create Triangles
 				//Inner Circle
