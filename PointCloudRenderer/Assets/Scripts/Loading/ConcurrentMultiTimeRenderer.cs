@@ -364,6 +364,7 @@ namespace Loading {
                         if (n.HasGameObjects()) {
                             cache.Withdraw(n);
                             n.ReactivateGameObjects();
+                            i--;
                         } else {
                             //Create GameObjects
                             n.CreateGameObjects(meshConfiguration);
