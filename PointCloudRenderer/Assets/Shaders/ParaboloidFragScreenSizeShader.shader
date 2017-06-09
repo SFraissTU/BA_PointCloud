@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Custom/QuadGeomShader"
+﻿Shader "Custom/ParaboloidFragScreenSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.
@@ -35,24 +33,38 @@ Shader "Custom/QuadGeomShader"
 
 				struct VertexMiddle {
 					float4 position : SV_POSITION;
+					float4 size : POINTSIZE;
 					float4 color : COLOR;
 				};
 
 				struct VertexOutput
 				{
 					float4 position : SV_POSITION;
+					float4 viewposition: TEXCOORD1;
 					float4 color : COLOR;
 					float2 uv : TEXCOORD0;
+					float size : POINTSIZE;
+				};
+
+				struct FragmentOutput
+				{
+					float4 color : COLOR;
+					float depth : SV_DEPTH;
 				};
 
 				float _PointSize;
 				int _ScreenWidth;
 				int _ScreenHeight;
 				int _Circles;
+				float _FOV;
+				float4x4 _InverseProjMatrix;
 
 				VertexMiddle vert(VertexInput v) {
 					VertexMiddle o;
-					o.position = UnityObjectToClipPos(v.position);
+					float4 viewpos = mul(UNITY_MATRIX_MV, v.position);
+					o.position = mul(UNITY_MATRIX_P, viewpos);
+					float slope = tan(_FOV / 2);
+					o.size = _PointSize * slope * viewpos.z * 2 / _ScreenHeight;
 					o.color = v.color;
 					return o;
 				}
@@ -67,36 +79,59 @@ Shader "Custom/QuadGeomShader"
 					out1.uv = float2(-1.0f, 1.0f);
 					out1.position.x -= out1.position.w * xsize;
 					out1.position.y += out1.position.w * ysize;
+					out1.position = out1.position / out1.position.w;
+					out1.viewposition = mul(_InverseProjMatrix, out1.position);
+					out1.viewposition /= out1.viewposition.w;
+					out1.size = input[0].size;
 					VertexOutput out2;
 					out2.position = input[0].position;
 					out2.color = input[0].color;
 					out2.uv = float2(1.0f, 1.0f);
 					out2.position.x += out2.position.w * xsize;
 					out2.position.y += out2.position.w * ysize;
+					out2.position = out2.position / out2.position.w;
+					out2.viewposition = mul(_InverseProjMatrix, out2.position);
+					out2.viewposition /= out2.viewposition.w;
+					out2.size = input[0].size;
 					VertexOutput out3;
 					out3.position = input[0].position;
 					out3.color = input[0].color;
 					out3.uv = float2(1.0f, -1.0f);
 					out3.position.x += out3.position.w * xsize;
 					out3.position.y -= out3.position.w * ysize;
+					out3.position = out3.position / out3.position.w;
+					out3.viewposition = mul(_InverseProjMatrix, out3.position);
+					out3.viewposition /= out3.viewposition.w;
+					out3.size = input[0].size;
 					VertexOutput out4;
 					out4.position = input[0].position;
 					out4.color = input[0].color;
 					out4.uv = float2(-1.0f, -1.0f);
 					out4.position.x -= out4.position.w * xsize;
 					out4.position.y -= out4.position.w * ysize;
+					out4.position = out4.position / out4.position.w;
+					out4.viewposition = mul(_InverseProjMatrix, out4.position);
+					out4.viewposition /= out4.viewposition.w;
+					out4.size = input[0].size;
 					outputStream.Append(out1);
 					outputStream.Append(out2);
 					outputStream.Append(out4);
 					outputStream.Append(out3);
 				}
 
-				float4 frag(VertexOutput o) : COLOR{
-					if (_Circles >= 0.5 && o.uv.x*o.uv.x + o.uv.y*o.uv.y > 1) {
+				FragmentOutput frag(VertexOutput o)  {
+					FragmentOutput fragout;
+					float uvlen = o.uv.x*o.uv.x + o.uv.y*o.uv.y;
+					if (_Circles >= 0.5 && uvlen > 1) {
 						discard;
 					}
-				return o.color;
-			}
+					o.viewposition.z -= (1 - uvlen) * o.size;
+					float4 pos = mul(UNITY_MATRIX_P, o.viewposition);
+					pos /= pos.w;
+					fragout.depth = pos.z;
+					fragout.color = o.color;
+					return fragout;
+				}
 
 			ENDCG
 		}
