@@ -1,24 +1,44 @@
-﻿using System;
-using CloudData;
+﻿using CloudData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace ObjectCreation {
-    /* Renders every point as a 1px-Point
-     */
-    class QuadBillboardMeshConfiguration : MeshConfiguration {
+    class ParaboloidMeshConfiguration : MeshConfiguration {
         //Size of the quad/circle
         public float pointRadius = 10;
         //wether the quads should be rendered as circles or not
         public bool renderCircles = false;
+        //size in screen or world coordinates
+        public bool screenSize = true;  //TODO
 
         private Material material;
         private GameObjectCache goCache;
+        private Camera mainCamera;
 
         public void Start() {
-            material = new Material(Shader.Find("Custom/QuadBillboardShader"));
+            if (screenSize) {
+                material = new Material(Shader.Find("Custom/ParaboloidScreenSizeShader"));
+            } else {
+                material = new Material(Shader.Find("Custom/ParaboloidWorldSizeShader"));
+            }
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
+            Rect screen = Camera.main.pixelRect;
+            material.SetInt("_ScreenWidth", (int)screen.width);
+            material.SetInt("_ScreenHeight", (int)screen.height);
             goCache = new GameObjectCache();
+            mainCamera = Camera.main;
+        }
+
+        public void Update() {
+            if (screenSize) {
+                Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
+                material.SetMatrix("_InverseProjMatrix", invP);
+                material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
+            }
         }
 
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
