@@ -27,7 +27,8 @@ namespace CloudData
         //Parent-element. May be null at the root.
         private Node parent;
         //PointCount, read from hierarchy-file
-        private uint pointCount = 0;
+        private int pointCount = -1;
+        private bool gosActive = true;
 
         //A status flag. Can be used by the renderer, doesn't have to be!
         //The meaning and use of the NodeStatus is therefore dependent from the used renderer and does not have to be used consistently
@@ -51,24 +52,28 @@ namespace CloudData
 
         //Creates the Game Object(s) containing the points of this node
         //Does not happen in the constructor, as gameobjects should be created on the main thread (valled via update)
-        //Vertices and Colors have to be set before. Vertices and Colors are forgotten after the creation of the GameObjects
+        //Vertices and Colors have to be set before. Vertices and Colors are removed from this object after the creation of the GameObjects
         public void CreateGameObjects(MeshConfiguration configuration)
         {
             int max = configuration.GetMaximumPointsPerMesh();
-            int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
-            int index = 0; //name index
-            while (amount > 0)
-            {
-                Vector3[] vertices = verticesToStore.Take(amount).ToArray();
-                Color[] colors = colorsToStore.Take(amount).ToArray(); ;
-                verticesToStore = verticesToStore.Skip(amount).ToArray();
-                colorsToStore = colorsToStore.Skip(amount).ToArray();
-                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
-                amount = Math.Min(max, verticesToStore.Length);
-                index++;
+            if (verticesToStore.Length <= max) {
+                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name, verticesToStore, colorsToStore, boundingBox));
+            } else { 
+                int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
+                int index = 0; //name index
+                Vector3[] restVertices = verticesToStore;
+                Color[] restColors = colorsToStore;
+                while (amount > 0) {
+                    Vector3[] vertices = restVertices.Take(amount).ToArray();
+                    Color[] colors = restColors.Take(amount).ToArray(); ;
+                    restVertices = restVertices.Skip(amount).ToArray();
+                    restColors = restColors.Skip(amount).ToArray();
+                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
+                    amount = Math.Min(max, verticesToStore.Length);
+                    index++;
+                }
+                //VERTICES AND COLORS ARE NOT DELETED!
             }
-            verticesToStore = null;
-            colorsToStore = null;
         }
 
         /* Creates a box game object with the shape of the bounding box of this node
@@ -94,16 +99,30 @@ namespace CloudData
             }
         }
 
-        /* Removes the gameobjects again. To create them again, you once again have to set the vertices and colors and call SetReadyForGameObjectCreation()
-         * Given MeshConfiguration should be the same that has been used for creation
-         */
-        public void RemoveGameObjects(MeshConfiguration configuration)
-        {
-            foreach (GameObject go in gameObjects)
-            {
-                configuration.RemoveGameObject(go);
+        public void RemoveGameObjects() {
+            foreach (GameObject go in gameObjects) {
+                UnityEngine.Object.Destroy(go);
             }
             gameObjects.Clear();
+            gosActive = true;
+        }
+
+        public void DeactivateGameObjects() {
+            foreach (GameObject go in gameObjects) {
+                go.SetActive(false);
+            }
+            gosActive = false;
+        }
+
+        public void ReactivateGameObjects() {
+            foreach (GameObject go in gameObjects) {
+                go.SetActive(true);
+            }
+            gosActive = true;
+        }
+
+        public bool AreGameObjectsActive() {
+            return gosActive;
         }
         
         /* Sets the point data to be stored.
@@ -121,7 +140,7 @@ namespace CloudData
             }
             verticesToStore = vertices;
             colorsToStore = colors;
-            pointCount = (uint)vertices.Length;
+            pointCount = vertices.Length;
         }
 
         /* Deletes the loaded Vertex- and Color-Information (Vertex-Count stays stored however)
@@ -250,7 +269,7 @@ namespace CloudData
         }
 
         //Number of points given the last time SetPoints was called. Or 0 if it hasn't been called
-        public uint PointCount
+        public int PointCount
         {
             get
             {

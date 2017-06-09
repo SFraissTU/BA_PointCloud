@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 namespace Loading {
@@ -48,14 +49,6 @@ namespace Loading {
          * dataRPath is the path of the R-folder
          */
         private static void LoadHierarchy(string dataRPath, PointCloudMetaData metaData, Node root) {
-            /*byte[] data;
-            if (root.Name.Length < metaData.hierarchyStepSize)
-            {
-                data = File.ReadAllBytes(dataRPath + "r" + root.Name + ".hrc");
-            } else
-            {
-                data = File.ReadAllBytes(dataRPath + "\\" + root.Name + "\\r" + root.Name + ".hrc");
-            }*/
             byte[] data = FindAndLoadFile(dataRPath, metaData, root.Name, ".hrc");
             int nodeByteSize = 5;
             int numNodes = data.Length / nodeByteSize;
@@ -117,7 +110,7 @@ namespace Loading {
         /* Loads the points for just that one node
          */
         private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
-            
+
             byte[] data = FindAndLoadFile(dataRPath, metaData, node.Name, ".bin");
             int pointByteSize = 16;//TODO: Is this always the case?
             int numPoints = data.Length / pointByteSize;

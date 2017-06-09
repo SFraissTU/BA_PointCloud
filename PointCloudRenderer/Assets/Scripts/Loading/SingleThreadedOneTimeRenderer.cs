@@ -133,7 +133,7 @@ namespace Loading {
                         toLoad.Enqueue(currentNode, priority);
                         if (currentNode.HasGameObjects()) {
                             alreadyRendered.Enqueue(currentNode, priority);
-                            renderingPointCount += currentNode.PointCount;
+                            renderingPointCount += (uint)currentNode.PointCount;
                         }
                         foreach (Node child in currentNode) {
                             toCheck.Enqueue(child);
@@ -155,7 +155,7 @@ namespace Loading {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
-                currentNode.RemoveGameObjects(config);
+                currentNode.RemoveGameObjects();
                 foreach (Node child in currentNode) {
                     childrenToCheck.Enqueue(child);
                 }
@@ -163,7 +163,7 @@ namespace Loading {
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    child.RemoveGameObjects(config);
+                    child.RemoveGameObjects();
                     foreach (Node childchild in child) {
                         childrenToCheck.Enqueue(childchild);
                     }
@@ -188,25 +188,26 @@ namespace Loading {
                     }
                     //Already in PointCount!
                 } else {
-                    uint amount = n.PointCount;
+                    int amount = n.PointCount;
                     //PointCount might already be there from loading the points before
-                    if (amount == 0) {
+                    if (amount == -1) {
                         CloudLoader.LoadPointsForNode(n);
                         amount = n.PointCount;
                     }
                     //If the pointbudget would be exheeded by loading the points, old GameObjects that already exist but have a lower priority might be removed
                     while (renderingPointCount + amount > pointBudget && !alreadyRendered.IsEmpty()) {
                         Node u = alreadyRendered.Pop(); //Get element with lowest priority
-                        u.RemoveGameObjects(meshConfiguration);
-                        renderingPointCount -= u.PointCount;
+                        u.RemoveGameObjects();
+                        renderingPointCount -= (uint)u.PointCount;
                     }
                     if (renderingPointCount + amount <= pointBudget) {
-                        renderingPointCount += amount;
+                        renderingPointCount += (uint)amount;
                         if (!n.HasPointsToRender()) {
                             CloudLoader.LoadPointsForNode(n);
                         }
                         //Create GameObjects
                         n.CreateGameObjects(meshConfiguration);
+                        n.ForgetPoints();
                     } else {
                         //Stop Loading
                         //AlreadyRendered is empty, so no nodes are visible
