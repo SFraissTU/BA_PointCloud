@@ -12,23 +12,33 @@ namespace ObjectCreation {
         //wether the quads should be rendered as circles or not
         public bool renderCircles = false;
         //size in screen or world coordinates
-        public bool screenSize = true;  //TODO
+        public bool screenSize = true;
+        public bool geometryShader = false;
 
         private Material material;
         private GameObjectCache goCache;
         private Camera mainCamera;
+        
+        private void LoadShaders() {
+            if (geometryShader) {
+                if (screenSize) {
+                    material = new Material(Shader.Find("Custom/ParaboloidGeoScreenSizeShader"));
+                } else {
+                    material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
+                }
+            } else {
+                if (screenSize) {
+                    material = new Material(Shader.Find("Custom/ParaboloidFragScreenSizeShader"));
+                } else {
+                    material = new Material(Shader.Find("Custom/ParaboloidFragWorldSizeShader"));
+                }
+                material.SetFloat("_PointSize", pointRadius);
+                material.SetInt("_Circles", renderCircles ? 1 : 0);
+            }
+        }
 
         public void Start() {
-            if (screenSize) {
-                material = new Material(Shader.Find("Custom/ParaboloidScreenSizeShader"));
-            } else {
-                material = new Material(Shader.Find("Custom/ParaboloidWorldSizeShader"));
-            }
-            material.SetFloat("_PointSize", pointRadius);
-            material.SetInt("_Circles", renderCircles ? 1 : 0);
-            Rect screen = Camera.main.pixelRect;
-            material.SetInt("_ScreenWidth", (int)screen.width);
-            material.SetInt("_ScreenHeight", (int)screen.height);
+            LoadShaders();
             goCache = new GameObjectCache();
             mainCamera = Camera.main;
         }
@@ -38,6 +48,9 @@ namespace ObjectCreation {
                 Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
                 material.SetMatrix("_InverseProjMatrix", invP);
                 material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
+                Rect screen = Camera.main.pixelRect;
+                material.SetInt("_ScreenWidth", (int)screen.width);
+                material.SetInt("_ScreenHeight", (int)screen.height);
             }
         }
 

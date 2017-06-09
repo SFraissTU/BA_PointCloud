@@ -1,5 +1,5 @@
 ﻿
-Shader "Custom/ParaboloidWorldSizeShader"
+Shader "Custom/ParaboloidFragWorldSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.

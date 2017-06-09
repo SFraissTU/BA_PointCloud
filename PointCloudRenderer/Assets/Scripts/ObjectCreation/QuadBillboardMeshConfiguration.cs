@@ -20,7 +20,7 @@ namespace ObjectCreation {
             material.SetInt("_Circles", renderCircles ? 1 : 0);
             goCache = new GameObjectCache();
         }
-
+        
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
             GameObject gameObject;
             bool reused = goCache.RequestGameObject(name, out gameObject);
