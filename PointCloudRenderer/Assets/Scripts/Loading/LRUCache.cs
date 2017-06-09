@@ -39,7 +39,11 @@ namespace Loading {
                     old.ForgetPoints();
                 }
                 if (currentPointCount + node.PointCount <= maxPoints) {
-                    queue.Enqueue(node);
+                    try {
+                        queue.Enqueue(node);
+                    } catch (ArgumentException ex) {
+                        return;
+                    }
                     currentPointCount += (uint)node.PointCount;
                 } else {
                     node.ForgetPoints();

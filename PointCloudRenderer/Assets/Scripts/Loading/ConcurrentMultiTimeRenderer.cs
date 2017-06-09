@@ -285,8 +285,6 @@ namespace Loading {
                         Monitor.Exit(pointCountLock);
                         Monitor.Exit(toLoadLock);
                         //LOADING OR RECEIVING FROM CACHE vvvvv
-                        //TODO: SYNCHRONISATION
-                        //TODO: SOMEHOW A DEADLOCK SEEMS TO HAPPEN SOMETIMES!!!
                         if (!n.HasGameObjects()) {
                             if (!firstLoaded) { //if firstLoaded, nodes have been loaded before and are not in the cache!
                                 cache.Withdraw(n); //Will only be withdrawn if it exists in cache
