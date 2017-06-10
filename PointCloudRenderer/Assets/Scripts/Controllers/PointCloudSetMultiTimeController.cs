@@ -26,9 +26,9 @@ namespace Controllers {
         protected override void Initialize() {
             userCamera = Camera.main;
             if (multithreaded) {
-                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera, GameObjectLRUCache.CacheFromPointCount(cacheSizeInPoints));
+                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera, meshConfiguration, cacheSizeInPoints);
             } else {
-                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera, meshConfiguration);
             }
         }
         
@@ -41,11 +41,11 @@ namespace Controllers {
             if (Input.GetKey(KeyCode.X)) {
                 if (lastX == 0) {
                     Debug.Log("Updating!");
-                    PointRenderer.UpdateVisibleNodes(meshConfiguration);
+                    PointRenderer.UpdateVisibleNodes();
                     lastX = 1;
                 }
             } else {
-                PointRenderer.UpdateGameObjects(meshConfiguration);
+                PointRenderer.UpdateGameObjects();
                 if (lastX != 0) {
                     lastX = (lastX + 1) % 10;   //Nur alle 10 Frames X drücken ermöglichen
                 }

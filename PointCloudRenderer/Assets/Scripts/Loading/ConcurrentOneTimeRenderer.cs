@@ -34,6 +34,7 @@ namespace Loading {
 
         //Camera Info
         private Camera camera;
+        private MeshConfiguration config;
 
         private double minNodeSize; //Min projected node size
         private uint pointBudget;   //Point Budget
@@ -46,12 +47,13 @@ namespace Loading {
 
         /* Creates a new ConcurrentOneTimeRenderer.
          */
-        public ConcurrentOneTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
+        public ConcurrentOneTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, MeshConfiguration config) {
             toLoad = new HeapPriorityQueue<double, Node>();
             toRender = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new ListPriorityQueue<double, Node>();
             toDelete = new ThreadSafeQueue<Node>();
             rootNodes = new List<Node>();
+            this.config = config;
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
             this.camera = camera;
@@ -78,12 +80,11 @@ namespace Loading {
          * Traverses the hierarchies and checks for each node, weither it is in the view frustum and weither the min node size is alright.
          * GameObjects of Nodes that fail this test are deleted right away, so this method should be called from the main thread!
          * This method can only be called if the renderer is currently not loading points (see method IsReadyForUpdate)
-         * config is the MeshConfiguration used for GameObject-Creation (null is not allowed). This is needed because GameObjects might be deleted. 
          * At the end of the method a new thread is started, which loads the nodes.
          * The PointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
          * If shuttingDown is set to true while this method is running, the traversal simply stops. The state of the renderer might be inconsistent afterward and will not be usable anymore.
          */
-        public void UpdateVisibleNodes(MeshConfiguration config) {
+        public void UpdateVisibleNodes() {
             if (loadingPoints) {
                 throw new InvalidOperationException("Renderer is not ready for filling. Still loading points.");
             }
@@ -149,11 +150,11 @@ namespace Loading {
                         }
                     } else {
                         //This node or its children might be visible
-                        DeleteNode(currentNode, config);
+                        DeleteNode(currentNode);
                     }
                 } else {
                     //This node or its children might be visible
-                    DeleteNode(currentNode, config);
+                    DeleteNode(currentNode);
                 }
             }
 
@@ -162,11 +163,11 @@ namespace Loading {
 
         /* Deletes the GOs of the given node as well as all its children.
          */
-        private void DeleteNode(Node currentNode, MeshConfiguration config) {
+        private void DeleteNode(Node currentNode) {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
-                currentNode.RemoveGameObjects();
+                currentNode.RemoveGameObjects(config);
                 foreach (Node child in currentNode) {
                     childrenToCheck.Enqueue(child);
                 }
@@ -174,7 +175,7 @@ namespace Loading {
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    child.RemoveGameObjects();
+                    child.RemoveGameObjects(config);
                     foreach (Node childchild in child) {
                         childrenToCheck.Enqueue(childchild);
                     }
@@ -238,18 +239,18 @@ namespace Loading {
          * Up to MAX_NDOES_CREATE_PER_FRAME are created in one frame. Up to MAX_NODES_DELETE_PER_FRAME are deleted in a frame except during Hierachy Traversal (updateRenderingQueue), where no limit is given.
          * Should be called every frame in the main thread, because GameObject-Creation happens here.
          * meshConfiguration is the MeshConfiguration used for GameObject-Creation (null is not allowed). */
-        public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
+        public void UpdateGameObjects() {
             if (shuttingDown) return;
             int i;
             for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
                 Node n = toRender.Dequeue();
                 //Create GameObjects
-                n.CreateGameObjects(meshConfiguration);
+                n.CreateGameObjects(config);
                 n.ForgetPoints();
             }
             //toDelete only contains nodes that where there last frame, are in the view frustum, but would exheed the point budget
             for (int j = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
-                toDelete.Dequeue().RemoveGameObjects();
+                toDelete.Dequeue().RemoveGameObjects(config);
             }
         }
 

@@ -26,17 +26,17 @@ namespace Controllers {
         protected override void Initialize() {
             userCamera = Camera.main;
             if (multithreaded) {
-                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera, GameObjectLRUCache.CacheFromPointCount(cacheSizeInPoints));
+                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, userCamera, meshConfiguration, cacheSizeInPoints);
             } else {
-                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera);
+                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, userCamera, meshConfiguration);
             }
         }
 
         // Update is called once per frame
         void Update() {
             if (!CheckReady()) return;
-            PointRenderer.UpdateVisibleNodes(meshConfiguration);
-            PointRenderer.UpdateGameObjects(meshConfiguration);
+            PointRenderer.UpdateVisibleNodes();
+            PointRenderer.UpdateGameObjects();
         }
     }
 }

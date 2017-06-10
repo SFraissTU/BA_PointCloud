@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace ObjectCreation
 {
+    //TODO: Unity crashes when using this and a point budget of 10000000 points
     /* Renders every point as a quad or a circle
      */
-    class QuadMeshConfiguration : MeshConfiguration
-    {
+    class Quad4PointMeshConfiguration : MeshConfiguration {
         //Size of the quad/circle
         public float pointRadius = 10;
         //wether the quads should be rendered as circles or not
@@ -15,9 +15,8 @@ namespace ObjectCreation
 
         private Material material;
 
-        public void Start()
-        {
-            material = new Material(Shader.Find("Custom/QuadShader"));
+        public void Start() {
+            material = new Material(Shader.Find("Custom/Quad4PointScreenSizeShader"));
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
             Rect screen = Camera.main.pixelRect;
@@ -25,8 +24,7 @@ namespace ObjectCreation
             material.SetInt("_ScreenHeight", (int)screen.height);
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox)
-        {
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
             GameObject gameObject = new GameObject(name);
 
             Mesh mesh = new Mesh();
@@ -42,8 +40,7 @@ namespace ObjectCreation
             Color[] newColorBuffer = new Color[colorData.Length * 4];
             Vector2[] offsetBuffer = new Vector2[vertexData.Length * 4];
             int[] indecies = new int[vertexData.Length * 4];
-            for (int i = 0; i < vertexData.Length; ++i)
-            {
+            for (int i = 0; i < vertexData.Length; ++i) {
                 int startindex = i * 4;
                 newVertexBuffer[startindex] = newVertexBuffer[startindex + 1] = newVertexBuffer[startindex + 2] = newVertexBuffer[startindex + 3] = vertexData[i];
                 offsetBuffer[startindex + 0] = new Vector2(-1.0f, +1.0f);
@@ -67,9 +64,12 @@ namespace ObjectCreation
             return gameObject;
         }
 
-        public override int GetMaximumPointsPerMesh()
-        {
+        public override int GetMaximumPointsPerMesh() {
             return 16250;
+        }
+
+        public override void RemoveGameObject(GameObject gameObject) {
+            Destroy(gameObject);
         }
     }
 }

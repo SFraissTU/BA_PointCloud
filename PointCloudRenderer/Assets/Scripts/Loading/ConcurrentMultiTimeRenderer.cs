@@ -31,6 +31,7 @@ namespace Loading {
 
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 
+        private MeshConfiguration config;
         private GameObjectLRUCache cache;
 
         //Camera Info
@@ -50,7 +51,7 @@ namespace Loading {
 
         /* Creates a new ConcurrentMultiTimeRenderer. Already starts the Loading-Thread!!!
          */
-        public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, GameObjectLRUCache cache) {
+        public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, MeshConfiguration config, uint cacheSizeInPoints) {
             toLoad = new HeapPriorityQueue<LoadingPriority, Node>();
             toRender = new ThreadSafeQueue<Node>();
             alreadyLoaded = new ListPriorityQueue<LoadingPriority, Node>();
@@ -59,7 +60,8 @@ namespace Loading {
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
             this.camera = camera;
-            this.cache = cache;
+            this.config = config;
+            this.cache = GameObjectLRUCache.CacheFromPointCount(cacheSizeInPoints, config);
             new Thread(UpdateLoadedPoints).Start();
         }
 
@@ -83,7 +85,7 @@ namespace Loading {
          * Points are only scheduled for loading in this method. This method does not load the points though. Loading happens concurrently in an other thread.
          * If shuttingDown is set to true while this method is running, the traversal simply stops. The state of the renderer might be inconsistent afterward and will not be usable anymore.
          */
-        public void UpdateVisibleNodes(MeshConfiguration config) {
+        public void UpdateVisibleNodes() {
             if (shuttingDown) {
                 return;
             }
@@ -162,11 +164,11 @@ namespace Loading {
                         }
                     } else {
                         //This node or its children might be visible
-                        DeleteNode(currentNode, config);
+                        DeleteNode(currentNode);
                     }
                 } else {
                     //This node or its children might be visible
-                    DeleteNode(currentNode, config);
+                    DeleteNode(currentNode);
                 }
             }
             
@@ -180,7 +182,7 @@ namespace Loading {
 
         /* Deletes the GOs of the given node as well as all its children.
          */
-        private void DeleteNode(Node currentNode, MeshConfiguration config) {
+        private void DeleteNode(Node currentNode) {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             childrenToCheck.Enqueue(currentNode);
@@ -354,7 +356,7 @@ namespace Loading {
         /* Creates new GameObjects for nodes that are scheduled to be rendered. This has to be called from the main thread.
          * Up to MAX_NDOES_CREATE_PER_FRAME are created in one frame. Up to MAX_NODES_DELETE_PER_FRAME are deleted in a frame except during Hierachy Traversal (updateRenderingQueue), where no limit is given
          */
-        public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
+        public void UpdateGameObjects() {
             if (shuttingDown) return;
             int i;
             for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
@@ -367,7 +369,7 @@ namespace Loading {
                             i--;
                         } else {
                             //Create GameObjects
-                            n.CreateGameObjects(meshConfiguration);
+                            n.CreateGameObjects(config);
                             n.ForgetPoints();
                         }
                         n.NodeStatus = NodeStatus.RENDERED;

@@ -24,14 +24,12 @@ namespace Loading {
         bool IsReadyForUpdate();
         
         /* This method checks which nodes of the PointCloud are visible and adjusts the rendering queue(s) accordingly.
-         * Should be called in the main thread, because Unity-operations are used, which are only allowed there.
-         * config is the MeshConfiguration used for GameObject-Creation (null is not allowed). This is needed because GameObjects might be deleted. */
-        void UpdateVisibleNodes(MeshConfiguration config);
+         * Should be called in the main thread, because Unity-operations are used, which are only allowed there.*/
+        void UpdateVisibleNodes();
 
         /* Should be called every frame in the main thread, because GameObject-Creation happens here.
-         * This method takes nodes which have been scheduled for GameObject-Creation in UpdateVisibleNodes and creates GameObjects for them.
-         * meshConfiguration is the MeshConfiguration used for GameObject-Creation (null is not allowed). */
-        void UpdateGameObjects(MeshConfiguration meshConfiguration);
+         * This method takes nodes which have been scheduled for GameObject-Creation in UpdateVisibleNodes and creates GameObjects for them. */
+        void UpdateGameObjects();
 
         /* This methods stops and disables the renderer. Method calls should not leed to any GameObject-modifications anymore. Concurrent threads are scheduled to stop.
          * Consistency is not guaranteed after the call of this method. This should only be called at the end of the program to stop concurrent threads. */

@@ -15,6 +15,8 @@ namespace ObjectCreation
         public abstract int GetMaximumPointsPerMesh();
         //Condition: Length of vertexData and colorData are the same and not more than MaximumPointsPerMesh.
         public abstract GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox);
+        //Called to delete a GameObject
+        public abstract void RemoveGameObject(GameObject gameObject);
     }
 
 }

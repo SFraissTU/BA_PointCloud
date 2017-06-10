@@ -99,9 +99,9 @@ namespace CloudData
             }
         }
 
-        public void RemoveGameObjects() {
+        public void RemoveGameObjects(MeshConfiguration config) {
             foreach (GameObject go in gameObjects) {
-                UnityEngine.Object.Destroy(go);
+                config.RemoveGameObject(go);
             }
             gameObjects.Clear();
             gosActive = true;

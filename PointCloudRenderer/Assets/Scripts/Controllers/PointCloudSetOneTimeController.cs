@@ -26,9 +26,9 @@ namespace Controllers {
         protected override void Initialize() {
             userCamera = Camera.main;
             if (multithreaded) {
-                PointRenderer = new ConcurrentOneTimeRenderer(minNodeSize, pointBudget, userCamera);
+                PointRenderer = new ConcurrentOneTimeRenderer(minNodeSize, pointBudget, userCamera, meshConfiguration);
             } else {
-                PointRenderer = new SingleThreadedOneTimeRenderer(minNodeSize, pointBudget, userCamera);
+                PointRenderer = new SingleThreadedOneTimeRenderer(minNodeSize, pointBudget, userCamera, meshConfiguration);
             }
         }
         
@@ -37,9 +37,9 @@ namespace Controllers {
             if (!CheckReady()) return;
             if (PointRenderer.IsReadyForUpdate() && Input.GetKey(KeyCode.X)) {
                 Debug.Log("Updating!");
-                PointRenderer.UpdateVisibleNodes(meshConfiguration);
+                PointRenderer.UpdateVisibleNodes();
             } else {
-                PointRenderer.UpdateGameObjects(meshConfiguration);
+                PointRenderer.UpdateGameObjects();
             }
         }
     }

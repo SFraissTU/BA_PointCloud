@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Custom/QuadGeomShader"
+Shader "Custom/QuadGeoScreenSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.

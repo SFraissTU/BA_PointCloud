@@ -2,7 +2,7 @@
 
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Custom/QuadBillboardShader"
+Shader "Custom/QuadGeoWorldSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.

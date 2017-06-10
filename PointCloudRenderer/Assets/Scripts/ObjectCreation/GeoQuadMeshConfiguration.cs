@@ -6,46 +6,79 @@ using System.Text;
 using UnityEngine;
 
 namespace ObjectCreation {
-    class ParaboloidMeshConfiguration : MeshConfiguration {
+
+    enum ParaboloidMode {
+        OFF,
+        FRAGMENT,
+        GEOMETRY
+    }
+
+    class GeoQuadMeshConfiguration : MeshConfiguration {
+
         //Size of the quad/circle
         public float pointRadius = 10;
         //wether the quads should be rendered as circles or not
-        public bool renderCircles = false;
+        public bool renderCircles = true;
         //size in screen or world coordinates
         public bool screenSize = true;
-        public bool geometryShader = false;
+        //Wether and how to use paraboloids
+        public ParaboloidMode paraboloid = ParaboloidMode.OFF;
+        //If changing the parameters should be possible during execution, this variable has to be set to true in the beginning! Later changes will not change anything
+        public bool reloadingPossible = true;
+        //Set this to true to reload the shaders according to the changed parameters
+        public bool reload = false;
 
         private Material material;
         private Camera mainCamera;
-        
+        private HashSet<GameObject> gameObjectCollection = null;
+
         private void LoadShaders() {
-            if (geometryShader) {
+            if (paraboloid == ParaboloidMode.OFF) {
+                if (screenSize) {
+                    material = new Material(Shader.Find("Custom/QuadGeoScreenSizeShader"));
+                } else {
+                    material = new Material(Shader.Find("Custom/QuadGeoWorldSizeShader"));
+                }
+            }
+            if (paraboloid == ParaboloidMode.GEOMETRY) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
                 }
-            } else {
+            } else if (paraboloid == ParaboloidMode.FRAGMENT) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidFragScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidFragWorldSizeShader"));
                 }
-                material.SetFloat("_PointSize", pointRadius);
-                material.SetInt("_Circles", renderCircles ? 1 : 0);
             }
+            material.SetFloat("_PointSize", pointRadius);
+            material.SetInt("_Circles", renderCircles ? 1 : 0);
         }
 
         public void Start() {
+            if (reloadingPossible) {
+                gameObjectCollection = new HashSet<GameObject>();
+            }
             LoadShaders();
             mainCamera = Camera.main;
         }
 
         public void Update() {
+            if (reload && gameObjectCollection != null) {
+                LoadShaders();
+                foreach (GameObject go in gameObjectCollection) {
+                    go.GetComponent<MeshRenderer>().material = material;
+                }
+                reload = false;
+            }
             if (screenSize) {
-                Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
-                material.SetMatrix("_InverseProjMatrix", invP);
-                material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
+                if (paraboloid != ParaboloidMode.OFF) {
+                    Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
+                    material.SetMatrix("_InverseProjMatrix", invP);
+                    material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
+                }
                 Rect screen = Camera.main.pixelRect;
                 material.SetInt("_ScreenWidth", (int)screen.width);
                 material.SetInt("_ScreenHeight", (int)screen.height);
@@ -75,11 +108,22 @@ namespace ObjectCreation {
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
 
+            if (gameObjectCollection != null) {
+                gameObjectCollection.Add(gameObject);
+            }
+
             return gameObject;
         }
 
         public override int GetMaximumPointsPerMesh() {
             return 65000;
+        }
+
+        public override void RemoveGameObject(GameObject gameObject) {
+            if (gameObjectCollection != null) {
+                gameObjectCollection.Remove(gameObject);
+            }
+            Destroy(gameObject);
         }
     }
 }

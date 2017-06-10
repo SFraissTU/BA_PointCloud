@@ -30,6 +30,7 @@ namespace Loading {
 
         //Camera Info
         private Camera camera;
+        private MeshConfiguration config;
 
         private double minNodeSize; //Min projected node size
         private uint pointBudget;   //Point Budget
@@ -41,13 +42,14 @@ namespace Loading {
 
         /* Creates a new SingleThreadedMultiTimeRenderer.
          */
-        public SingleThreadedMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera) {
+        public SingleThreadedMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, MeshConfiguration config) {
             toLoad = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new HeapPriorityQueue<double, Node>();
             rootNodes = new List<Node>();
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
             this.camera = camera;
+            this.config = config;
         }
 
         public void AddRootNode(Node rootNode) {
@@ -71,7 +73,7 @@ namespace Loading {
          * The PointCount is set to the number of points visible after calling this method (points of GameObjects which have been visible before and still are).
          * If shuttingDown is set to true while this method is running, the traversal simply stops. The state of the renderer might be inconsistent afterward and will not be usable anymore.
          */
-        public void UpdateVisibleNodes(MeshConfiguration config) {
+        public void UpdateVisibleNodes() {
             if (shuttingDown) {
                 return;
             }
@@ -135,22 +137,22 @@ namespace Loading {
                         }
                     } else {
                         //This node or its children might be visible
-                        DeleteNode(currentNode, config);
+                        DeleteNode(currentNode);
                     }
                 } else {
                     //This node or its children might be visible
-                    DeleteNode(currentNode, config);
+                    DeleteNode(currentNode);
                 }
             }
         }
 
         /* Deletes the GOs of the given node as well as all its children.
          */
-        private void DeleteNode(Node currentNode, MeshConfiguration config) {
+        private void DeleteNode(Node currentNode) {
             //Assumption: Parents have always higher priority than children, so if the parent is not already rendered, the child cannot be either!!!
             Queue<Node> childrenToCheck = new Queue<Node>();
             if (currentNode.HasGameObjects()) {
-                currentNode.RemoveGameObjects();
+                currentNode.RemoveGameObjects(config);
                 foreach (Node child in currentNode) {
                     childrenToCheck.Enqueue(child);
                 }
@@ -158,7 +160,7 @@ namespace Loading {
             while (childrenToCheck.Count != 0) {
                 Node child = childrenToCheck.Dequeue();
                 if (child.HasGameObjects()) {
-                    child.RemoveGameObjects();
+                    child.RemoveGameObjects(config);
                     foreach (Node childchild in child) {
                         childrenToCheck.Enqueue(childchild);
                     }
@@ -170,7 +172,7 @@ namespace Loading {
          * Up to MAX_NDOES_CREATE_PER_FRAME are loaded and created in one frame.
          * Should be called every frame in the main thread, because GameObject-Creation happens here.
          * meshConfiguration is the MeshConfiguration used for GameObject-Creation (null is not allowed). */
-        public void UpdateGameObjects(MeshConfiguration meshConfiguration) {
+        public void UpdateGameObjects() {
             if (shuttingDown) return;
             int i;
             for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toLoad.IsEmpty(); i++) {
@@ -188,7 +190,7 @@ namespace Loading {
                     double arPriority = -alreadyRendered.MaxPriority();
                     if (arPriority < nPriority) {
                         Node u = alreadyRendered.Dequeue(); //Get element with lowest priority
-                        u.RemoveGameObjects();
+                        u.RemoveGameObjects(config);
                         renderingPointCount -= (uint)u.PointCount;
                     } else {
                         break;
@@ -200,7 +202,7 @@ namespace Loading {
                         CloudLoader.LoadPointsForNode(n);
                     }
                     //Create GameObjects
-                    n.CreateGameObjects(meshConfiguration);
+                    n.CreateGameObjects(config);
                     n.ForgetPoints();
                 } else {
                     //Stop Loading

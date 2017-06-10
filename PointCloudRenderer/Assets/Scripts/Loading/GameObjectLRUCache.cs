@@ -1,5 +1,6 @@
 ﻿using CloudData;
 using DataStructures;
+using ObjectCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,19 @@ namespace Loading {
         private uint maxPoints;
         private RandomAccessQueue<Node> queue;
         private uint currentPointCount = 0;
+        private MeshConfiguration config;
 
-        public static GameObjectLRUCache CacheFromByteSize(uint byteSize) {
-            return new GameObjectLRUCache(byteSize / pointbytesize);
+        public static GameObjectLRUCache CacheFromByteSize(uint byteSize, MeshConfiguration config) {
+            return new GameObjectLRUCache(byteSize / pointbytesize, config);
         }
 
-        public static GameObjectLRUCache CacheFromPointCount(uint pointCount) {
-            return new GameObjectLRUCache(pointCount);
+        public static GameObjectLRUCache CacheFromPointCount(uint pointCount, MeshConfiguration config) {
+            return new GameObjectLRUCache(pointCount, config);
         }
 
-        private GameObjectLRUCache(uint maxPoints) {
+        private GameObjectLRUCache(uint maxPoints, MeshConfiguration config) {
             this.maxPoints = maxPoints;
+            this.config = config;
             queue = new RandomAccessQueue<Node>();
         }
 
@@ -35,14 +38,14 @@ namespace Loading {
                     while (currentPointCount + node.PointCount > maxPoints && !queue.IsEmpty()) {
                         Node old = queue.Dequeue();
                         currentPointCount -= (uint)old.PointCount;
-                        old.RemoveGameObjects();
+                        old.RemoveGameObjects(config);
                     }
                     if (currentPointCount + node.PointCount <= maxPoints) {
                         queue.Enqueue(node);
                         node.DeactivateGameObjects();
                         currentPointCount += (uint)node.PointCount;
                     } else {
-                        node.RemoveGameObjects();
+                        node.RemoveGameObjects(config);
                     }
                 }
             }
