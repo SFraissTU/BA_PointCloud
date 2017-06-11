@@ -46,12 +46,12 @@ namespace Loading {
         private object pointCountLock = new object();       //MutEx-Object. All access to renderingPointCount should be done while locking over this object
 
         //Frame-Limits, see UpdateGameObjects
-        private const int MAX_NODES_CREATE_PER_FRAME = 25;
+        private uint nodesPerFrame;
         private const int MAX_NODES_DELETE_PER_FRAME = 10;
 
         /* Creates a new ConcurrentMultiTimeRenderer. Already starts the Loading-Thread!!!
          */
-        public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, MeshConfiguration config, uint cacheSizeInPoints) {
+        public ConcurrentMultiTimeRenderer(int minNodeSize, uint pointBudget, uint nodesPerFrame, Camera camera, MeshConfiguration config, uint cacheSizeInPoints) {
             toLoad = new HeapPriorityQueue<LoadingPriority, Node>();
             toRender = new ThreadSafeQueue<Node>();
             alreadyLoaded = new ListPriorityQueue<LoadingPriority, Node>();
@@ -62,6 +62,7 @@ namespace Loading {
             this.camera = camera;
             this.config = config;
             this.cache = GameObjectLRUCache.CacheFromPointCount(cacheSizeInPoints, config);
+            this.nodesPerFrame = nodesPerFrame;
             new Thread(UpdateLoadedPoints).Start();
         }
 
@@ -358,8 +359,7 @@ namespace Loading {
          */
         public void UpdateGameObjects() {
             if (shuttingDown) return;
-            int i;
-            for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toRender.IsEmpty(); i++) {
+            for (int i = 0; i < nodesPerFrame && !toRender.IsEmpty(); i++) {
                 Node n = toRender.Dequeue();
                 lock (n) {
                     if (n.NodeStatus == NodeStatus.TORENDER) {
@@ -378,7 +378,7 @@ namespace Loading {
             }
             //FPSOutputController.NoteFPS(i == 0);
             //toDelete only contains nodes that where there last frame, are in the view frustum, but would exheed the point budget
-            for (int j = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
+            for (int j = 0; j < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
                 Node n = toDelete.Dequeue();
                 lock (n) {
                     if (n.NodeStatus == NodeStatus.TODELETE) {

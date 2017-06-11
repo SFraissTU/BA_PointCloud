@@ -249,7 +249,7 @@ namespace Loading {
                 n.ForgetPoints();
             }
             //toDelete only contains nodes that where there last frame, are in the view frustum, but would exheed the point budget
-            for (int j = 0; i < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
+            for (int j = 0; j < MAX_NODES_DELETE_PER_FRAME && !toDelete.IsEmpty(); j++) {
                 toDelete.Dequeue().RemoveGameObjects(config);
             }
         }

@@ -38,11 +38,11 @@ namespace Loading {
         private uint renderingPointCount = 0;   //Number of points being in GameObjects right now
 
         //Frame-Limits, see UpdateGameObjects
-        private const int MAX_NODES_CREATE_PER_FRAME = 5;
+        private uint nodesPerFrame = 5;
 
         /* Creates a new SingleThreadedMultiTimeRenderer.
          */
-        public SingleThreadedMultiTimeRenderer(int minNodeSize, uint pointBudget, Camera camera, MeshConfiguration config) {
+        public SingleThreadedMultiTimeRenderer(int minNodeSize, uint pointBudget, uint nodesPerFrame, Camera camera, MeshConfiguration config) {
             toLoad = new HeapPriorityQueue<double, Node>();
             alreadyRendered = new HeapPriorityQueue<double, Node>();
             rootNodes = new List<Node>();
@@ -50,6 +50,7 @@ namespace Loading {
             this.pointBudget = pointBudget;
             this.camera = camera;
             this.config = config;
+            this.nodesPerFrame = nodesPerFrame;
         }
 
         public void AddRootNode(Node rootNode) {
@@ -175,7 +176,7 @@ namespace Loading {
         public void UpdateGameObjects() {
             if (shuttingDown) return;
             int i;
-            for (i = 0; i < MAX_NODES_CREATE_PER_FRAME && !toLoad.IsEmpty(); i++) {
+            for (i = 0; i < nodesPerFrame && !toLoad.IsEmpty(); i++) {
                 double nPriority;
                 Node n = toLoad.Dequeue(out nPriority);
                 //n doesn't have GameObjects
