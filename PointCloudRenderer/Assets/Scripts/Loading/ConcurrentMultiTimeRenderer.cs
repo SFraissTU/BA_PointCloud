@@ -47,7 +47,7 @@ namespace Loading {
 
         //Frame-Limits, see UpdateGameObjects
         private uint nodesPerFrame;
-        private const int MAX_NODES_DELETE_PER_FRAME = 10;
+        private const int MAX_NODES_DELETE_PER_FRAME = 20;
 
         /* Creates a new ConcurrentMultiTimeRenderer. Already starts the Loading-Thread!!!
          */
@@ -134,7 +134,7 @@ namespace Loading {
                         double angle = Math.Acos(camToScreenCenterDir * camToNodeCenterDir);
                         double angleWeight = Math.Abs(angle) + 1.0;
                         angleWeight = Math.Pow(angle, 2);
-                        double priority = projectedSize / angleWeight;
+                        double priority = projectedSize / angleWeight;  //TODO: Because the center of the bounding box is used for centrality-calculation, some strange results can happen
 
                         //Node should be loaded. So, let's check the status:
                         lock (currentNode) {
@@ -146,6 +146,7 @@ namespace Loading {
                                     newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.GetLevel(), priority));
                                     break;
                                 case NodeStatus.TODELETE:
+                                    cache.Insert(currentNode);
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
                                     newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.GetLevel(), priority));
                                     //Note: This has to be done, as we do not want to increase the pointcount in here because of synchronisation problems with the other thread
@@ -274,11 +275,11 @@ namespace Loading {
                                     if (u.NodeStatus == NodeStatus.TORENDER || u.NodeStatus == NodeStatus.RENDERED) {
                                         lock (pointCountLock) {
                                             renderingPointCount -= (uint)u.PointCount;
-                                            if (u.NodeStatus == NodeStatus.TORENDER) {
-                                                u.NodeStatus = NodeStatus.INVISIBLE; //Will not be rendered
-                                            } else /* RENDERED */ {
+                                            if (u.HasGameObjects() && u.AreGameObjectsActive()) {
                                                 toDelete.Enqueue(u);
                                                 u.NodeStatus = NodeStatus.TODELETE;
+                                            } else /* RENDERED */ {
+                                                u.NodeStatus = NodeStatus.INVISIBLE; //Will not be rendered
                                             }
                                         }
                                     }

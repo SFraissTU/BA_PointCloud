@@ -57,7 +57,7 @@ namespace CloudData
         {
             int max = configuration.GetMaximumPointsPerMesh();
             if (verticesToStore.Length <= max) {
-                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name, verticesToStore, colorsToStore, boundingBox));
+                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox));
             } else { 
                 int amount = Math.Min(max, verticesToStore.Length);        //Typecast: As max is an int, the value cannot be out of range
                 int index = 0; //name index
@@ -68,7 +68,7 @@ namespace CloudData
                     Color[] colors = restColors.Take(amount).ToArray(); ;
                     restVertices = restVertices.Skip(amount).ToArray();
                     restColors = restColors.Skip(amount).ToArray();
-                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index, vertices, colors, boundingBox));
+                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index + " (" + vertices.Length + ")", vertices, colors, boundingBox));
                     amount = Math.Min(max, verticesToStore.Length);
                     index++;
                 }
