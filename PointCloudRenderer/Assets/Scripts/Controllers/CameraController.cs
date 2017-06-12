@@ -14,7 +14,8 @@ namespace Controllers {
         private float pitch = 0.0f;
 
         private float lowSpeed = 10;
-        private float highSpeed = 100;
+        private float normalSpeed = 100;
+        private float highSpeed = 500;
 
         void Start() {
             //Hide the cursor
@@ -28,8 +29,10 @@ namespace Controllers {
             float moveVertical = Input.GetAxis("Vertical");
             float moveUp = Input.GetKey(KeyCode.E) ? 1 : Input.GetKey(KeyCode.Q) ? -1 : 0;
 
-            float speed = lowSpeed;
-            if (Input.GetKey(KeyCode.LeftShift)) {
+            float speed = normalSpeed;
+            if (Input.GetKey(KeyCode.C)) {
+                speed = lowSpeed;
+            } else if (Input.GetKey(KeyCode.LeftShift)) {
                 speed = highSpeed;
             }
             transform.Translate(new Vector3(moveHorizontal * speed * Time.deltaTime, moveUp * speed * Time.deltaTime, moveVertical * speed * Time.deltaTime));
