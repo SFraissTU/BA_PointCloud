@@ -40,3 +40,6 @@
 
 #other stuff
 _ignore/
+
+#Clouds
+PointCloudRenderer/Clouds/big/*

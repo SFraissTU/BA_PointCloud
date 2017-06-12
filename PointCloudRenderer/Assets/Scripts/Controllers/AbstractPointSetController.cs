@@ -38,6 +38,7 @@ namespace Controllers {
 
         //Register a PointCloud-Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
         //The whole cloud will be moved and rendered as soon as for every registered controller the bounding box is given via UpdateBoundingBox
+        //Can be called several times, registering will only be done once, but boundingboxes will be deleted
         public void RegisterController(MonoBehaviour controller) {
             lock (boundingBoxes) {
                 boundingBoxes[controller] = null;
