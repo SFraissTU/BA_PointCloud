@@ -12,6 +12,8 @@ namespace CloudData
     */
     public class Node : IEnumerable<Node>
     {
+        private const bool autoBBDisplay = false;
+
         //filename without the r. for example 073. identifieing the node in the tree
         private string name;
         //MetaData of the cloud
@@ -74,15 +76,22 @@ namespace CloudData
                 }
                 //VERTICES AND COLORS ARE NOT DELETED!
             }
+            if (autoBBDisplay) {
+                GameObject box = CreateBoundingBoxGameObject();
+                gameObjects.Add(box);
+            }
         }
 
         /* Creates a box game object with the shape of the bounding box of this node
          */
-        public void CreateBoundingBoxGameObject()
+        public GameObject CreateBoundingBoxGameObject()
         {
             GameObject box = UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/BoundingBoxPrefab"));
+            int h = GetHashCode();
+            box.GetComponent<MeshRenderer>().material.color = new Color(((float)h / int.MaxValue), (h % 10000) / 10000f, (h % 100) / 100f, 0.472f);
             box.transform.Translate((boundingBox.Min() + (boundingBox.Size() / 2)).ToFloatVector());
             box.transform.localScale = boundingBox.Size().ToFloatVector();
+            return box;
         }
 
         /* As CreateGameObjects, but it also creates the gameobjects of the children recursively
