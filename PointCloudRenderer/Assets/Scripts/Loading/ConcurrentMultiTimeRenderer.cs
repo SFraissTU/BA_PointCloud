@@ -106,20 +106,21 @@ namespace Loading {
             foreach (Node rootNode in rootNodes) {
                 toCheck.Enqueue(rootNode);
             }
-            //Radius & Level
-            double radius = rootNodes[0].BoundingBox.Radius();
-            int lastLevel = rootNodes[0].GetLevel();//= 0
+            //Radii & Level
+            Dictionary<PointCloudMetaData, double> radii = new Dictionary<PointCloudMetaData, double>(rootNodes.Count);
+            for (int i = 0; i < rootNodes.Count; i++) {
+                radii.Add(rootNodes[i].MetaData, rootNodes[i].BoundingBox.Radius());
+            }
+            int lastLevel = 0;
             //Check all nodes - Breadth first
             while (toCheck.Count != 0 && !shuttingDown) {
                 Node currentNode = toCheck.Dequeue();
                 //Check Level and radius
                 if (currentNode.GetLevel() > lastLevel) {
-                    radius /= 2;
+                    for (int i = 0; i < rootNodes.Count; i++) {
+                        radii[rootNodes[i].MetaData] /= 2;
+                    }
                     ++lastLevel;
-                } else if (currentNode.GetLevel() < lastLevel) {
-                    //Should not happen, but just in case...
-                    lastLevel = currentNode.GetLevel();
-                    radius = currentNode.BoundingBox.Radius();
                 }
                 
                 //Is Node inside frustum?
@@ -127,14 +128,14 @@ namespace Loading {
                     //Calculate projected size
                     Vector3d center = currentNode.BoundingBox.Center();
                     double distance = center.distance(cameraPosition);
-                    double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
-                    double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
+                    double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
+                    double projectedSize = (screenHeight / 2.0) * radii[currentNode.MetaData] / (slope * distance);
                     if (projectedSize >= minNodeSize) {
                         Vector3d camToNodeCenterDir = (center - cameraPosition).Normalize();
                         double angle = Math.Acos(camToScreenCenterDir * camToNodeCenterDir);
-                        double angleWeight = Math.Abs(angle) + 1.0;
-                        angleWeight = Math.Pow(angle, 2);
-                        double priority = projectedSize / angleWeight;  //TODO: Because the center of the bounding box is used for centrality-calculation, some strange results can happen
+                        double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
+                        //angleWeight = Math.Pow(angle, 2);
+                        double priority = projectedSize / angleWeight; 
 
                         //Node should be loaded. So, let's check the status:
                         lock (currentNode) {
@@ -143,12 +144,12 @@ namespace Loading {
                                 case NodeStatus.INVISIBLE:
                                 case NodeStatus.TOLOAD:
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
-                                    newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.GetLevel(), priority));
+                                    newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.MetaData, currentNode.Name, priority, false));
                                     break;
                                 case NodeStatus.TODELETE:
                                     cache.Insert(currentNode);
                                     currentNode.NodeStatus = NodeStatus.TOLOAD;
-                                    newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.GetLevel(), priority));
+                                    newToLoad.Enqueue(currentNode, new LoadingPriority(currentNode.MetaData, currentNode.Name, priority, false));
                                     //Note: This has to be done, as we do not want to increase the pointcount in here because of synchronisation problems with the other thread
                                     //These lines mean, that nodes can be in TOLOAD, that are already rendered!!! Keep that in mind!
                                     break;
@@ -156,7 +157,7 @@ namespace Loading {
                                     //LOADING, TORENDER, RENDERED: Add to alreadyLoaded!
                                     //Note: LOADING-Nodes are added too, just in case loading should be finished during hierarchy traversal.
                                     //So the status has to be checked later again! Also if loading finishes after traversal, the node might be two times in aL
-                                    newAlreadyLoaded.Enqueue(currentNode, new LoadingPriority(-currentNode.GetLevel(), -priority));
+                                    newAlreadyLoaded.Enqueue(currentNode, new LoadingPriority(currentNode.MetaData, currentNode.Name, priority, true));
                                     break;
                             }
                         }

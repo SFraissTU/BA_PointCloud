@@ -98,6 +98,7 @@ namespace Loading {
             float screenHeight = camera.pixelRect.height;
             float fieldOfView = camera.fieldOfView;
             Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(camera);
+            Vector3d camToScreenCenterDir = new Vector3d(camera.transform.forward);
             //Clearing Queues
             toLoad.Clear();
             toRender.Clear();
@@ -108,36 +109,36 @@ namespace Loading {
             foreach (Node rootNode in rootNodes) {
                 toCheck.Enqueue(rootNode);
             }
-            //Radius & Level
-            double radius = rootNodes[0].BoundingBox.Radius();
-            int lastLevel = rootNodes[0].GetLevel();//= 0
+            //Radii & Level
+            Dictionary<PointCloudMetaData, double> radii = new Dictionary<PointCloudMetaData, double>(rootNodes.Count);
+            for (int i = 0; i < rootNodes.Count; i++) {
+                radii.Add(rootNodes[i].MetaData, rootNodes[i].BoundingBox.Radius());
+            }
+            int lastLevel = 0;
             //Check all nodes - Breadth first
             while (toCheck.Count != 0 && !shuttingDown) {
                 Node currentNode = toCheck.Dequeue();
                 //Check Level and radius
                 if (currentNode.GetLevel() > lastLevel) {
-                    radius /= 2;
+                    for (int i = 0; i < rootNodes.Count; i++) {
+                        radii[rootNodes[i].MetaData] /= 2;
+                    }
                     ++lastLevel;
-                } else if (currentNode.GetLevel() < lastLevel) {
-                    //Should not happen, but just in case...
-                    lastLevel = currentNode.GetLevel();
-                    radius = currentNode.BoundingBox.Radius();
                 }
-                
+
                 //Is Node inside frustum?
                 if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject())) {
                     //Calculate projected size
                     Vector3d center = currentNode.BoundingBox.Center();
                     double distance = center.distance(cameraPosition);
-                    double slope = Math.Tan(fieldOfView / 2 * (Math.PI / 180));
-                    double projectedSize = (screenHeight / 2.0) * radius / (slope * distance);
+                    double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
+                    double projectedSize = (screenHeight / 2.0) * radii[currentNode.MetaData] / (slope * distance);
                     if (projectedSize >= minNodeSize) {
-                        //Calculate centrality. TODO: Approach works, but maybe theres a better way of combining the two factors
-                        //TODO: Centrality ignored, because it created unwanted results. Put back in later after discussion with supervisor
-                        Vector3 pos = currentNode.BoundingBox.Center().ToFloatVector();
-                        Vector3 projected = camera.WorldToViewportPoint(pos);
-                        projected = (projected * 2) - new Vector3(1, 1, 0);
-                        double priority = projectedSize;// Math.Sqrt(Math.Pow(projected.x, 2) + Math.Pow(projected.y, 2));
+                        Vector3d camToNodeCenterDir = (center - cameraPosition).Normalize();
+                        double angle = Math.Acos(camToScreenCenterDir * camToNodeCenterDir);
+                        double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
+                        double priority = projectedSize / angleWeight;
+
                         //Object has no GameObjects -> Enqueue for Loading
                         //Object has GameObjects -> Also Enqueue for Loading. Will be checked later. Enqueue for possible GO-Removal
                         toLoad.Enqueue(currentNode, priority);
