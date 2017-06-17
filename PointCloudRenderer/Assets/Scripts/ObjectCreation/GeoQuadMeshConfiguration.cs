@@ -123,6 +123,7 @@ namespace ObjectCreation {
             if (gameObjectCollection != null) {
                 gameObjectCollection.Remove(gameObject);
             }
+            Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
             Destroy(gameObject);
         }
     }

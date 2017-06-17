@@ -49,6 +49,7 @@ namespace ObjectCreation
         }
 
         public override void RemoveGameObject(GameObject gameObject) {
+            Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
             Destroy(gameObject);
         }
     }
