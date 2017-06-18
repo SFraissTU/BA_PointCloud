@@ -30,7 +30,7 @@ namespace CloudData {
             return new Vector3((float)x, (float)y, (float)z);
         }
 
-        public double distance(Vector3d other) {
+        public double Distance(Vector3d other) {
             return (this - other).Length();
         }
 

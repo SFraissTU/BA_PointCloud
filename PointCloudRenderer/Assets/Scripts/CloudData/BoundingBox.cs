@@ -66,11 +66,6 @@ namespace CloudData
             bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
         }
 
-        //How much you would have to move the box so its center is in the origin
-        public Vector3d DistanceToOrigin() {
-            return (Size() / -2) - Min();
-        }
-
         /* Moves the boxes center to the origin
          */
         public void MoveToOrigin()

@@ -127,7 +127,7 @@ namespace Loading {
                 if (GeometryUtility.TestPlanesAABB(frustum, currentNode.BoundingBox.GetBoundsObject())) {
                     //Calculate projected size
                     Vector3d center = currentNode.BoundingBox.Center();
-                    double distance = center.distance(cameraPosition);
+                    double distance = center.Distance(cameraPosition);
                     double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
                     double projectedSize = (screenHeight / 2.0) * radii[currentNode.MetaData] / (slope * distance);
                     if (projectedSize >= minNodeSize) {
@@ -297,8 +297,7 @@ namespace Loading {
                     if (renderingPointCount + amount <= pointBudget) {
                         Monitor.Exit(pointCountLock);
                         Monitor.Exit(toLoadLock);
-                        //LOADING OR RECEIVING FROM CACHE vvvvv
-                        //TODO: SYNCHRONISATION
+                        //Reloading from Cache
                         if (n.HasGameObjects() && !n.AreGameObjectsActive()) {
                             cache.Withdraw(n);
                         }

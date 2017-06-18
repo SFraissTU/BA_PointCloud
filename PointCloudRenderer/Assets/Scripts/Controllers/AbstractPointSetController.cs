@@ -10,14 +10,14 @@ using UnityEngine;
 namespace Controllers {
     /* Super class for all PointSet-Controllers. A PointSetController enables the loading of several point clouds at once.
      * This enabled loading several PointClouds at the same time. The configured options work globally for all point clouds.
-     * The part that this abstract class is responsible for is the waiting for every Cloud to register itself at the PointSet and to move it to the origin, if so wanted by the user.
+     * The part that this abstract class is responsible for is the waiting for every Cloud to register itself at the PointSet and to move the center of the cloud to the location of this object, if so wanted by the user.
      */
     public abstract class AbstractPointSetController : MonoBehaviour {
 
-        public bool moveToOrigin = true;
+        public bool moveCenterToTransformPosition = true;
 
         //For origin-moving:
-        private bool hasMovedToOrigin = false;
+        private bool hasMoved = false;
         private BoundingBox overallBoundingBox = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity,
                                                                     double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
         private Dictionary<MonoBehaviour, BoundingBox> boundingBoxes = new Dictionary<MonoBehaviour, BoundingBox>();
@@ -26,7 +26,7 @@ namespace Controllers {
         private AbstractRenderer pRenderer;
 
         void Start() {
-            if (!moveToOrigin) hasMovedToOrigin = true;
+            if (!moveCenterToTransformPosition) hasMoved = true;
             Initialize();
             if (pRenderer == null) {
                 throw new InvalidOperationException("PointRenderer has not been set!");
@@ -57,7 +57,7 @@ namespace Controllers {
                 overallBoundingBox.Uy = Math.Max(overallBoundingBox.Uy, boundingBox.Uy);
                 overallBoundingBox.Uz = Math.Max(overallBoundingBox.Uz, boundingBox.Uz);
             }
-            if (moveToOrigin) {
+            if (moveCenterToTransformPosition) {
                 waiterForBoundingBoxUpdate.WaitOne();
             }
         }
@@ -73,14 +73,14 @@ namespace Controllers {
          */
         protected bool CheckReady() {
             lock (boundingBoxes) {
-                if (!hasMovedToOrigin) {
+                if (!hasMoved) {
                     if (!boundingBoxes.ContainsValue(null)) {
-                        Vector3d moving = overallBoundingBox.DistanceToOrigin();
+                        Vector3d moving = new Vector3d(transform.position) - overallBoundingBox.Center();
                         foreach (BoundingBox bb in boundingBoxes.Values) {
                             bb.MoveAlong(moving);
                         }
                         overallBoundingBox.MoveAlong(moving);
-                        hasMovedToOrigin = true;
+                        hasMoved = true;
                         waiterForBoundingBoxUpdate.Set();
                     } else {
                         return false;
