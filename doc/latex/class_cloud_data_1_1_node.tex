@@ -1,0 +1,388 @@
+\hypertarget{class_cloud_data_1_1_node}{}\section{Cloud\+Data.\+Node Class Reference}
+\label{class_cloud_data_1_1_node}\index{Cloud\+Data.\+Node@{Cloud\+Data.\+Node}}
+
+
+Resembles a node of the nested octree.  
+
+
+Inheritance diagram for Cloud\+Data.\+Node\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_cloud_data_1_1_node}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_cloud_data_1_1_node_a6540b5d8cb8fc40067560b3c002d574c}{Node} (string name, \hyperlink{class_cloud_data_1_1_point_cloud_meta_data}{Point\+Cloud\+Meta\+Data} meta\+Data, \hyperlink{class_cloud_data_1_1_bounding_box}{Bounding\+Box} bounding\+Box, \hyperlink{class_cloud_data_1_1_node}{Node} parent)
+\begin{DoxyCompactList}\small\item\em Creates a new node object. \end{DoxyCompactList}\item 
+int \hyperlink{class_cloud_data_1_1_node_af70f14b2486f62d63e1155a1a7d4f34f}{Get\+Level} ()
+\begin{DoxyCompactList}\small\item\em Returns how deep in the tree this node is. 0 means it is the root node, 1 means it is a child of the root node and so on... \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_a5d81b4c9928dbdc1d204c13feb645da0}{Create\+Game\+Objects} (\hyperlink{class_object_creation_1_1_mesh_configuration}{Mesh\+Configuration} configuration)
+\begin{DoxyCompactList}\small\item\em Creates the Game Object(s) containing the points of this node. Vertices and Colors have to be set before calling this function (via Set\+Points)! This function has to be called from the main thread! \end{DoxyCompactList}\item 
+Game\+Object \hyperlink{class_cloud_data_1_1_node_a79ada8b9a0cf64c7d23f70b862681f4c}{Create\+Bounding\+Box\+Game\+Object} ()
+\begin{DoxyCompactList}\small\item\em Creates a transparent box game object with the shape of the bounding box of this node. The color is determined by the hashcode of this node. Used for debugging purposes only. \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_a75101ac753ab2b540c0a1f8e761f79df}{Create\+All\+Game\+Objects} (\hyperlink{class_object_creation_1_1_mesh_configuration}{Mesh\+Configuration} configuration)
+\begin{DoxyCompactList}\small\item\em Creates Game\+Objects for this node and all its (grand-\/)children. Useable for displaying a whole point cloud at once. Vertices and Colors have to be set before calling this function (via Set\+Points) for this object and all its children! This function has to be called from the main thread! \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_a98647399470b2adc5c6ac27ca78c5ddb}{Remove\+Game\+Objects} (\hyperlink{class_object_creation_1_1_mesh_configuration}{Mesh\+Configuration} config)
+\begin{DoxyCompactList}\small\item\em Removes the Game\+Objects of this node. Has to be called from the main thread. \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_a397ec14bfc75899441b6edfcabb004ad}{Deactivate\+Game\+Objects} ()
+\begin{DoxyCompactList}\small\item\em Deactivates the Game\+Objects of this node. Has to be called from the main thread. \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_a8a7c01462a603882108e401c8119e388}{Reactivate\+Game\+Objects} ()
+\begin{DoxyCompactList}\small\item\em Activates the Game\+Objects of this node (Game\+Objects are usually active after creation. A call of this function only makes sense after previously calling Deactivate\+Game\+Objects). Has to be called from the main thread. \end{DoxyCompactList}\item 
+bool \hyperlink{class_cloud_data_1_1_node_aeb88a03cff66169770082a2e72a9f326}{Are\+Game\+Objects\+Active} ()
+\begin{DoxyCompactList}\small\item\em Returns true, iff there are Game Objects and they are active OR there are not Game Objects for this object. \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_af82be4d0f143e8894ec6d2ecf4ae8c31}{Set\+Points} (Vector3\mbox{[}$\,$\mbox{]} vertices, Color\mbox{[}$\,$\mbox{]} colors)
+\begin{DoxyCompactList}\small\item\em Sets the point data. Throws an exception if gameobjects already exist or vertices or colors are null or their length do not match. Also sets the point count. \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_a42cf1e1f98f40a542173abce2b82a078}{Forget\+Points} ()
+\begin{DoxyCompactList}\small\item\em Deletes the loaded vertex-\/ and color-\/information (to release the used memory). The point count stays saved however. \end{DoxyCompactList}\item 
+bool \hyperlink{class_cloud_data_1_1_node_add8b3fc44e4abc6572f7a723deda352d}{Has\+Points\+To\+Render} ()
+\begin{DoxyCompactList}\small\item\em Returns true, iff vertices and colors are set \end{DoxyCompactList}\item 
+bool \hyperlink{class_cloud_data_1_1_node_aa253c61651daa14e2377ddb189f56320}{Has\+Game\+Objects} ()
+\begin{DoxyCompactList}\small\item\em Returns true, iff this object has Game\+Objects. \end{DoxyCompactList}\item 
+void \hyperlink{class_cloud_data_1_1_node_aa4164d93a7380b4f3704c0ac36663164}{Set\+Child} (int index, \hyperlink{class_cloud_data_1_1_node}{Node} node)
+\begin{DoxyCompactList}\small\item\em Sets the child with the given index \end{DoxyCompactList}\item 
+\hyperlink{class_cloud_data_1_1_node}{Node} \hyperlink{class_cloud_data_1_1_node_a93ba39401d22c904ec3a9631fca1c222}{Get\+Child} (int index)
+\begin{DoxyCompactList}\small\item\em Returns the child at the given index \end{DoxyCompactList}\item 
+bool \hyperlink{class_cloud_data_1_1_node_a42e31008a7772d196ce770ff2244cc26}{Has\+Child} (int index)
+\begin{DoxyCompactList}\small\item\em Returns true, iff the node has a child at the given index. \end{DoxyCompactList}\item 
+I\+Enumerator$<$ \hyperlink{class_cloud_data_1_1_node}{Node} $>$ \hyperlink{class_cloud_data_1_1_node_adbc0168d2d1b1c9600c2f91720f00c18}{Get\+Enumerator} ()
+\begin{DoxyCompactList}\small\item\em Returns an enumerator with which it is possible to enumerate through the children of the node (not including null-\/values) \end{DoxyCompactList}\item 
+override string \hyperlink{class_cloud_data_1_1_node_af070c6770edc822d95393383c70aa055}{To\+String} ()
+\begin{DoxyCompactList}\small\item\em Returns a string representation of the \hyperlink{class_cloud_data_1_1_node}{Node} (for example \char`\"{}\+Node\+: r123\char`\"{}) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{class_cloud_data_1_1_node_ad6676243e485f19675af4055c164071b}{Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The name of the node, which is the path of the node in the tree. For example \char`\"{}023\char`\"{} for the forth child of the third child of the first child of the root node. (readonly) \end{DoxyCompactList}\item 
+\hyperlink{class_cloud_data_1_1_bounding_box}{Bounding\+Box} \hyperlink{class_cloud_data_1_1_node_ad82330bd7fb62f8c25512d2f3ecd7888}{Bounding\+Box}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The \hyperlink{class_cloud_data_1_1_bounding_box}{Bounding\+Box} of the node (readonly) \end{DoxyCompactList}\item 
+\hyperlink{class_cloud_data_1_1_node}{Node} \hyperlink{class_cloud_data_1_1_node_ae7600b8769acc09e7d3a6d4a5382fed8}{Parent}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The parent of this node (may be null, if this is a root node) \end{DoxyCompactList}\item 
+int \hyperlink{class_cloud_data_1_1_node_a5d9df7ed9ea8c45472d032591e7ea99c}{Point\+Count}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Number of points given the last time Set\+Points was called. Or -\/1 if it hasn\textquotesingle{}t been called yet \end{DoxyCompactList}\item 
+\hyperlink{class_cloud_data_1_1_point_cloud_meta_data}{Point\+Cloud\+Meta\+Data} \hyperlink{class_cloud_data_1_1_node_acc0afd56fb7f3c0c22fdfda9c43dce0c}{Meta\+Data}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The metadata identifying which pointcloud this node belongs to \end{DoxyCompactList}\item 
+byte \hyperlink{class_cloud_data_1_1_node_add6b3b455a1b95a74506a849a1081f28}{Node\+Status}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em The status of this node. The meaning and use of the \hyperlink{class_cloud_data_1_1_node_status}{Node\+Status} is dependent from the used renderer and does not have to be used consistently by all renders. Currently its only used by the Concurrent\+Multi\+Time\+Renderer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Resembles a node of the nested octree. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a6540b5d8cb8fc40067560b3c002d574c}\label{class_cloud_data_1_1_node_a6540b5d8cb8fc40067560b3c002d574c}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Node@{Node}}
+\index{Node@{Node}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Node()}{Node()}}
+{\footnotesize\ttfamily Cloud\+Data.\+Node.\+Node (\begin{DoxyParamCaption}\item[{string}]{name,  }\item[{\hyperlink{class_cloud_data_1_1_point_cloud_meta_data}{Point\+Cloud\+Meta\+Data}}]{meta\+Data,  }\item[{\hyperlink{class_cloud_data_1_1_bounding_box}{Bounding\+Box}}]{bounding\+Box,  }\item[{\hyperlink{class_cloud_data_1_1_node}{Node}}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates a new node object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The path of the node in the tree. For example \char`\"{}023\char`\"{} for the forth child of the third child of the first child of the root node.\\
+\hline
+{\em meta\+Data} & The meta data of the point cloud, to identify which cloud this node belongs to.\\
+\hline
+{\em bounding\+Box} & The bounding box of this node.\\
+\hline
+{\em parent} & The parent node. May be null if this is the root node.\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_aeb88a03cff66169770082a2e72a9f326}\label{class_cloud_data_1_1_node_aeb88a03cff66169770082a2e72a9f326}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Are\+Game\+Objects\+Active@{Are\+Game\+Objects\+Active}}
+\index{Are\+Game\+Objects\+Active@{Are\+Game\+Objects\+Active}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Are\+Game\+Objects\+Active()}{AreGameObjectsActive()}}
+{\footnotesize\ttfamily bool Cloud\+Data.\+Node.\+Are\+Game\+Objects\+Active (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns true, iff there are Game Objects and they are active OR there are not Game Objects for this object. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a75101ac753ab2b540c0a1f8e761f79df}\label{class_cloud_data_1_1_node_a75101ac753ab2b540c0a1f8e761f79df}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Create\+All\+Game\+Objects@{Create\+All\+Game\+Objects}}
+\index{Create\+All\+Game\+Objects@{Create\+All\+Game\+Objects}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Create\+All\+Game\+Objects()}{CreateAllGameObjects()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Create\+All\+Game\+Objects (\begin{DoxyParamCaption}\item[{\hyperlink{class_object_creation_1_1_mesh_configuration}{Mesh\+Configuration}}]{configuration }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates Game\+Objects for this node and all its (grand-\/)children. Useable for displaying a whole point cloud at once. Vertices and Colors have to be set before calling this function (via Set\+Points) for this object and all its children! This function has to be called from the main thread! 
+
+
+\begin{DoxyParams}{Parameters}
+{\em configuration} & The Mesh\+Configuration which should be used for creating the Game Objects\\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a79ada8b9a0cf64c7d23f70b862681f4c}\label{class_cloud_data_1_1_node_a79ada8b9a0cf64c7d23f70b862681f4c}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Create\+Bounding\+Box\+Game\+Object@{Create\+Bounding\+Box\+Game\+Object}}
+\index{Create\+Bounding\+Box\+Game\+Object@{Create\+Bounding\+Box\+Game\+Object}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Create\+Bounding\+Box\+Game\+Object()}{CreateBoundingBoxGameObject()}}
+{\footnotesize\ttfamily Game\+Object Cloud\+Data.\+Node.\+Create\+Bounding\+Box\+Game\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates a transparent box game object with the shape of the bounding box of this node. The color is determined by the hashcode of this node. Used for debugging purposes only. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a5d81b4c9928dbdc1d204c13feb645da0}\label{class_cloud_data_1_1_node_a5d81b4c9928dbdc1d204c13feb645da0}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Create\+Game\+Objects@{Create\+Game\+Objects}}
+\index{Create\+Game\+Objects@{Create\+Game\+Objects}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Create\+Game\+Objects()}{CreateGameObjects()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Create\+Game\+Objects (\begin{DoxyParamCaption}\item[{\hyperlink{class_object_creation_1_1_mesh_configuration}{Mesh\+Configuration}}]{configuration }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates the Game Object(s) containing the points of this node. Vertices and Colors have to be set before calling this function (via Set\+Points)! This function has to be called from the main thread! 
+
+
+\begin{DoxyParams}{Parameters}
+{\em configuration} & The Mesh\+Configuration which should be used for creating the Game Objects\\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a397ec14bfc75899441b6edfcabb004ad}\label{class_cloud_data_1_1_node_a397ec14bfc75899441b6edfcabb004ad}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Deactivate\+Game\+Objects@{Deactivate\+Game\+Objects}}
+\index{Deactivate\+Game\+Objects@{Deactivate\+Game\+Objects}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Deactivate\+Game\+Objects()}{DeactivateGameObjects()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Deactivate\+Game\+Objects (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Deactivates the Game\+Objects of this node. Has to be called from the main thread. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a42cf1e1f98f40a542173abce2b82a078}\label{class_cloud_data_1_1_node_a42cf1e1f98f40a542173abce2b82a078}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Forget\+Points@{Forget\+Points}}
+\index{Forget\+Points@{Forget\+Points}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Forget\+Points()}{ForgetPoints()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Forget\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Deletes the loaded vertex-\/ and color-\/information (to release the used memory). The point count stays saved however. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a93ba39401d22c904ec3a9631fca1c222}\label{class_cloud_data_1_1_node_a93ba39401d22c904ec3a9631fca1c222}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Get\+Child@{Get\+Child}}
+\index{Get\+Child@{Get\+Child}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Get\+Child()}{GetChild()}}
+{\footnotesize\ttfamily \hyperlink{class_cloud_data_1_1_node}{Node} Cloud\+Data.\+Node.\+Get\+Child (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the child at the given index 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & 0 $<$= index $<$ 8\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The child (may be null, if no child exists at that index)
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_adbc0168d2d1b1c9600c2f91720f00c18}\label{class_cloud_data_1_1_node_adbc0168d2d1b1c9600c2f91720f00c18}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Get\+Enumerator@{Get\+Enumerator}}
+\index{Get\+Enumerator@{Get\+Enumerator}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Get\+Enumerator()}{GetEnumerator()}}
+{\footnotesize\ttfamily I\+Enumerator$<$\hyperlink{class_cloud_data_1_1_node}{Node}$>$ Cloud\+Data.\+Node.\+Get\+Enumerator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns an enumerator with which it is possible to enumerate through the children of the node (not including null-\/values) 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_af70f14b2486f62d63e1155a1a7d4f34f}\label{class_cloud_data_1_1_node_af70f14b2486f62d63e1155a1a7d4f34f}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Get\+Level@{Get\+Level}}
+\index{Get\+Level@{Get\+Level}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Get\+Level()}{GetLevel()}}
+{\footnotesize\ttfamily int Cloud\+Data.\+Node.\+Get\+Level (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns how deep in the tree this node is. 0 means it is the root node, 1 means it is a child of the root node and so on... 
+
+\begin{DoxyReturn}{Returns}
+the level in the tree ($>$=0)
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a42e31008a7772d196ce770ff2244cc26}\label{class_cloud_data_1_1_node_a42e31008a7772d196ce770ff2244cc26}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Has\+Child@{Has\+Child}}
+\index{Has\+Child@{Has\+Child}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Has\+Child()}{HasChild()}}
+{\footnotesize\ttfamily bool Cloud\+Data.\+Node.\+Has\+Child (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns true, iff the node has a child at the given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & 0 $<$= index $<$ 8\\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_aa253c61651daa14e2377ddb189f56320}\label{class_cloud_data_1_1_node_aa253c61651daa14e2377ddb189f56320}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Has\+Game\+Objects@{Has\+Game\+Objects}}
+\index{Has\+Game\+Objects@{Has\+Game\+Objects}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Has\+Game\+Objects()}{HasGameObjects()}}
+{\footnotesize\ttfamily bool Cloud\+Data.\+Node.\+Has\+Game\+Objects (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns true, iff this object has Game\+Objects. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_add8b3fc44e4abc6572f7a723deda352d}\label{class_cloud_data_1_1_node_add8b3fc44e4abc6572f7a723deda352d}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Has\+Points\+To\+Render@{Has\+Points\+To\+Render}}
+\index{Has\+Points\+To\+Render@{Has\+Points\+To\+Render}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Has\+Points\+To\+Render()}{HasPointsToRender()}}
+{\footnotesize\ttfamily bool Cloud\+Data.\+Node.\+Has\+Points\+To\+Render (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns true, iff vertices and colors are set 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a8a7c01462a603882108e401c8119e388}\label{class_cloud_data_1_1_node_a8a7c01462a603882108e401c8119e388}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Reactivate\+Game\+Objects@{Reactivate\+Game\+Objects}}
+\index{Reactivate\+Game\+Objects@{Reactivate\+Game\+Objects}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Reactivate\+Game\+Objects()}{ReactivateGameObjects()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Reactivate\+Game\+Objects (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Activates the Game\+Objects of this node (Game\+Objects are usually active after creation. A call of this function only makes sense after previously calling Deactivate\+Game\+Objects). Has to be called from the main thread. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a98647399470b2adc5c6ac27ca78c5ddb}\label{class_cloud_data_1_1_node_a98647399470b2adc5c6ac27ca78c5ddb}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Remove\+Game\+Objects@{Remove\+Game\+Objects}}
+\index{Remove\+Game\+Objects@{Remove\+Game\+Objects}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Remove\+Game\+Objects()}{RemoveGameObjects()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Remove\+Game\+Objects (\begin{DoxyParamCaption}\item[{\hyperlink{class_object_creation_1_1_mesh_configuration}{Mesh\+Configuration}}]{config }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Removes the Game\+Objects of this node. Has to be called from the main thread. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & The Mesh\+Configuration which should be used for removing the Game Objects\\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_aa4164d93a7380b4f3704c0ac36663164}\label{class_cloud_data_1_1_node_aa4164d93a7380b4f3704c0ac36663164}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Set\+Child@{Set\+Child}}
+\index{Set\+Child@{Set\+Child}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Set\+Child()}{SetChild()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Set\+Child (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{\hyperlink{class_cloud_data_1_1_node}{Node}}]{node }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the child with the given index 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & 0 $<$= index $<$ 8\\
+\hline
+{\em node} & Child node.\\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_af82be4d0f143e8894ec6d2ecf4ae8c31}\label{class_cloud_data_1_1_node_af82be4d0f143e8894ec6d2ecf4ae8c31}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Set\+Points@{Set\+Points}}
+\index{Set\+Points@{Set\+Points}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Set\+Points()}{SetPoints()}}
+{\footnotesize\ttfamily void Cloud\+Data.\+Node.\+Set\+Points (\begin{DoxyParamCaption}\item[{Vector3 \mbox{[}$\,$\mbox{]}}]{vertices,  }\item[{Color \mbox{[}$\,$\mbox{]}}]{colors }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the point data. Throws an exception if gameobjects already exist or vertices or colors are null or their length do not match. Also sets the point count. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vertices} & Position-\/\+Data\\
+\hline
+{\em colors} & Color-\/\+Data (has to have the same length as vertices)\\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_af070c6770edc822d95393383c70aa055}\label{class_cloud_data_1_1_node_af070c6770edc822d95393383c70aa055}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!To\+String@{To\+String}}
+\index{To\+String@{To\+String}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{To\+String()}{ToString()}}
+{\footnotesize\ttfamily override string Cloud\+Data.\+Node.\+To\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns a string representation of the \hyperlink{class_cloud_data_1_1_node}{Node} (for example \char`\"{}\+Node\+: r123\char`\"{}) 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+\subsection{Property Documentation}
+\mbox{\Hypertarget{class_cloud_data_1_1_node_ad82330bd7fb62f8c25512d2f3ecd7888}\label{class_cloud_data_1_1_node_ad82330bd7fb62f8c25512d2f3ecd7888}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Bounding\+Box@{Bounding\+Box}}
+\index{Bounding\+Box@{Bounding\+Box}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Bounding\+Box}{BoundingBox}}
+{\footnotesize\ttfamily \hyperlink{class_cloud_data_1_1_bounding_box}{Bounding\+Box} Cloud\+Data.\+Node.\+Bounding\+Box\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The \hyperlink{class_cloud_data_1_1_bounding_box}{Bounding\+Box} of the node (readonly) 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_acc0afd56fb7f3c0c22fdfda9c43dce0c}\label{class_cloud_data_1_1_node_acc0afd56fb7f3c0c22fdfda9c43dce0c}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Meta\+Data@{Meta\+Data}}
+\index{Meta\+Data@{Meta\+Data}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Meta\+Data}{MetaData}}
+{\footnotesize\ttfamily \hyperlink{class_cloud_data_1_1_point_cloud_meta_data}{Point\+Cloud\+Meta\+Data} Cloud\+Data.\+Node.\+Meta\+Data\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The metadata identifying which pointcloud this node belongs to 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_ad6676243e485f19675af4055c164071b}\label{class_cloud_data_1_1_node_ad6676243e485f19675af4055c164071b}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Name@{Name}}
+\index{Name@{Name}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Name}{Name}}
+{\footnotesize\ttfamily string Cloud\+Data.\+Node.\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+The name of the node, which is the path of the node in the tree. For example \char`\"{}023\char`\"{} for the forth child of the third child of the first child of the root node. (readonly) 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_add6b3b455a1b95a74506a849a1081f28}\label{class_cloud_data_1_1_node_add6b3b455a1b95a74506a849a1081f28}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Node\+Status@{Node\+Status}}
+\index{Node\+Status@{Node\+Status}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Node\+Status}{NodeStatus}}
+{\footnotesize\ttfamily byte Cloud\+Data.\+Node.\+Node\+Status\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The status of this node. The meaning and use of the \hyperlink{class_cloud_data_1_1_node_status}{Node\+Status} is dependent from the used renderer and does not have to be used consistently by all renders. Currently its only used by the Concurrent\+Multi\+Time\+Renderer. 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_ae7600b8769acc09e7d3a6d4a5382fed8}\label{class_cloud_data_1_1_node_ae7600b8769acc09e7d3a6d4a5382fed8}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Parent@{Parent}}
+\index{Parent@{Parent}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Parent}{Parent}}
+{\footnotesize\ttfamily \hyperlink{class_cloud_data_1_1_node}{Node} Cloud\+Data.\+Node.\+Parent\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}
+
+
+
+The parent of this node (may be null, if this is a root node) 
+
+\mbox{\Hypertarget{class_cloud_data_1_1_node_a5d9df7ed9ea8c45472d032591e7ea99c}\label{class_cloud_data_1_1_node_a5d9df7ed9ea8c45472d032591e7ea99c}} 
+\index{Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}!Point\+Count@{Point\+Count}}
+\index{Point\+Count@{Point\+Count}!Cloud\+Data\+::\+Node@{Cloud\+Data\+::\+Node}}
+\subsubsection{\texorpdfstring{Point\+Count}{PointCount}}
+{\footnotesize\ttfamily int Cloud\+Data.\+Node.\+Point\+Count\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Number of points given the last time Set\+Points was called. Or -\/1 if it hasn\textquotesingle{}t been called yet 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Cloud\+Data/Node.\+cs\end{DoxyCompactItemize}
