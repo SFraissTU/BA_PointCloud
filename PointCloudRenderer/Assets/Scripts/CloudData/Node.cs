@@ -82,7 +82,7 @@ namespace CloudData {
                     restVertices = restVertices.Skip(amount).ToArray();
                     restColors = restColors.Skip(amount).ToArray();
                     gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index + " (" + vertices.Length + ")", vertices, colors, boundingBox));
-                    amount = Math.Min(max, verticesToStore.Length);
+                    amount = Math.Min(max, vertices.Length);
                     index++;
                 }
             }
