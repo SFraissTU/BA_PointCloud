@@ -10,7 +10,9 @@ namespace ObjectCreation {
     enum ParaboloidMode {
         OFF,
         FRAGMENT,
-        GEOMETRY
+        GEOMETRY1,
+        GEOMETRY2,
+        GEOMETRY3
     }
 
     class GeoQuadMeshConfiguration : MeshConfiguration {
@@ -40,11 +42,22 @@ namespace ObjectCreation {
                     material = new Material(Shader.Find("Custom/QuadGeoWorldSizeShader"));
                 }
             }
-            if (paraboloid == ParaboloidMode.GEOMETRY) {
+            if (paraboloid == ParaboloidMode.GEOMETRY1 || paraboloid == ParaboloidMode.GEOMETRY2 || paraboloid == ParaboloidMode.GEOMETRY3) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
+                }
+                switch (paraboloid) {
+                    case ParaboloidMode.GEOMETRY1:
+                        material.SetInt("_Details", 1);
+                        break;
+                    case ParaboloidMode.GEOMETRY2:
+                        material.SetInt("_Details", 2);
+                        break;
+                    case ParaboloidMode.GEOMETRY3:
+                        material.SetInt("_Details", 3);
+                        break;
                 }
             } else if (paraboloid == ParaboloidMode.FRAGMENT) {
                 if (screenSize) {
