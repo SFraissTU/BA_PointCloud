@@ -53,18 +53,16 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 
 			VertexMiddle vert(VertexInput v) {
 				VertexMiddle o;
-				o.position = v.position;
+				o.position = mul(unity_ObjectToWorld, v.position);
 				o.color = v.color;
 
 				float3 view = normalize(UNITY_MATRIX_IT_MV[2].xyz);
-				float3 viewcam = normalize(float3(mul(unity_ObjectToWorld, v.position) - _WorldSpaceCameraPos));
 				float3 upvec = normalize(UNITY_MATRIX_IT_MV[1].xyz);
 				float3 R = normalize(cross(view, upvec));
 
 
 				o.U = float4(upvec * _PointSize, 0);
-				o.R = -float4(R * _PointSize, 0);               
-				o.N = -float4(viewcam * _PointSize, 0);
+				o.R = -float4(R * _PointSize, 0);
 				return o;
 			}
 
@@ -73,8 +71,9 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 				nPoint.position = input.position;
 				nPoint.position += u*input.R;
 				nPoint.position += v*input.U;
-				nPoint.position -= (1 - (u*u + v*v))*input.N;
-				nPoint.position = UnityObjectToClipPos(nPoint.position);
+				float4 N = -float4(normalize(float3(nPoint.position - _WorldSpaceCameraPos))*_PointSize, 0);
+				nPoint.position += (1 - (u*u + v*v))*N;
+				nPoint.position = mul(UNITY_MATRIX_VP, nPoint.position);
 				nPoint.color = input.color;
 				nPoint.uv = float2(u, v);
 				return nPoint;
