@@ -43,3 +43,7 @@ _ignore/
 
 #Clouds
 PointCloudRenderer/Clouds/big/*
+!PointCloudRenderer/Clouds/big/CA13_35120C7101A/
+!PointCloudRenderer/Clouds/big/CA13_35120C7101B/
+!PointCloudRenderer/Clouds/big/CA13_35120C7101C/
+!PointCloudRenderer/Clouds/big/CA13_35120C7101D/

@@ -64,7 +64,7 @@
 					float4 viewpos = mul(UNITY_MATRIX_MV, v.position);
 					o.position = mul(UNITY_MATRIX_P, viewpos);
 					float slope = tan(_FOV / 2);
-					o.size = _PointSize * slope * viewpos.z * 2 / _ScreenHeight;
+					o.size = -_PointSize * slope * viewpos.z * 2 / _ScreenHeight;
 					o.color = v.color;
 					return o;
 				}
@@ -125,7 +125,7 @@
 					if (_Circles >= 0.5 && uvlen > 1) {
 						discard;
 					}
-					o.viewposition.z -= (1 - uvlen) * o.size;
+					o.viewposition.z += (1 - uvlen) * o.size;
 					float4 pos = mul(UNITY_MATRIX_P, o.viewposition);
 					pos /= pos.w;
 					fragout.depth = pos.z;

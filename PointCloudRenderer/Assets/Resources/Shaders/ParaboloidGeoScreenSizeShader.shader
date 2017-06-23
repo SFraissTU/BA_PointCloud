@@ -68,8 +68,13 @@ Shader "Custom/ParaboloidGeoScreenSizeShader"
 				nPoint.position /= nPoint.position.w;
 				float4 viewposition = mul(_InverseProjMatrix, nPoint.position);
 				viewposition /= viewposition.w;
-				viewposition.z -= (1 - (u*u + v*v))*zsize;
-				nPoint.position = mul(UNITY_MATRIX_P, viewposition);
+				//viewposition givesalso the direction in which the object can be moved torwards the camera
+				float3 vpn = float3(viewposition.x, viewposition.y, viewposition.z);
+				vpn = normalize(vpn);
+				viewposition += (1 - (u*u + v*v))*float4(vpn.x,vpn.y,vpn.z,0)*zsize;
+				viewposition = mul(UNITY_MATRIX_P, viewposition);
+				viewposition /= viewposition.w;
+				nPoint.position = viewposition;
 				nPoint.color = input.color;
 				nPoint.uv = float2(u, v);
 				return nPoint;

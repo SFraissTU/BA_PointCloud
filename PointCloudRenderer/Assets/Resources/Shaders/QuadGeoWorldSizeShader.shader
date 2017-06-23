@@ -54,10 +54,10 @@ Shader "Custom/QuadGeoWorldSizeShader"
 				VertexMiddle o;
 				o.position = v.position;
 				o.color = v.color;
-				float3 view = (float3(mul(unity_ObjectToWorld, v.position) - _WorldSpaceCameraPos));
+				float3 view = normalize(UNITY_MATRIX_IT_MV[2].xyz);
 				float3 upvec = normalize(UNITY_MATRIX_IT_MV[1].xyz);
 				float3 R = normalize(cross(view, upvec));
-				o.U = float4(normalize(cross(R, view)) * _PointSize, 0);
+				o.U = float4(upvec * _PointSize, 0);
 				o.R = float4(R * _PointSize, 0);
 				return o;
 			}
