@@ -10,6 +10,7 @@ namespace ObjectCreation {
     enum ParaboloidMode {
         OFF,
         FRAGMENT,
+        GEOMETRY0,
         GEOMETRY1,
         GEOMETRY2,
         GEOMETRY3
@@ -42,13 +43,16 @@ namespace ObjectCreation {
                     material = new Material(Shader.Find("Custom/QuadGeoWorldSizeShader"));
                 }
             }
-            if (paraboloid == ParaboloidMode.GEOMETRY1 || paraboloid == ParaboloidMode.GEOMETRY2 || paraboloid == ParaboloidMode.GEOMETRY3) {
+            if (paraboloid == ParaboloidMode.GEOMETRY0 || paraboloid == ParaboloidMode.GEOMETRY1 || paraboloid == ParaboloidMode.GEOMETRY2 || paraboloid == ParaboloidMode.GEOMETRY3) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
                 }
                 switch (paraboloid) {
+                    case ParaboloidMode.GEOMETRY0:
+                        material.SetInt("_Details", 0);
+                        break;
                     case ParaboloidMode.GEOMETRY1:
                         material.SetInt("_Details", 1);
                         break;
