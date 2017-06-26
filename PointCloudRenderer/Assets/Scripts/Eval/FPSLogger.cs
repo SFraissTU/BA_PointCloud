@@ -6,12 +6,11 @@ using Controllers;
 
 namespace Eval {
     public class FPSLogger : MonoBehaviour {
-
-        public AbstractPointSetController controller;
+        
         public string testIdentifier;
+        public bool log = false;
 
         private List<float> deltaTs = new List<float>(115 * 60);
-        private List<uint> pointcounts = new List<uint>(115 * 60);
 
         // Use this for initialization
         void Start() {
@@ -21,24 +20,32 @@ namespace Eval {
         // Update is called once per frame
         void Update() {
             deltaTs.Add(Time.deltaTime);
-            pointcounts.Add(controller.GetPointCount());
         }
 
         private void OnApplicationQuit() {
-            System.IO.StreamWriter output = new System.IO.StreamWriter("evaltest_" + testIdentifier + ".txt");
-            output.WriteLine("TestRun: " + DateTime.Now.ToString() + " - " + testIdentifier + ", count: " + deltaTs.Count + "/" + pointcounts.Count);
+            float sum = 0;
             foreach (float dT in deltaTs) {
-                output.Write(dT);
-                output.Write(";");
+                sum += dT;
             }
-            output.WriteLine();
-            foreach (uint pc  in pointcounts) {
-                output.Write(pc);
-                output.Write(";");
+            float avg = deltaTs.Count / sum;
+            Debug.Log(avg);
+            float devsum = 0;
+            foreach (float dT in deltaTs) {
+                devsum += Mathf.Pow(((1/dT) - avg), 2)* dT;
             }
-            output.WriteLine();
-            output.Flush();
-            output.Close();
+            float dev = Mathf.Sqrt(devsum / sum);
+            Debug.Log(dev);
+            if (log) {
+                System.IO.StreamWriter output = new System.IO.StreamWriter("evaltest_" + testIdentifier + ".txt");
+                output.WriteLine("TestRun: " + DateTime.Now.ToString() + " - " + testIdentifier);
+                output.WriteLine(deltaTs.Count);
+                output.WriteLine();
+                output.WriteLine("Avg/Dev");
+                output.WriteLine(avg);
+                output.WriteLine(dev);
+                output.Flush();
+                output.Close();
+            }
         }
     }
 }
