@@ -23,7 +23,15 @@ namespace Loading {
         Plane[] frustum;
         Vector3 camForward;
 
-        public V2TraversalThread(List<Node> rootNodes, double minNodeSize, uint pointBudget) {
+        private Queue<Node> toDelete;
+        private Queue<Node> toRender;
+
+        private ConcurrentMultiTimeRendererV2 mainThread;
+        private V2LoadingThread loadingThread;
+
+        public V2TraversalThread(ConcurrentMultiTimeRendererV2 mainThread, V2LoadingThread loadingThread, List<Node> rootNodes, double minNodeSize, uint pointBudget) {
+            this.mainThread = mainThread;
+            this.loadingThread = loadingThread;
             this.rootNodes = rootNodes;
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
@@ -34,9 +42,18 @@ namespace Loading {
         }
 
         private void Run() {
-            while(!shuttingDown) {
-                Traverse();
+            try {
+                while (!shuttingDown) {
+                    toDelete = new Queue<Node>();
+                    toRender = new Queue<Node>();
+                    var toProcess = Traverse();
+                    BuildRenderingQueue(toProcess);
+                    mainThread.SetQueues(toRender, toDelete);
+                }
+            } catch (Exception ex) {
+                Debug.LogError(ex);
             }
+            Debug.Log("Traversal Thread stopped");
         }
 
         public void SetNextCameraData(Vector3 cameraPosition, Vector3 camForward, Plane[] frustum, float screenHeight, float fieldOfView) {
@@ -49,16 +66,19 @@ namespace Loading {
             }
         }
 
-        private void Traverse() {
+        private PriorityQueue<LoadingPriority, Node> Traverse() {
             //Camera Data
             Vector3 cameraPosition;
             Vector3 camForward;
             Plane[] frustum;
             float screenHeight;
             float fieldOfView;
+
+            PriorityQueue<LoadingPriority, Node> toProcess = new HeapPriorityQueue<LoadingPriority, Node>();
+
             lock (locker) {
                 if (this.frustum == null) {
-                    return;
+                    return toProcess;
                 }
                 cameraPosition = this.cameraPosition;
                 camForward = this.camForward;
@@ -67,8 +87,6 @@ namespace Loading {
                 fieldOfView = this.fieldOfView;
             }
             //Clearing Queues
-            PriorityQueue<LoadingPriority, Node> toProcess = new HeapPriorityQueue<LoadingPriority, Node>();
-            Queue<Node> toRender = new Queue<Node>();
 
             //Initializing Checking-Queue
             Queue<Node> toCheck = new Queue<Node>();
@@ -121,10 +139,10 @@ namespace Loading {
                     DeleteNode(currentNode);
                 }
             }
+            return toProcess;
         }
 
         private void DeleteNode(Node currentNode) {
-            //TODO
             Queue<Node> nodesToDelete = new Queue<Node>();
             nodesToDelete.Enqueue(currentNode);
 
@@ -132,11 +150,48 @@ namespace Loading {
                 Node child = nodesToDelete.Dequeue();
                 if (child.HasGameObjects()) {
 
-                    //child.RemoveGameObjects(config);
+                    toDelete.Enqueue(child);
 
                     foreach (Node childchild in child) {
                         nodesToDelete.Enqueue(childchild);
                     }
+                }
+            }
+        }
+
+        private void BuildRenderingQueue(PriorityQueue<LoadingPriority, Node> toProcess) {
+            uint renderingpointcount = 0;
+            int maxnodestoprocess = 25;
+            int maxnodestorender = 15;
+            while (maxnodestoprocess > 0 && maxnodestorender > 0 && !toProcess.IsEmpty()) {
+                Node n = toProcess.Dequeue();
+                if (n.PointCount == -1) {
+                    loadingThread.ScheduleForLoading(n);
+                    --maxnodestoprocess;
+                }
+                else if (renderingpointcount + n.PointCount <= pointBudget) {
+                    if (n.HasGameObjects()) {
+                        renderingpointcount += (uint)n.PointCount;
+                    } else if (n.HasPointsToRender()) {
+                        renderingpointcount += (uint)n.PointCount;
+                        toRender.Enqueue(n);
+                        --maxnodestorender;
+                    } else {
+                        loadingThread.ScheduleForLoading(n);
+                        --maxnodestoprocess;
+                    }
+                } else {
+                    maxnodestoprocess = 0;
+                    maxnodestorender = 0;
+                    if (n.HasGameObjects()) {
+                        toDelete.Enqueue(n);
+                    }
+                }
+            }
+            while (!toProcess.IsEmpty()) {
+                Node n = toProcess.Dequeue();
+                if (n.HasGameObjects()) {
+                    toDelete.Enqueue(n);
                 }
             }
         }
