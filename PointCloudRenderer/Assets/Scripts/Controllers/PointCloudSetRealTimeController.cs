@@ -12,7 +12,7 @@ namespace Controllers {
     /* This PointSetController updates the loading queue every frame, so at every frame the nodes which should be loaded are adapted to the current camera position.
      */
     public class PointCloudSetRealTimeController : AbstractPointSetController {
-
+        
         public uint pointBudget;
         public int minNodeSize;
         public uint nodesPerFrame = 15;
@@ -27,11 +27,13 @@ namespace Controllers {
         protected override void Initialize() {
             userCamera = Camera.main;
             if (multithreaded) {
-                PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, nodesPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
+                PointRenderer = new ConcurrentMultiTimeRendererV2(minNodeSize, pointBudget, userCamera, meshConfiguration);
+                //PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, nodesPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
             } else {
                 PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, nodesPerFrame, userCamera, meshConfiguration);
             }
         }
+        
 
         // Update is called once per frame
         void Update() {

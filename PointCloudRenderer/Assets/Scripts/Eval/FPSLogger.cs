@@ -36,7 +36,7 @@ namespace Eval {
             float dev = Mathf.Sqrt(devsum / sum);
             Debug.Log(dev);
             if (log) {
-                System.IO.StreamWriter output = new System.IO.StreamWriter("evaltest_" + testIdentifier + ".txt");
+                System.IO.StreamWriter output = new System.IO.StreamWriter(testIdentifier + ".txt");
                 output.WriteLine("TestRun: " + DateTime.Now.ToString() + " - " + testIdentifier);
                 output.WriteLine(deltaTs.Count);
                 output.WriteLine();

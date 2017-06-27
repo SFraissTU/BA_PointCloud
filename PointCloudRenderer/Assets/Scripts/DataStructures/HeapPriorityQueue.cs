@@ -11,7 +11,7 @@ namespace DataStructures {
         private Entry[] heapArray;
         private int count = 0;
         private int initialCapacity;
-        private object locker = new object();
+        protected object locker = new object();
 
         public HeapPriorityQueue() : this(20) {
         }
@@ -152,7 +152,7 @@ namespace DataStructures {
         //Complexity: O(1)
         public override T Peek() {
             lock (locker) {
-                if (count == 0) throw new InvalidOperationException("Queue is empty!");
+                if (Count == 0) throw new InvalidOperationException("Queue is empty!");
                 return heapArray[0].element;
             }
         }
