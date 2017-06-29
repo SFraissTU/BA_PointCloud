@@ -25,6 +25,7 @@ namespace Loading {
 
         private Queue<Node> toDelete;
         private Queue<Node> toRender;
+        private HashSet<Node> visibleNodes;
 
         private ConcurrentMultiTimeRendererV2 mainThread;
         private V2LoadingThread loadingThread;
@@ -35,6 +36,7 @@ namespace Loading {
             this.rootNodes = rootNodes;
             this.minNodeSize = minNodeSize;
             this.pointBudget = pointBudget;
+            visibleNodes = new HashSet<Node>();
         }
 
         public void Start() {
@@ -49,6 +51,7 @@ namespace Loading {
                     var toProcess = Traverse();
                     BuildRenderingQueue(toProcess);
                     mainThread.SetQueues(toRender, toDelete);
+
                 }
             } catch (Exception ex) {
                 Debug.LogError(ex);
@@ -130,11 +133,11 @@ namespace Loading {
                             toCheck.Enqueue(child);
                         }
 
-                    } else {
+                    } else if (currentNode.HasGameObjects()) {
                         //This node or its children might be visible
                         DeleteNode(currentNode);
                     }
-                } else {
+                } else if (currentNode.HasGameObjects()) {
                     //This node or its children might be visible
                     DeleteNode(currentNode);
                 }
@@ -148,11 +151,11 @@ namespace Loading {
 
             while (nodesToDelete.Count != 0) {
                 Node child = nodesToDelete.Dequeue();
-                if (child.HasGameObjects()) {
 
-                    toDelete.Enqueue(child);
+                toDelete.Enqueue(child);
 
-                    foreach (Node childchild in child) {
+                foreach (Node childchild in child) {
+                    if (childchild.HasGameObjects()) {
                         nodesToDelete.Enqueue(childchild);
                     }
                 }
@@ -163,6 +166,7 @@ namespace Loading {
             uint renderingpointcount = 0;
             int maxnodestoprocess = 25;
             int maxnodestorender = 15;
+            HashSet<Node> newVisibleNodes = new HashSet<Node>();
             while (maxnodestoprocess > 0 && maxnodestorender > 0 && !toProcess.IsEmpty()) {
                 Node n = toProcess.Dequeue();
                 if (n.PointCount == -1) {
@@ -172,10 +176,13 @@ namespace Loading {
                 else if (renderingpointcount + n.PointCount <= pointBudget) {
                     if (n.HasGameObjects()) {
                         renderingpointcount += (uint)n.PointCount;
+                        visibleNodes.Remove(n);
+                        newVisibleNodes.Add(n);
                     } else if (n.HasPointsToRender()) {
                         renderingpointcount += (uint)n.PointCount;
                         toRender.Enqueue(n);
                         --maxnodestorender;
+                        newVisibleNodes.Add(n);
                     } else {
                         loadingThread.ScheduleForLoading(n);
                         --maxnodestoprocess;
@@ -184,16 +191,17 @@ namespace Loading {
                     maxnodestoprocess = 0;
                     maxnodestorender = 0;
                     if (n.HasGameObjects()) {
+                        visibleNodes.Remove(n);
                         toDelete.Enqueue(n);
                     }
                 }
             }
-            while (!toProcess.IsEmpty()) {
-                Node n = toProcess.Dequeue();
+            foreach (Node n  in visibleNodes) {
                 if (n.HasGameObjects()) {
                     toDelete.Enqueue(n);
                 }
             }
+            visibleNodes = newVisibleNodes;
         }
 
         public void Stop() {
