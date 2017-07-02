@@ -17,6 +17,7 @@ namespace Loading {
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 
         private MeshConfiguration config;
+        private uint renderingpointcount;
 
         //Camera Info
         private Camera camera;
@@ -31,7 +32,7 @@ namespace Loading {
             this.config = config;
             loadingThread = new V2LoadingThread();
             loadingThread.Start();
-            traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget);
+            traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, 0);
             traversalThread.Start();
         }
 
@@ -62,15 +63,19 @@ namespace Loading {
             if (toRender == null) return;
             while (toDelete.Count != 0) {
                 Node n = toDelete.Dequeue();
-                if (n.HasGameObjects()) {
-                    n.RemoveGameObjects(config);
+                lock (n) {
+                    if (n.HasGameObjects()) {
+                        n.RemoveGameObjects(config);
+                    }
                 }
             }
             while (toRender.Count != 0) {
                 Node n = toRender.Dequeue();
-                if (n.HasPointsToRender()) {
-                    n.CreateGameObjects(config);
-                    n.ForgetPoints();
+                lock (n) {
+                    if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
+                        n.CreateGameObjects(config);
+                        n.ForgetPoints();
+                    }
                 }
             }
         }
@@ -83,13 +88,14 @@ namespace Loading {
         }
 
         public uint GetPointCount() {
-            return 0; //TODO:
+            return renderingpointcount;
         }
 
-        public void SetQueues(Queue<Node> toRender, Queue<Node> toDelete) {
+        public void SetQueues(Queue<Node> toRender, Queue<Node> toDelete, uint pointcount) {
             lock (locker) {
                 this.toRender = toRender;
                 this.toDelete = toDelete;
+                this.renderingpointcount = pointcount;
             }
         }
     }
