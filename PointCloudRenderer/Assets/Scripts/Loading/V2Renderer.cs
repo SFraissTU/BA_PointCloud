@@ -24,8 +24,6 @@ namespace Loading {
         private Queue<Node> toRender;
         private Queue<Node> toDelete;
 
-        private bool ready = false;
-
         public V2Renderer(int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
             rootNodes = new List<Node>();
             this.camera = camera;
@@ -80,9 +78,6 @@ namespace Loading {
             }
 
             //Notify Traversal Thread
-            lock (locker) {
-                ready = true;
-            }
             lock (traversalThread) {
                 Monitor.PulseAll(traversalThread);
             }
