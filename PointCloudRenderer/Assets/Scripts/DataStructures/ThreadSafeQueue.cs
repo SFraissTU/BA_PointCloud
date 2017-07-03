@@ -31,6 +31,18 @@ namespace DataStructures
             }
         }
 
+        public bool TryDequeue(out T result) {
+            lock (queue) {
+                if (queue.Count == 0) {
+                    result = default(T);
+                    return false;
+                } else {
+                    result = queue.Dequeue();
+                    return true;
+                }
+            }
+        }
+
         public bool IsEmpty()
         {
             lock (queue)

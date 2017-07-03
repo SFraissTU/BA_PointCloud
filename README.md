@@ -14,9 +14,9 @@ Projects:
 		In this example scene, four cloudes are loaded. Rendering is done in Real-Time.
 	
 	Assets/Scenes/OneTimeScene.unity:
-		In this example scene, four cloudes are loaded. Rendering is only done when pressing X.
+		In this example scene, one cloud is loaded at the beginning completely (without lod-algorithms)
 	
-	For details about the classes, scripts and game objects (in order to use them in your own projects) please refer to the code documentation (in work).
+	For details about the classes, scripts and game objects (in order to use them in your own projects) please refer to the code documentation (in progress).
 	For details about the algorithms please refer to the bachelor thesis (will be linked here soon).
   
 * Tests: Used to test several classes in the other projects.

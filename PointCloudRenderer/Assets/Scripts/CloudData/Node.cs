@@ -184,7 +184,7 @@ namespace CloudData {
          /// Returns true, iff vertices and colors are set
          /// </summary>
         public bool HasPointsToRender() {
-            return verticesToStore != null && colorsToStore != null;
+            return verticesToStore != null && colorsToStore != null && pointCount != -1;
         }
 
         /// <summary>
