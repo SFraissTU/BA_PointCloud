@@ -176,7 +176,6 @@ namespace Loading {
                 if (child.HasGameObjects()) {
                     Monitor.Exit(child);
                     tempToDelete.Push(child);
-                    child.NodeStatus = NodeStatus.TODELETE;
 
                     foreach (Node childchild in child) {
                         nodesToDelete.Enqueue(childchild);

@@ -30,12 +30,6 @@ namespace CloudData {
         private Node parent;
         //PointCount, if known. -1 before points have been read in
         private int pointCount = -1;
-        //Whether the Game Objects of this node are active (inactive when in cache)
-        private bool gosActive = true;
-
-        //A status flag. Can be used by the renderer, doesn't have to be!
-        //The meaning and use of the NodeStatus is therefore dependent from the used renderer and does not have to be used consistently
-        private byte nodeStatus = CloudData.NodeStatus.UNDEFINED;
 
         //List containing the gameobjects resembling this node
         private List<GameObject> gameObjects = new List<GameObject>();
@@ -124,7 +118,6 @@ namespace CloudData {
                 config.RemoveGameObject(go);
             }
             gameObjects.Clear();
-            gosActive = true;
         }
 
         /// <summary>
@@ -134,26 +127,8 @@ namespace CloudData {
             foreach (GameObject go in gameObjects) {
                 go.SetActive(false);
             }
-            gosActive = false;
         }
-
-        /// <summary>
-        /// Activates the GameObjects of this node (GameObjects are usually active after creation. A call of this function only makes sense after previously calling DeactivateGameObjects). Has to be called from the main thread.
-        /// </summary>
-        public void ReactivateGameObjects() {
-            foreach (GameObject go in gameObjects) {
-                go.SetActive(true);
-            }
-            gosActive = true;
-        }
-
-        /// <summary>
-        /// Returns true, iff there are Game Objects and they are active OR there are not Game Objects for this object.
-        /// </summary>
-        public bool AreGameObjectsActive() {
-            return gosActive;
-        }
-        
+                
         /// <summary>
         /// Sets the point data. Throws an exception if gameobjects already exist or vertices or colors are null or their length do not match.
         /// Also sets the point count.
@@ -318,21 +293,6 @@ namespace CloudData {
         /// </summary>
         public PointCloudMetaData MetaData {
             get { return metaData; }
-        }
-
-        /// <summary>
-        /// The status of this node.
-        /// The meaning and use of the NodeStatus is  dependent from the used renderer and does not have to be used consistently by all renders.
-        /// Currently its only used by the ConcurrentMultiTimeRenderer.
-        /// </summary>
-        public byte NodeStatus {
-            get {
-                return nodeStatus;
-            }
-
-            set {
-                nodeStatus = value;
-            }
         }
 
         /// <summary>
