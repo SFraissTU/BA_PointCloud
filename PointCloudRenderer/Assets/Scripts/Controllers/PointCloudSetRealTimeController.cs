@@ -19,7 +19,6 @@ namespace Controllers {
         public uint nodesGOsPerFrame = 30;
         //Defines the type of PointCloud (Points, Quads, Circles)
         public MeshConfiguration meshConfiguration;
-        public bool multithreaded = true;
         public uint cacheSizeInPoints = 0;
 
         private Camera userCamera;
@@ -27,20 +26,14 @@ namespace Controllers {
         // Use this for initialization
         protected override void Initialize() {
             userCamera = Camera.main;
-            if (multithreaded) {
-                PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
-                //PointRenderer = new ConcurrentMultiTimeRenderer(minNodeSize, pointBudget, nodesPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
-            } else {
-                PointRenderer = new SingleThreadedMultiTimeRenderer(minNodeSize, pointBudget, 15, userCamera, meshConfiguration);
-            }
+            PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
         }
         
 
         // Update is called once per frame
         void Update() {
             if (!CheckReady()) return;
-            PointRenderer.UpdateVisibleNodes();
-            PointRenderer.UpdateGameObjects();
+            PointRenderer.Update();
         }
     }
 }

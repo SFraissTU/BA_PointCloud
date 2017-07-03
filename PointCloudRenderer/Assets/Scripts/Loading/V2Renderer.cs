@@ -1,6 +1,7 @@
 ﻿using CloudData;
 using ObjectCreation;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Loading {
@@ -44,16 +45,15 @@ namespace Loading {
             return rootNodes.Count;
         }
 
-        public bool IsReadyForUpdate() {
+        public bool IsRunning() {
             return !shuttingDown;
         }
 
-        public void UpdateVisibleNodes() {
+        public void Update() {
+            //Set new Camera Data
             traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera), camera.pixelRect.height, camera.fieldOfView);
-        }
-             
-
-        public void UpdateGameObjects() {
+            
+            //Update GameObjects
             Queue<Node> toRender;
             Queue<Node> toDelete;
             lock (locker) {
@@ -78,14 +78,22 @@ namespace Loading {
                     }
                 }
             }
+
+            //Notify Traversal Thread
             lock (locker) {
                 ready = true;
+            }
+            lock (traversalThread) {
+                Monitor.PulseAll(traversalThread);
             }
         }
 
         public void ShutDown() {
             shuttingDown = true;
             traversalThread.Stop();
+            lock (traversalThread) {
+                Monitor.PulseAll(traversalThread);
+            }
             loadingThread.Stop();
             
         }
@@ -100,13 +108,6 @@ namespace Loading {
                 this.toDelete = toDelete;
                 this.renderingpointcount = pointcount;
             }
-        }
-
-        public void Wait() {
-            lock (locker) {
-                ready = false;
-            }
-            while (!ready && !shuttingDown) continue;
         }
     }
 }

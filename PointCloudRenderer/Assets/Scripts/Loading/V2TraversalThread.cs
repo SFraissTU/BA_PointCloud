@@ -57,7 +57,9 @@ namespace Loading {
                     var toProcess = Traverse();
                     uint pointcount = BuildRenderingQueue(toProcess);
                     mainThread.SetQueues(toRender, toDelete, pointcount);
-                    mainThread.Wait();
+                    lock (this) {
+                        Monitor.Wait(this);
+                    }
                 }
             } catch (Exception ex) {
                 Debug.LogError(ex);
