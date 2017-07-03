@@ -11,25 +11,19 @@ namespace Loading {
         private uint maxPoints;
         private uint cachePointCount = 0;
         private RandomAccessQueue<Node> queue = new RandomAccessQueue<Node>();
-        private ThreadSafeQueue<Node> toDestroy = new ThreadSafeQueue<Node>();
 
         public V2Cache(uint maxPoints) {
             this.maxPoints = maxPoints;
         }
-
-        //Achtung: Deaktivieren und Reaktivieren wird nicht von Cache übernommen. Muss auserhalb gemacht werden
-        //Node MUSS Points haben ODER GameObjects
+        
         public void Insert(Node node) {
             lock (queue) {
+                Withdraw(node); //it might be in the queue already but has to be moved to the front
                 //Alte Objekte aus Cache entfernen
                 while (cachePointCount + node.PointCount > maxPoints && !queue.IsEmpty()) {
                     Node old = queue.Dequeue();
                     cachePointCount -= (uint)old.PointCount;
-                    if (old.HasGameObjects()) {
-                        toDestroy.Enqueue(old);
-                    } else {
-                        old.ForgetPoints();
-                    }
+                    old.ForgetPoints();
                 }
                 if (cachePointCount + node.PointCount <= maxPoints) {
                     //In Cache einfügen
@@ -37,11 +31,7 @@ namespace Loading {
                     cachePointCount += (uint)node.PointCount;
                 } else {
                     //Nicht in Cache einfügen -> direkt entfernen
-                    if (node.HasGameObjects()) {
-                        toDestroy.Enqueue(node);
-                    } else {
-                        node.ForgetPoints();
-                    }
+                    node.ForgetPoints();
                 }
             }
         }
@@ -56,13 +46,9 @@ namespace Loading {
             }
         }
 
-        public Node NextToDestroy() {
+        public uint PointCount() {
             lock (queue) {
-                if (toDestroy.Count == 0) {
-                    return null;
-                } else {
-                    return queue.Dequeue();
-                }
+                return cachePointCount;
             }
         }
     }

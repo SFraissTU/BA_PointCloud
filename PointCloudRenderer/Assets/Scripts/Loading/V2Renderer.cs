@@ -1,19 +1,16 @@
 ﻿using CloudData;
-using DataStructures;
 using ObjectCreation;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Loading {
-    class ConcurrentMultiTimeRendererV2 : AbstractRenderer {
+    class V2Renderer : AbstractRenderer {
 
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
         private V2TraversalThread traversalThread;
         private V2LoadingThread loadingThread;
+        private V2Cache cache;
         private List<Node> rootNodes;   //List of root nodes of the point clouds
 
         private MeshConfiguration config;
@@ -26,13 +23,16 @@ namespace Loading {
         private Queue<Node> toRender;
         private Queue<Node> toDelete;
 
-        public ConcurrentMultiTimeRendererV2(int minNodeSize, uint pointBudget, Camera camera, MeshConfiguration config) {
+        private bool ready = false;
+
+        public V2Renderer(int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
             rootNodes = new List<Node>();
             this.camera = camera;
             this.config = config;
-            loadingThread = new V2LoadingThread();
+            cache = new V2Cache(cacheSize);
+            loadingThread = new V2LoadingThread(cache);
             loadingThread.Start();
-            traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, 0);
+            traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
             traversalThread.Start();
         }
 
@@ -45,7 +45,7 @@ namespace Loading {
         }
 
         public bool IsReadyForUpdate() {
-            return !shuttingDown; //TODO: Except its updating right now
+            return !shuttingDown;
         }
 
         public void UpdateVisibleNodes() {
@@ -66,6 +66,7 @@ namespace Loading {
                 lock (n) {
                     if (n.HasGameObjects()) {
                         n.RemoveGameObjects(config);
+                        cache.Insert(n);
                     }
                 }
             }
@@ -74,9 +75,11 @@ namespace Loading {
                 lock (n) {
                     if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
                         n.CreateGameObjects(config);
-                        n.ForgetPoints();
                     }
                 }
+            }
+            lock (locker) {
+                ready = true;
             }
         }
 
@@ -97,6 +100,13 @@ namespace Loading {
                 this.toDelete = toDelete;
                 this.renderingpointcount = pointcount;
             }
+        }
+
+        public void Wait() {
+            lock (locker) {
+                ready = false;
+            }
+            while (!ready && !shuttingDown) continue;
         }
     }
 }
