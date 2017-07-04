@@ -1,0 +1,21 @@
+TestRun: 7/4/2017 4:32:31 PM - evaltest
+Point Budget: 5000000
+Min Node Size: 1
+Nodes Loaded Per Frame: 35
+Nodes GOs per Frame: 30
+Mesh Configuration: GeoQuadMeshConfiguration
+  Point Radius: 10
+  Circles: True
+  Screen Size: True
+  Paraboloid: OFF
+
+694
+
+AvgFPS: 59.35432
+DevFPS: 6.630333
+MinFPS: 12.69685
+MaxFPS: 147.1059
+AvgUPS: 18.98829
+DevUPS: 4.374856
+MinUPS: 11.42633
+MaxUPS: 59.26041

@@ -57,8 +57,13 @@ namespace Loading {
             lock (locker) {
                 toRender = this.toRender;
                 toDelete = this.toDelete;
+                this.toRender = null;
+                this.toDelete = null;
             }
-            if (toRender == null) return;
+            if (toRender == null) {
+                Eval.FPSLogger.NextUpdateFrame(false);
+                return;
+            }
             while (toDelete.Count != 0) {
                 Node n = toDelete.Dequeue();
                 lock (n) {
@@ -81,6 +86,7 @@ namespace Loading {
             lock (traversalThread) {
                 Monitor.PulseAll(traversalThread);
             }
+            Eval.FPSLogger.NextUpdateFrame(true);
         }
 
         public void ShutDown() {

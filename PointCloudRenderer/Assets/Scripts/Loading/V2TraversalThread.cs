@@ -58,7 +58,9 @@ namespace Loading {
                     uint pointcount = BuildRenderingQueue(toProcess);
                     mainThread.SetQueues(toRender, toDelete, pointcount);
                     lock (this) {
-                        Monitor.Wait(this);
+                        if (running) {
+                            Monitor.Wait(this);
+                        }
                     }
                 }
             } catch (Exception ex) {
@@ -127,19 +129,10 @@ namespace Loading {
                     double distance = (center - cameraPosition).magnitude;
                     double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
                     double projectedSize = (screenHeight / 2.0) * radii[currentNode.MetaData] / (slope * distance);
-                    //Vector3d cP3d = new Vector3d(cameraPosition);
-                    //Vector3d center = currentNode.BoundingBox.Center();
-                    //double distance = center.Distance(cP3d);
-                    //double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
-                    //double projectedSize = (screenHeight / 2.0) * radii[currentNode.MetaData] / (slope * distance);
                     if (projectedSize >= minNodeSize) {
                         Vector3 camToNodeCenterDir = (center - cameraPosition).normalized;
                         double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
                         double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
-                        //Vector3d camToNodeCenterDir = (center - cP3d).Normalize();
-                        //Vector3d camToScreenCenterDir = new Vector3d(camForward);
-                        //double angle = Math.Acos(camToScreenCenterDir * camToNodeCenterDir);
-                        //double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
                         double priority = projectedSize / angleWeight;
 
                         toProcess.Enqueue(currentNode, new LoadingPriority(currentNode.MetaData, currentNode.Name, priority, false));
@@ -236,7 +229,9 @@ namespace Loading {
         }
 
         public void Stop() {
-            running = false;
+            lock (this) {
+                running = false;
+            }
         }
 
     }
