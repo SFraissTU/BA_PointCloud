@@ -9,7 +9,8 @@ namespace ObjectCreation {
 
     enum ParaboloidMode {
         OFF,
-        FRAGMENT,
+        FRAGMENT_PARA,
+        FRAGMENT_CONE,
         GEOMETRY0,
         GEOMETRY1,
         GEOMETRY2,
@@ -63,12 +64,13 @@ namespace ObjectCreation {
                         material.SetInt("_Details", 3);
                         break;
                 }
-            } else if (paraboloid == ParaboloidMode.FRAGMENT) {
+            } else if (paraboloid == ParaboloidMode.FRAGMENT_PARA || paraboloid == ParaboloidMode.FRAGMENT_CONE) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidFragScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidFragWorldSizeShader"));
                 }
+                material.SetInt("_Cones", (paraboloid == ParaboloidMode.FRAGMENT_CONE) ? 1 : 0);
             }
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);

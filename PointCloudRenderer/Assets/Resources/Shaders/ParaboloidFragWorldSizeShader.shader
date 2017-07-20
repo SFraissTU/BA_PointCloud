@@ -10,6 +10,7 @@ Shader "Custom/ParaboloidFragWorldSizeShader"
 	Properties{
 		_PointSize("Point Size", Float) = 5
 		[Toggle] _Circles("Circles", Int) = 0
+		[Toggle] _Cones("Cones", Int) = 0
 	}
 
 	SubShader
@@ -53,6 +54,7 @@ Shader "Custom/ParaboloidFragWorldSizeShader"
 
 			float _PointSize;
 			int _Circles;
+			int _Cones;
 
 			VertexMiddle vert(VertexInput v) {
 				VertexMiddle o;
@@ -108,7 +110,12 @@ Shader "Custom/ParaboloidFragWorldSizeShader"
 				if (_Circles >= 0.5 && uvlen > 1) {
 					discard;
 				}
-				o.viewposition.z += (1 - uvlen) * _PointSize;
+				if (_Cones < 0.5) {
+					o.viewposition.z += (1 - uvlen) * _PointSize;
+				}
+				else {
+					o.viewposition.z += (1 - sqrt(uvlen)) * _PointSize;
+				}
 				float4 pos = mul(UNITY_MATRIX_P, o.viewposition);
 				pos /= pos.w;
 				fragout.depth = pos.z;

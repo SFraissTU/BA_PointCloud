@@ -10,6 +10,7 @@
 		_ScreenWidth("Screen Width", Int) = 0
 		_ScreenHeight("Screen Height", Int) = 0
 		[Toggle] _Circles("Circles", Int) = 0
+		[Toggle] _Cones("Cones", Int) = 0
 	}
 
 		SubShader
@@ -56,6 +57,7 @@
 				int _ScreenWidth;
 				int _ScreenHeight;
 				int _Circles;
+				int _Cones;
 				float _FOV;
 				float4x4 _InverseProjMatrix;
 
@@ -125,7 +127,12 @@
 					if (_Circles >= 0.5 && uvlen > 1) {
 						discard;
 					}
-					o.viewposition.z += (1 - uvlen) * o.size;
+					if (_Cones < 0.5) {
+						o.viewposition.z += (1 - uvlen) * o.size;
+					}
+					else {
+						o.viewposition.z += (1 - sqrt(uvlen)) * o.size;
+					}
 					float4 pos = mul(UNITY_MATRIX_P, o.viewposition);
 					pos /= pos.w;
 					fragout.depth = pos.z;
