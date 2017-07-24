@@ -7,29 +7,71 @@ using UnityEngine;
 
 namespace ObjectCreation {
 
-    enum ParaboloidMode {
+    /// <summary>
+    /// What kind of interpolation to use
+    /// </summary>
+    enum InterpolationMode {
+        /// <summary>
+        /// No interpolation
+        /// </summary>
         OFF,
+        /// <summary>
+        /// Exact paraboloids
+        /// </summary>
         FRAGMENT_PARA,
+        /// <summary>
+        /// Exact cones
+        /// </summary>
         FRAGMENT_CONE,
+        /// <summary>
+        /// Paraboloids approximated with 8 triangles
+        /// </summary>
         GEOMETRY0,
+        /// <summary>
+        /// Paraboloids approximated with 16 triangles
+        /// </summary>
         GEOMETRY1,
+        /// <summary>
+        /// Paraboloids approximated with 32 triangles
+        /// </summary>
         GEOMETRY2,
+        /// <summary>
+        /// Paraboloids approximated with 48 triangles
+        /// </summary>
         GEOMETRY3
     }
 
+    /// <summary>
+    /// Geometry Shader Quad Rendering, as described in the Bachelor Thesis in chapter 3.2.3.
+    /// Creates a screen facing square or circle for each point using the Geometry Shader.
+    /// Also supports various interpolation modes (see Thesis chapter 3.2.4 "Interpolation").
+    /// This configuration also supports changes of the parameters while the application is running. Just change the parameters and check the checkbox "reload".
+    /// </summary>
     class GeoQuadMeshConfiguration : MeshConfiguration {
 
-        //Size of the quad/circle
+        /// <summary>
+        /// Radius of the point (in pixel or world units, depending on variable screenSize)
+        /// </summary>
         public float pointRadius = 10;
-        //wether the quads should be rendered as circles or not
+        /// <summary>
+        /// Whether the quads should be rendered as circles (true) or as squares (false)
+        /// </summary>
         public bool renderCircles = true;
-        //size in screen or world coordinates
+        /// <summary>
+        /// True, if pointRadius should be interpreted as pixels, false if it should be interpreted as world units
+        /// </summary>
         public bool screenSize = true;
-        //Wether and how to use paraboloids
-        public ParaboloidMode paraboloid = ParaboloidMode.OFF;
-        //If changing the parameters should be possible during execution, this variable has to be set to true in the beginning! Later changes will not change anything
+        /// <summary>
+        /// Wether and how to use interpolation
+        /// </summary>
+        public InterpolationMode interpolation = InterpolationMode.OFF;
+        /// <summary>
+        /// If changing the parameters should be possible during execution, this variable has to be set to true in the beginning! Later changes to this variable will not change anything
+        /// </summary>
         public bool reloadingPossible = true;
-        //Set this to true to reload the shaders according to the changed parameters
+        /// <summary>
+        /// Set this to true to reload the shaders according to the changed parameters
+        /// </summary>
         public bool reload = false;
 
         private Material material;
@@ -37,40 +79,40 @@ namespace ObjectCreation {
         private HashSet<GameObject> gameObjectCollection = null;
 
         private void LoadShaders() {
-            if (paraboloid == ParaboloidMode.OFF) {
+            if (interpolation == InterpolationMode.OFF) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/QuadGeoScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/QuadGeoWorldSizeShader"));
                 }
             }
-            if (paraboloid == ParaboloidMode.GEOMETRY0 || paraboloid == ParaboloidMode.GEOMETRY1 || paraboloid == ParaboloidMode.GEOMETRY2 || paraboloid == ParaboloidMode.GEOMETRY3) {
+            if (interpolation == InterpolationMode.GEOMETRY0 || interpolation == InterpolationMode.GEOMETRY1 || interpolation == InterpolationMode.GEOMETRY2 || interpolation == InterpolationMode.GEOMETRY3) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidGeoWorldSizeShader"));
                 }
-                switch (paraboloid) {
-                    case ParaboloidMode.GEOMETRY0:
+                switch (interpolation) {
+                    case InterpolationMode.GEOMETRY0:
                         material.SetInt("_Details", 0);
                         break;
-                    case ParaboloidMode.GEOMETRY1:
+                    case InterpolationMode.GEOMETRY1:
                         material.SetInt("_Details", 1);
                         break;
-                    case ParaboloidMode.GEOMETRY2:
+                    case InterpolationMode.GEOMETRY2:
                         material.SetInt("_Details", 2);
                         break;
-                    case ParaboloidMode.GEOMETRY3:
+                    case InterpolationMode.GEOMETRY3:
                         material.SetInt("_Details", 3);
                         break;
                 }
-            } else if (paraboloid == ParaboloidMode.FRAGMENT_PARA || paraboloid == ParaboloidMode.FRAGMENT_CONE) {
+            } else if (interpolation == InterpolationMode.FRAGMENT_PARA || interpolation == InterpolationMode.FRAGMENT_CONE) {
                 if (screenSize) {
                     material = new Material(Shader.Find("Custom/ParaboloidFragScreenSizeShader"));
                 } else {
                     material = new Material(Shader.Find("Custom/ParaboloidFragWorldSizeShader"));
                 }
-                material.SetInt("_Cones", (paraboloid == ParaboloidMode.FRAGMENT_CONE) ? 1 : 0);
+                material.SetInt("_Cones", (interpolation == InterpolationMode.FRAGMENT_CONE) ? 1 : 0);
             }
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
@@ -93,7 +135,7 @@ namespace ObjectCreation {
                 reload = false;
             }
             if (screenSize) {
-                if (paraboloid != ParaboloidMode.OFF) {
+                if (interpolation != InterpolationMode.OFF) {
                     Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
                     material.SetMatrix("_InverseProjMatrix", invP);
                     material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Eval {
-
+    
+    /// <summary>
+    /// Used in animations. OnAnimationEnd is called in the end of the animations to exit the application.
+    /// </summary>
     public class AnimationHelper : MonoBehaviour {
 
         // Use this for initialization

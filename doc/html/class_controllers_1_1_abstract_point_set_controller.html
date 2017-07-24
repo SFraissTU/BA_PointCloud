@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -74,57 +74,315 @@ $(function() {
 <div class="title">Controllers.AbstractPointSetController Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>A PointSetController enables loading and rendering several point clouds at once using an AbstractRenderer. Everytime you want to use an AbstractRenderer it is recommended to use an <a class="el" href="class_controllers_1_1_abstract_point_set_controller.html" title="A PointSetController enables loading and rendering several point clouds at once using an AbstractRend...">AbstractPointSetController</a>, even if you have only one cloud. The configured options of the point set controller (for example point budget) work for all point clouds attached to this set. Every pointcloud has its own controller (for example a <a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a>), which has to register itself at the PointSetController via the methods RegisterController, UpdateBoundingBox and AddRootNode. The only current implementation of this class is <a class="el" href="class_controllers_1_1_point_cloud_set_real_time_controller.html" title="The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed ">PointCloudSetRealTimeController</a>.  
+ <a href="class_controllers_1_1_abstract_point_set_controller.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for Controllers.AbstractPointSetController:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_controllers_1_1_abstract_point_set_controller.png" usemap="#Controllers.AbstractPointSetController_map" alt=""/>
   <map id="Controllers.AbstractPointSetController_map" name="Controllers.AbstractPointSetController_map">
-<area href="class_controllers_1_1_point_cloud_set_multi_time_controller.html" alt="Controllers.PointCloudSetMultiTimeController" shape="rect" coords="0,112,266,136"/>
-<area href="class_controllers_1_1_point_cloud_set_one_time_controller.html" alt="Controllers.PointCloudSetOneTimeController" shape="rect" coords="276,112,542,136"/>
-<area href="class_controllers_1_1_point_cloud_set_real_time_controller.html" alt="Controllers.PointCloudSetRealTimeController" shape="rect" coords="552,112,818,136"/>
+<area href="class_controllers_1_1_point_cloud_set_real_time_controller.html" title="The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed " alt="Controllers.PointCloudSetRealTimeController" shape="rect" coords="0,112,264,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8bfeeed26c2cbc95ecfc3906fe39d932"><td class="memItemLeft" align="right" valign="top"><a id="a8bfeeed26c2cbc95ecfc3906fe39d932"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>RegisterController</b> (MonoBehaviour controller)</td></tr>
+<tr class="memitem:a8bfeeed26c2cbc95ecfc3906fe39d932"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a8bfeeed26c2cbc95ecfc3906fe39d932">RegisterController</a> (MonoBehaviour controller)</td></tr>
+<tr class="memdesc:a8bfeeed26c2cbc95ecfc3906fe39d932"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a PointCloud-Controller (See <a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a>). This should be done in the start-method of the pc-controller and is neccessary for the bounding-box-recalculation. The whole cloud will be moved and rendered as soon as for every registererd controller the bounding box was given via UpdateBoundingBox. Should be called only once for every controller  <a href="#a8bfeeed26c2cbc95ecfc3906fe39d932">More...</a><br /></td></tr>
 <tr class="separator:a8bfeeed26c2cbc95ecfc3906fe39d932"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10ea36265d82091cd92355ed64c2581c"><td class="memItemLeft" align="right" valign="top"><a id="a10ea36265d82091cd92355ed64c2581c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>UpdateBoundingBox</b> (MonoBehaviour controller, <a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox)</td></tr>
+<tr class="memitem:a10ea36265d82091cd92355ed64c2581c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a10ea36265d82091cd92355ed64c2581c">UpdateBoundingBox</a> (MonoBehaviour controller, <a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox)</td></tr>
+<tr class="memdesc:a10ea36265d82091cd92355ed64c2581c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the bounding box of a given Cloud-Controller, which has been registered via RegisterController first. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update), so this method should not be called in the main thread.  <a href="#a10ea36265d82091cd92355ed64c2581c">More...</a><br /></td></tr>
 <tr class="separator:a10ea36265d82091cd92355ed64c2581c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafa007a9fb523364254042ce85abbaf0"><td class="memItemLeft" align="right" valign="top"><a id="aafa007a9fb523364254042ce85abbaf0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>AddRootNode</b> (<a class="el" href="class_cloud_data_1_1_node.html">Node</a> node)</td></tr>
+<tr class="memitem:aafa007a9fb523364254042ce85abbaf0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#aafa007a9fb523364254042ce85abbaf0">AddRootNode</a> (<a class="el" href="class_cloud_data_1_1_node.html">Node</a> node)</td></tr>
+<tr class="memdesc:aafa007a9fb523364254042ce85abbaf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox.  <a href="#aafa007a9fb523364254042ce85abbaf0">More...</a><br /></td></tr>
 <tr class="separator:aafa007a9fb523364254042ce85abbaf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a702c76d6d9a81a5a2878aafa428f8615"><td class="memItemLeft" align="right" valign="top"><a id="a702c76d6d9a81a5a2878aafa428f8615"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>OnApplicationQuit</b> ()</td></tr>
+<tr class="memitem:a702c76d6d9a81a5a2878aafa428f8615"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a702c76d6d9a81a5a2878aafa428f8615">OnApplicationQuit</a> ()</td></tr>
+<tr class="memdesc:a702c76d6d9a81a5a2878aafa428f8615"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down the renderer  <a href="#a702c76d6d9a81a5a2878aafa428f8615">More...</a><br /></td></tr>
 <tr class="separator:a702c76d6d9a81a5a2878aafa428f8615"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82db4e310b3d53990ca4ebffddd45bea"><td class="memItemLeft" align="right" valign="top"><a id="a82db4e310b3d53990ca4ebffddd45bea"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>GetPointCount</b> ()</td></tr>
+<tr class="memitem:a82db4e310b3d53990ca4ebffddd45bea"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a82db4e310b3d53990ca4ebffddd45bea">GetPointCount</a> ()</td></tr>
+<tr class="memdesc:a82db4e310b3d53990ca4ebffddd45bea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the point count  <a href="#a82db4e310b3d53990ca4ebffddd45bea">More...</a><br /></td></tr>
 <tr class="separator:a82db4e310b3d53990ca4ebffddd45bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a3c7db48c8fefd07e67df31986a265a30"><td class="memItemLeft" align="right" valign="top"><a id="a3c7db48c8fefd07e67df31986a265a30"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>moveCenterToTransformPosition</b> = true</td></tr>
+<tr class="memitem:a3c7db48c8fefd07e67df31986a265a30"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a3c7db48c8fefd07e67df31986a265a30">moveCenterToTransformPosition</a> = true</td></tr>
+<tr class="memdesc:a3c7db48c8fefd07e67df31986a265a30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the center of the cloud should be moved to the position of this component  <a href="#a3c7db48c8fefd07e67df31986a265a30">More...</a><br /></td></tr>
 <tr class="separator:a3c7db48c8fefd07e67df31986a265a30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a8c7a3bc2173d6b23d8cd37b09c6cfe19"><td class="memItemLeft" align="right" valign="top"><a id="a8c7a3bc2173d6b23d8cd37b09c6cfe19"></a>
-abstract void&#160;</td><td class="memItemRight" valign="bottom"><b>Initialize</b> ()</td></tr>
+<tr class="memitem:a8c7a3bc2173d6b23d8cd37b09c6cfe19"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a8c7a3bc2173d6b23d8cd37b09c6cfe19">Initialize</a> ()</td></tr>
+<tr class="memdesc:a8c7a3bc2173d6b23d8cd37b09c6cfe19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Override this instead of Start!! Make sure to set the PointRenderer in here!!!  <a href="#a8c7a3bc2173d6b23d8cd37b09c6cfe19">More...</a><br /></td></tr>
 <tr class="separator:a8c7a3bc2173d6b23d8cd37b09c6cfe19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55485e0fbdd9f8154e140b2b79d0c787"><td class="memItemLeft" align="right" valign="top"><a id="a55485e0fbdd9f8154e140b2b79d0c787"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>CheckReady</b> ()</td></tr>
+<tr class="memitem:a55485e0fbdd9f8154e140b2b79d0c787"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#a55485e0fbdd9f8154e140b2b79d0c787">CheckReady</a> ()</td></tr>
+<tr class="memdesc:a55485e0fbdd9f8154e140b2b79d0c787"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, iff all the nodes are registered, have been moved to the center (if required) and the renderer is loaded.  <a href="#a55485e0fbdd9f8154e140b2b79d0c787">More...</a><br /></td></tr>
 <tr class="separator:a55485e0fbdd9f8154e140b2b79d0c787"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:ae05783b13871739392e1ce5fdb23ffbe"><td class="memItemLeft" align="right" valign="top"><a id="ae05783b13871739392e1ce5fdb23ffbe"></a>
-<a class="el" href="interface_loading_1_1_abstract_renderer.html">AbstractRenderer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>PointRenderer</b><code> [get, set]</code></td></tr>
+<tr class="memitem:ae05783b13871739392e1ce5fdb23ffbe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_loading_1_1_abstract_renderer.html">AbstractRenderer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html#ae05783b13871739392e1ce5fdb23ffbe">PointRenderer</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ae05783b13871739392e1ce5fdb23ffbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Renderer (value may not be null at setting)  <a href="#ae05783b13871739392e1ce5fdb23ffbe">More...</a><br /></td></tr>
 <tr class="separator:ae05783b13871739392e1ce5fdb23ffbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A PointSetController enables loading and rendering several point clouds at once using an AbstractRenderer. Everytime you want to use an AbstractRenderer it is recommended to use an <a class="el" href="class_controllers_1_1_abstract_point_set_controller.html" title="A PointSetController enables loading and rendering several point clouds at once using an AbstractRend...">AbstractPointSetController</a>, even if you have only one cloud. The configured options of the point set controller (for example point budget) work for all point clouds attached to this set. Every pointcloud has its own controller (for example a <a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a>), which has to register itself at the PointSetController via the methods RegisterController, UpdateBoundingBox and AddRootNode. The only current implementation of this class is <a class="el" href="class_controllers_1_1_point_cloud_set_real_time_controller.html" title="The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed ">PointCloudSetRealTimeController</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aafa007a9fb523364254042ce85abbaf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafa007a9fb523364254042ce85abbaf0">&#9670;&nbsp;</a></span>AddRootNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Controllers.AbstractPointSetController.AddRootNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_node.html">Node</a>&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox. </p>
+
+</div>
+</div>
+<a id="a55485e0fbdd9f8154e140b2b79d0c787"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55485e0fbdd9f8154e140b2b79d0c787">&#9670;&nbsp;</a></span>CheckReady()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Controllers.AbstractPointSetController.CheckReady </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns true, iff all the nodes are registered, have been moved to the center (if required) and the renderer is loaded. </p>
+
+</div>
+</div>
+<a id="a82db4e310b3d53990ca4ebffddd45bea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82db4e310b3d53990ca4ebffddd45bea">&#9670;&nbsp;</a></span>GetPointCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint Controllers.AbstractPointSetController.GetPointCount </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the point count </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a8c7a3bc2173d6b23d8cd37b09c6cfe19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c7a3bc2173d6b23d8cd37b09c6cfe19">&#9670;&nbsp;</a></span>Initialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void Controllers.AbstractPointSetController.Initialize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Override this instead of Start!! Make sure to set the PointRenderer in here!!! </p>
+
+<p>Implemented in <a class="el" href="class_controllers_1_1_point_cloud_set_real_time_controller.html#a201cc0a4cf300d304ee090d138fc8637">Controllers.PointCloudSetRealTimeController</a>.</p>
+
+</div>
+</div>
+<a id="a702c76d6d9a81a5a2878aafa428f8615"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a702c76d6d9a81a5a2878aafa428f8615">&#9670;&nbsp;</a></span>OnApplicationQuit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Controllers.AbstractPointSetController.OnApplicationQuit </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Shuts down the renderer </p>
+
+</div>
+</div>
+<a id="a8bfeeed26c2cbc95ecfc3906fe39d932"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bfeeed26c2cbc95ecfc3906fe39d932">&#9670;&nbsp;</a></span>RegisterController()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Controllers.AbstractPointSetController.RegisterController </td>
+          <td>(</td>
+          <td class="paramtype">MonoBehaviour&#160;</td>
+          <td class="paramname"><em>controller</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Registers a PointCloud-Controller (See <a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a>). This should be done in the start-method of the pc-controller and is neccessary for the bounding-box-recalculation. The whole cloud will be moved and rendered as soon as for every registererd controller the bounding box was given via UpdateBoundingBox. Should be called only once for every controller </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>not null</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a></dd></dl>
+
+</div>
+</div>
+<a id="a10ea36265d82091cd92355ed64c2581c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10ea36265d82091cd92355ed64c2581c">&#9670;&nbsp;</a></span>UpdateBoundingBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Controllers.AbstractPointSetController.UpdateBoundingBox </td>
+          <td>(</td>
+          <td class="paramtype">MonoBehaviour&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a>&#160;</td>
+          <td class="paramname"><em>boundingBox</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the bounding box of a given Cloud-Controller, which has been registered via RegisterController first. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update), so this method should not be called in the main thread. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a3c7db48c8fefd07e67df31986a265a30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c7db48c8fefd07e67df31986a265a30">&#9670;&nbsp;</a></span>moveCenterToTransformPosition</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Controllers.AbstractPointSetController.moveCenterToTransformPosition = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether the center of the cloud should be moved to the position of this component </p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="ae05783b13871739392e1ce5fdb23ffbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae05783b13871739392e1ce5fdb23ffbe">&#9670;&nbsp;</a></span>PointRenderer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="interface_loading_1_1_abstract_renderer.html">AbstractRenderer</a> Controllers.AbstractPointSetController.PointRenderer</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The Renderer (value may not be null at setting) </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>Controllers/AbstractPointSetController.cs</li>
 </ul>

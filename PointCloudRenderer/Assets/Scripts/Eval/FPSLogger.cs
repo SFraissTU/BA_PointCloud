@@ -6,6 +6,9 @@ using Controllers;
 using UnityEngine.Profiling;
 
 namespace Eval {
+    /// <summary>
+    /// Used for logging the Frames per Second and the Updates per Second
+    /// </summary>
     public class FPSLogger : MonoBehaviour {
         
         public string testIdentifier;
@@ -99,7 +102,7 @@ namespace Eval {
                     output.WriteLine("  Point Radius: " + config.pointRadius);
                     output.WriteLine("  Circles: " + config.renderCircles);
                     output.WriteLine("  Screen Size: " + config.screenSize);
-                    output.WriteLine("  Paraboloid: " + config.paraboloid);
+                    output.WriteLine("  Paraboloid: " + config.interpolation);
                 }
                 output.WriteLine();
                 output.WriteLine(deltaTs.Count);

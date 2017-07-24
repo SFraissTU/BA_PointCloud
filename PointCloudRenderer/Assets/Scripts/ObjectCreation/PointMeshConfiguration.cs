@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace ObjectCreation
 {
-    /* Renders every point as a 1px-Point
-     */
+    /// <summary>
+    /// Renders every point as a single pixel using the points primitive. As described in the Bachelor Thesis in chapter 3.2.1 "Single-Pixel Point Rendering".
+    /// </summary>
     class PointMeshConfiguration : MeshConfiguration
     {
         private Material material;

@@ -5,6 +5,9 @@ using System.Threading;
 using UnityEngine;
 
 namespace Loading {
+    /// <summary>
+    /// The multithreaded Real-Time-Renderer as described in the Bachelor Thesis in chapter 3.1.2 - 3.1.7
+    /// </summary>
     class V2Renderer : AbstractRenderer {
 
         private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
@@ -24,6 +27,16 @@ namespace Loading {
         private Queue<Node> toRender;
         private Queue<Node> toDelete;
 
+        /// <summary>
+        /// Creates a new V2Renderer and starts all the threads
+        /// </summary>
+        /// <param name="minNodeSize">Minimum Node Size</param>
+        /// <param name="pointBudget">Point Budget</param>
+        /// <param name="nodesLoadedPerFrame">Maximum number of nodes loaded per frame</param>
+        /// <param name="nodesGOsperFrame">Maximum number of nodes for which GameObjects should be created per frame</param>
+        /// <param name="camera">User Camera</param>
+        /// <param name="config">MeshConfiguration, defining how the points should be rendered</param>
+        /// <param name="cacheSize">Size of cache in points</param>
         public V2Renderer(int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
             rootNodes = new List<Node>();
             this.camera = camera;
@@ -35,18 +48,31 @@ namespace Loading {
             traversalThread.Start();
         }
 
+        /// <summary>
+        /// Registers the root node of a point cloud in the renderer.
+        /// </summary>
+        /// <param name="rootNode">not null</param>
         public void AddRootNode(Node rootNode) {
             rootNodes.Add(rootNode);
         }
 
+        /// <summary>
+        /// Returns how many root nodes have been added
+        /// </summary>
         public int GetRootNodeCount() {
             return rootNodes.Count;
         }
 
+        /// <summary>
+        /// True, if ShutDown() has not been called yet
+        /// </summary>
         public bool IsRunning() {
             return !shuttingDown;
         }
 
+        /// <summary>
+        /// Gives the current camera data to the traversal thread and updates the GameObjects. Called from the MainThread. As described in the Bachelor Thesis in chapter 3.1.3 "Main Thread"
+        /// </summary>
         public void Update() {
             //Set new Camera Data
             traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera), camera.pixelRect.height, camera.fieldOfView);
@@ -89,6 +115,9 @@ namespace Loading {
             Eval.FPSLogger.NextUpdateFrame(true);
         }
 
+        /// <summary>
+        /// Stops the rendering process and all threads
+        /// </summary>
         public void ShutDown() {
             shuttingDown = true;
             traversalThread.Stop();
@@ -99,10 +128,16 @@ namespace Loading {
             
         }
 
+        /// <summary>
+        /// Returns the current PointCount, so how many points are loaded / visible
+        /// </summary>
         public uint GetPointCount() {
             return renderingpointcount;
         }
 
+        /// <summary>
+        /// Sets the new GO-update-queues. Called from the TraversalThread.
+        /// </summary>
         public void SetQueues(Queue<Node> toRender, Queue<Node> toDelete, uint pointcount) {
             lock (locker) {
                 this.toRender = toRender;

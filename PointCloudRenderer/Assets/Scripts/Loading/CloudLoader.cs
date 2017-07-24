@@ -6,11 +6,17 @@ using System.Threading;
 using UnityEngine;
 
 namespace Loading {
-    /* Provides methods for loading pointclouds
-    */
+    /// <summary>
+    /// Provides methods for loading point clouds from the file system
+    /// </summary>
     class CloudLoader {
         /* Loads the metadata from the json-file in the given cloudpath
          */
+         /// <summary>
+         /// Loads the meta data from the json-file in the given cloudpath. Attributes "cloudPath", and "cloudName" are set as well.
+         /// </summary>
+         /// <param name="cloudPath">Folderpath of the cloud</param>
+         /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
             using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default)) {
@@ -22,17 +28,25 @@ namespace Loading {
             metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("\\") + 1);
             return metaData;
         }
-
-        /* Loads the complete Hierarchy and ALL points from the pointcloud described in the PointCloudMetaData
-         */
-        public static Node LoadPointCloud(string cloudPath, PointCloudMetaData metaData) {
-            string dataRPath = cloudPath + metaData.octreeDir + "\\r\\";
+        
+        /// <summary>
+        /// Loads the complete Hierarchy and ALL points from the pointcloud.
+        /// </summary>
+        /// <param name="metaData">MetaData-Object, as received by LoadMetaData</param>
+        /// <returns>The Root Node of the point cloud</returns>
+        public static Node LoadPointCloud(PointCloudMetaData metaData) {
+            string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             LoadAllPoints(dataRPath, metaData, rootNode);
             return rootNode;
         }
 
+        /// <summary>
+        /// Loads the hierarchy, but no points are loaded
+        /// </summary>
+        /// <param name="metaData">MetaData-Object, as received by LoadMetaData</param>
+        /// <returns>The Root Node of the point cloud</returns>
         public static Node LoadHierarchyOnly(PointCloudMetaData metaData) {
             string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
@@ -40,6 +54,9 @@ namespace Loading {
             return rootNode;
         }
 
+        /// <summary>
+        /// Loads the points for the given node
+        /// </summary>
         public static void LoadPointsForNode(Node node) {
             string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "\\r\\";
             LoadPoints(dataRPath, node.MetaData, node);

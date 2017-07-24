@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -72,11 +72,14 @@ $(function() {
 <div class="title">CloudData.PointCloudMetaData Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Description of a Bounding Box. Created from the cloud.js-File. Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud)  
+ <a href="class_cloud_data_1_1_point_cloud_meta_data.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3b43afa4f8f1dd2dc70582d011e05327"><td class="memItemLeft" align="right" valign="top"><a id="a3b43afa4f8f1dd2dc70582d011e05327"></a>
-static <a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ReadFromJson</b> (string json, bool moveToOrigin)</td></tr>
+<tr class="memitem:a3b43afa4f8f1dd2dc70582d011e05327"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html#a3b43afa4f8f1dd2dc70582d011e05327">ReadFromJson</a> (string json, bool moveToOrigin)</td></tr>
+<tr class="memdesc:a3b43afa4f8f1dd2dc70582d011e05327"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the metadata from a json-string.  <a href="#a3b43afa4f8f1dd2dc70582d011e05327">More...</a><br /></td></tr>
 <tr class="separator:a3b43afa4f8f1dd2dc70582d011e05327"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -118,6 +121,54 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>cloudPath</b></td><
 string&#160;</td><td class="memItemRight" valign="bottom"><b>cloudName</b></td></tr>
 <tr class="separator:a0c5632a8cf45f3ec60dabb7f9dd65864"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Description of a Bounding Box. Created from the cloud.js-File. Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud) </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3b43afa4f8f1dd2dc70582d011e05327"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b43afa4f8f1dd2dc70582d011e05327">&#9670;&nbsp;</a></span>ReadFromJson()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> CloudData.PointCloudMetaData.ReadFromJson </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>json</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>moveToOrigin</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads the metadata from a json-string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">json</td><td>Json-String</td></tr>
+    <tr><td class="paramname">moveToOrigin</td><td>True, iff the center of the bounding boxes should be moved to the origin</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>CloudData/PointCloudMetaData.cs</li>
 </ul>

@@ -4,13 +4,18 @@ using UnityEngine;
 
 namespace ObjectCreation
 {
-    //TODO: Unity crashes when using this and a point budget of 10000000 points
-    /* Renders every point as a quad or a circle
-     */
+    /// <summary>
+    /// 4-Vertex Quad Rendering, as described in the thesis in chapter 3.2.2.
+    /// Creates sceen faced squares or circles for each point with a given size in pixels, by passing each vertex 4 times to the GPU
+    /// </summary>
     class Quad4PointMeshConfiguration : MeshConfiguration {
-        //Size of the quad/circle
+        /// <summary>
+        /// Radius in pixel
+        /// </summary>
         public float pointRadius = 10;
-        //wether the quads should be rendered as circles or not
+        /// <summary>
+        /// Whether the quads should be rendered as circles (true) or as squares (false)
+        /// </summary>
         public bool renderCircles = false;
 
         private Material material;

@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -72,20 +72,28 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_loading_1_1_abstract_renderer.html">AbstractRenderer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_cloud_loader.html">CloudLoader</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_concurrent_multi_time_renderer.html">ConcurrentMultiTimeRenderer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_concurrent_one_time_renderer.html">ConcurrentOneTimeRenderer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_game_object_l_r_u_cache.html">GameObjectLRUCache</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides methods for loading point clouds from the file system  <a href="class_loading_1_1_cloud_loader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This struct can be used to describe the rendering priority. (See Bachelor Thesis chapter 3.1.5 "Loading Priority") The octree-level as well as the calculated priority value are considered. So (grand-)parents will have a higher priority than their (grand-)children. For nodes without such a relationship, the given priority-double-value determines the order.  <a href="struct_loading_1_1_loading_priority.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_point_attributes.html">PointAttributes</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attributes for FileReading  <a href="class_loading_1_1_point_attributes.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_single_threaded_multi_time_renderer.html">SingleThreadedMultiTimeRenderer</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_util.html">Util</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Various help functions  <a href="class_loading_1_1_util.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_single_threaded_one_time_renderer.html">SingleThreadedOneTimeRenderer</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_v2_cache.html">V2Cache</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The LRU Cache used by the <a class="el" href="class_loading_1_1_v2_renderer.html" title="The multithreaded Real-Time-Renderer as described in the Bachelor Thesis in chapter 3...">V2Renderer</a> (See Bachelor Thesis chapter 3.1.7 "LRU Cache").  <a href="class_loading_1_1_v2_cache.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_v2_loading_thread.html">V2LoadingThread</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="namespace_loading.html">Loading</a> Thread of the V2-Rendering-System (see Bachelor Thesis chapter 3.1.6 "The Loading Thread"). Responsible for loading the point data.  <a href="class_loading_1_1_v2_loading_thread.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_v2_renderer.html">V2Renderer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The multithreaded Real-Time-Renderer as described in the Bachelor Thesis in chapter 3.1.2 - 3.1.7  <a href="class_loading_1_1_v2_renderer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_loading_1_1_v2_traversal_thread.html">V2TraversalThread</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The traversal thread of the V2 Rendering System. Checks constantly, which nodes are visible and should be rendered and which not. Described in the Bachelor Thesis in chapter 3.1.4 "Traversal Thread". This is the place, where most of the magic happens.  <a href="class_loading_1_1_v2_traversal_thread.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->

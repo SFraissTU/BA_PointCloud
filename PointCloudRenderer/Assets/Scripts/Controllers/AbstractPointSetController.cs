@@ -8,12 +8,18 @@ using System.Threading;
 using UnityEngine;
 
 namespace Controllers {
-    /* Super class for all PointSet-Controllers. A PointSetController enables the loading of several point clouds at once.
-     * This enabled loading several PointClouds at the same time. The configured options work globally for all point clouds.
-     * The part that this abstract class is responsible for is the waiting for every Cloud to register itself at the PointSet and to move the center of the cloud to the location of this object, if so wanted by the user.
-     */
+     /// <summary>
+     /// A PointSetController enables loading and rendering several point clouds at once using an AbstractRenderer.
+     /// Everytime you want to use an AbstractRenderer it is recommended to use an AbstractPointSetController, even if you have only one cloud.
+     /// The configured options of the point set controller (for example point budget) work for all point clouds attached to this set.
+     /// Every pointcloud has its own controller (for example a DynamicLoaderController), which has to register itself at the PointSetController via the methods RegisterController, UpdateBoundingBox and AddRootNode.
+     /// The only current implementation of this class is PointCloudSetRealTimeController.
+     /// </summary>
     public abstract class AbstractPointSetController : MonoBehaviour {
 
+        /// <summary>
+        /// Whether the center of the cloud should be moved to the position of this component
+        /// </summary>
         public bool moveCenterToTransformPosition = true;
 
         //For origin-moving:
@@ -32,21 +38,30 @@ namespace Controllers {
                 throw new InvalidOperationException("PointRenderer has not been set!");
             }
         }
-
-        //Override this instead of Start!! Make sure to set the PointRenderer in here!!!
+        
+        /// <summary>
+        /// Override this instead of Start!! Make sure to set the PointRenderer in here!!!
+        /// </summary>
         protected abstract void Initialize();
-
-        //Register a PointCloud-Controller. This should be done in the start-method of the controller and is neccessary for the bounding-box-recalculation.
-        //The whole cloud will be moved and rendered as soon as for every registered controller the bounding box is given via UpdateBoundingBox
-        //Can be called several times, registering will only be done once, but boundingboxes will be deleted
+        
+        /// <summary>
+        /// Registers a PointCloud-Controller (See DynamicLoaderController). This should be done in the start-method of the pc-controller and is neccessary for the bounding-box-recalculation.
+        /// The whole cloud will be moved and rendered as soon as for every registererd controller the bounding box was given via UpdateBoundingBox.
+        /// Should be called only once for every controller
+        /// </summary>
+        /// <param name="controller">not null</param>
+        /// <seealso cref="DynamicLoaderController"/>
         public void RegisterController(MonoBehaviour controller) {
             lock (boundingBoxes) {
                 boundingBoxes[controller] = null;
             }
         }
-
-        //Sets the bounding box of a given Cloud-Controller. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update),
-        //so this method should be called in an extra thread
+        
+        /// <summary>
+        /// Sets the bounding box of a given Cloud-Controller, which has been registered via RegisterController first. 
+        /// If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update),
+        /// so this method should not be called in the main thread.
+        /// </summary>
         public void UpdateBoundingBox(MonoBehaviour controller, BoundingBox boundingBox) {
             lock (boundingBoxes) {
                 boundingBoxes[controller] = boundingBox;
@@ -61,16 +76,19 @@ namespace Controllers {
                 waiterForBoundingBoxUpdate.WaitOne();
             }
         }
-
-        //Adds a rootNode to the renderer.
+        
+        /// <summary>
+        /// Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox.
+        /// </summary>
         public void AddRootNode(Node node) {
             lock (pRenderer) {
                 pRenderer.AddRootNode(node);
             }
         }
-
-        /* Returns true, if all the nodes are registered, have been moved to the center and the renderer is loaded
-         */
+        
+         /// <summary>
+         /// Returns true, iff all the nodes are registered, have been moved to the center (if required) and the renderer is loaded.
+         /// </summary>
         protected bool CheckReady() {
             lock (boundingBoxes) {
                 if (!hasMoved) {
@@ -96,16 +114,26 @@ namespace Controllers {
             return true;
         }
 
+        /// <summary>
+        /// Shuts down the renderer
+        /// </summary>
         public void OnApplicationQuit() {
             if (pRenderer != null) {
                 pRenderer.ShutDown();
             }
         }
 
+        /// <summary>
+        /// Returns the point count
+        /// </summary>
+        /// <returns></returns>
         public uint GetPointCount() {
             return pRenderer.GetPointCount();
         }
 
+        /// <summary>
+        /// The Renderer (value may not be null at setting)
+        /// </summary>
         public AbstractRenderer PointRenderer {
             get {
                 return pRenderer;

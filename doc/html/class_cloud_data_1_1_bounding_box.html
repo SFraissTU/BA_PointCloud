@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -73,44 +73,47 @@ $(function() {
 <div class="title">CloudData.BoundingBox Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>An Axis-Aligned Bounding Box for a <a class="el" href="class_cloud_data_1_1_node.html" title="Resembles a node of the nested octree. ">Node</a>. Note that the values of the bounding box are not final, but might be changed.  
+ <a href="class_cloud_data_1_1_bounding_box.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a86e10f02158869d5ccc808e1826733da"><td class="memItemLeft" align="right" valign="top"><a id="a86e10f02158869d5ccc808e1826733da"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>BoundingBox</b> (double lx, double ly, double lz, double ux, double uy, double uz)</td></tr>
+<tr class="memitem:a86e10f02158869d5ccc808e1826733da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a86e10f02158869d5ccc808e1826733da">BoundingBox</a> (double <a class="el" href="class_cloud_data_1_1_bounding_box.html#afccc6119b7307c1a4847797155455939">lx</a>, double <a class="el" href="class_cloud_data_1_1_bounding_box.html#a338a758672564c211249b8eb2388b2b2">ly</a>, double <a class="el" href="class_cloud_data_1_1_bounding_box.html#a9ce1d3eca3a29640c7c8591802e1c795">lz</a>, double <a class="el" href="class_cloud_data_1_1_bounding_box.html#a5eb9a578bd7ed40abc6f7103ae47b3fb">ux</a>, double <a class="el" href="class_cloud_data_1_1_bounding_box.html#ae25969523e322b6bd1f181476cf2243c">uy</a>, double <a class="el" href="class_cloud_data_1_1_bounding_box.html#a35362a75e3fe95e287464c370f1b6f99">uz</a>)</td></tr>
+<tr class="memdesc:a86e10f02158869d5ccc808e1826733da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Bounding Box with the given parameters  <a href="#a86e10f02158869d5ccc808e1826733da">More...</a><br /></td></tr>
 <tr class="separator:a86e10f02158869d5ccc808e1826733da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a282c814d3b23ca4cd8597ed7e3ac2267"><td class="memItemLeft" align="right" valign="top"><a id="a282c814d3b23ca4cd8597ed7e3ac2267"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>BoundingBox</b> (<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> min, <a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> max)</td></tr>
+<tr class="memitem:a282c814d3b23ca4cd8597ed7e3ac2267"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a282c814d3b23ca4cd8597ed7e3ac2267">BoundingBox</a> (<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> min, <a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> max)</td></tr>
+<tr class="memdesc:a282c814d3b23ca4cd8597ed7e3ac2267"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Bounding Box with the given Parameters  <a href="#a282c814d3b23ca4cd8597ed7e3ac2267">More...</a><br /></td></tr>
 <tr class="separator:a282c814d3b23ca4cd8597ed7e3ac2267"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e915fefab3d9283d229c0e2b1299c74"><td class="memItemLeft" align="right" valign="top"><a id="a6e915fefab3d9283d229c0e2b1299c74"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Init</b> ()</td></tr>
 <tr class="separator:a6e915fefab3d9283d229c0e2b1299c74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdab2adfb0afb14d7b9f92f552d7d768"><td class="memItemLeft" align="right" valign="top"><a id="afdab2adfb0afb14d7b9f92f552d7d768"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SwitchYZ</b> ()</td></tr>
+<tr class="memitem:afdab2adfb0afb14d7b9f92f552d7d768"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#afdab2adfb0afb14d7b9f92f552d7d768">SwitchYZ</a> ()</td></tr>
+<tr class="memdesc:afdab2adfb0afb14d7b9f92f552d7d768"><td class="mdescLeft">&#160;</td><td class="mdescRight">Switches the Y and Z coordinates of the bounding box. This might be neccessary because of different coordinate systems  <a href="#afdab2adfb0afb14d7b9f92f552d7d768">More...</a><br /></td></tr>
 <tr class="separator:afdab2adfb0afb14d7b9f92f552d7d768"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00101639964ec22073a0f5b40e65d051"><td class="memItemLeft" align="right" valign="top"><a id="a00101639964ec22073a0f5b40e65d051"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>MoveToOrigin</b> ()</td></tr>
+<tr class="memitem:a00101639964ec22073a0f5b40e65d051"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a00101639964ec22073a0f5b40e65d051">MoveToOrigin</a> ()</td></tr>
+<tr class="memdesc:a00101639964ec22073a0f5b40e65d051"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the boxes, so its center is in the origin  <a href="#a00101639964ec22073a0f5b40e65d051">More...</a><br /></td></tr>
 <tr class="separator:a00101639964ec22073a0f5b40e65d051"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46071c421dcd1259018cd1132a70eeb6"><td class="memItemLeft" align="right" valign="top"><a id="a46071c421dcd1259018cd1132a70eeb6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>MoveAlong</b> (<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> vector)</td></tr>
+<tr class="memitem:a46071c421dcd1259018cd1132a70eeb6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a46071c421dcd1259018cd1132a70eeb6">MoveAlong</a> (<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> vector)</td></tr>
+<tr class="memdesc:a46071c421dcd1259018cd1132a70eeb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the box along the given vector  <a href="#a46071c421dcd1259018cd1132a70eeb6">More...</a><br /></td></tr>
 <tr class="separator:a46071c421dcd1259018cd1132a70eeb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a080446f806f02227b9b45da11f8d02d6"><td class="memItemLeft" align="right" valign="top"><a id="a080446f806f02227b9b45da11f8d02d6"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Radius</b> ()</td></tr>
+<tr class="memitem:a080446f806f02227b9b45da11f8d02d6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a080446f806f02227b9b45da11f8d02d6">Radius</a> ()</td></tr>
+<tr class="memdesc:a080446f806f02227b9b45da11f8d02d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the radius of the circumscribed sphere (half the length of the diagonal)  <a href="#a080446f806f02227b9b45da11f8d02d6">More...</a><br /></td></tr>
 <tr class="separator:a080446f806f02227b9b45da11f8d02d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adca189994b00ae2faf2293b8ef46f9cd"><td class="memItemLeft" align="right" valign="top"><a id="adca189994b00ae2faf2293b8ef46f9cd"></a>
-<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Size</b> ()</td></tr>
+<tr class="memitem:adca189994b00ae2faf2293b8ef46f9cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#adca189994b00ae2faf2293b8ef46f9cd">Size</a> ()</td></tr>
+<tr class="memdesc:adca189994b00ae2faf2293b8ef46f9cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width (x-length), length(y-length) and height (z-length) of the box  <a href="#adca189994b00ae2faf2293b8ef46f9cd">More...</a><br /></td></tr>
 <tr class="separator:adca189994b00ae2faf2293b8ef46f9cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa477d033f2fb789db62444d388508767"><td class="memItemLeft" align="right" valign="top"><a id="aa477d033f2fb789db62444d388508767"></a>
-<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Min</b> ()</td></tr>
+<tr class="memitem:aa477d033f2fb789db62444d388508767"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#aa477d033f2fb789db62444d388508767">Min</a> ()</td></tr>
+<tr class="memdesc:aa477d033f2fb789db62444d388508767"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the lowest corner of the bounding box  <a href="#aa477d033f2fb789db62444d388508767">More...</a><br /></td></tr>
 <tr class="separator:aa477d033f2fb789db62444d388508767"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fed7b597fc4bcded540dbb8484c9327"><td class="memItemLeft" align="right" valign="top"><a id="a9fed7b597fc4bcded540dbb8484c9327"></a>
-<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Max</b> ()</td></tr>
+<tr class="memitem:a9fed7b597fc4bcded540dbb8484c9327"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a9fed7b597fc4bcded540dbb8484c9327">Max</a> ()</td></tr>
+<tr class="memdesc:a9fed7b597fc4bcded540dbb8484c9327"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the highest corner of the bounding box  <a href="#a9fed7b597fc4bcded540dbb8484c9327">More...</a><br /></td></tr>
 <tr class="separator:a9fed7b597fc4bcded540dbb8484c9327"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad645b50a22a9d532bc64012513b5bae7"><td class="memItemLeft" align="right" valign="top"><a id="ad645b50a22a9d532bc64012513b5bae7"></a>
-<a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Center</b> ()</td></tr>
+<tr class="memitem:ad645b50a22a9d532bc64012513b5bae7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#ad645b50a22a9d532bc64012513b5bae7">Center</a> ()</td></tr>
+<tr class="memdesc:ad645b50a22a9d532bc64012513b5bae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the center of the box  <a href="#ad645b50a22a9d532bc64012513b5bae7">More...</a><br /></td></tr>
 <tr class="separator:ad645b50a22a9d532bc64012513b5bae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af805e886dc37ca582682256e3f7c282b"><td class="memItemLeft" align="right" valign="top"><a id="af805e886dc37ca582682256e3f7c282b"></a>
-Bounds&#160;</td><td class="memItemRight" valign="bottom"><b>GetBoundsObject</b> ()</td></tr>
+<tr class="memitem:af805e886dc37ca582682256e3f7c282b"><td class="memItemLeft" align="right" valign="top">Bounds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#af805e886dc37ca582682256e3f7c282b">GetBoundsObject</a> ()</td></tr>
+<tr class="memdesc:af805e886dc37ca582682256e3f7c282b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the Bounds-Object (Unity-Class for BoundingBoxes)  <a href="#af805e886dc37ca582682256e3f7c282b">More...</a><br /></td></tr>
 <tr class="separator:af805e886dc37ca582682256e3f7c282b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad38a3857856aa40d986d7c692762e05e"><td class="memItemLeft" align="right" valign="top"><a id="ad38a3857856aa40d986d7c692762e05e"></a>
 override string&#160;</td><td class="memItemRight" valign="bottom"><b>ToString</b> ()</td></tr>
@@ -118,46 +121,643 @@ override string&#160;</td><td class="memItemRight" valign="bottom"><b>ToString</
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:afccc6119b7307c1a4847797155455939"><td class="memItemLeft" align="right" valign="top"><a id="afccc6119b7307c1a4847797155455939"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>lx</b></td></tr>
+<tr class="memitem:afccc6119b7307c1a4847797155455939"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#afccc6119b7307c1a4847797155455939">lx</a></td></tr>
+<tr class="memdesc:afccc6119b7307c1a4847797155455939"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower X-Coordinate. Do not set manually after constructing! Use the property instead!  <a href="#afccc6119b7307c1a4847797155455939">More...</a><br /></td></tr>
 <tr class="separator:afccc6119b7307c1a4847797155455939"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a338a758672564c211249b8eb2388b2b2"><td class="memItemLeft" align="right" valign="top"><a id="a338a758672564c211249b8eb2388b2b2"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>ly</b></td></tr>
+<tr class="memitem:a338a758672564c211249b8eb2388b2b2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a338a758672564c211249b8eb2388b2b2">ly</a></td></tr>
+<tr class="memdesc:a338a758672564c211249b8eb2388b2b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower Y-Coordinate. Do not set manually after constructing! Use the property instead!  <a href="#a338a758672564c211249b8eb2388b2b2">More...</a><br /></td></tr>
 <tr class="separator:a338a758672564c211249b8eb2388b2b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ce1d3eca3a29640c7c8591802e1c795"><td class="memItemLeft" align="right" valign="top"><a id="a9ce1d3eca3a29640c7c8591802e1c795"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>lz</b></td></tr>
+<tr class="memitem:a9ce1d3eca3a29640c7c8591802e1c795"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a9ce1d3eca3a29640c7c8591802e1c795">lz</a></td></tr>
+<tr class="memdesc:a9ce1d3eca3a29640c7c8591802e1c795"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower Z-Coordinate. Do not set manually after constructing! Use the property instead!  <a href="#a9ce1d3eca3a29640c7c8591802e1c795">More...</a><br /></td></tr>
 <tr class="separator:a9ce1d3eca3a29640c7c8591802e1c795"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5eb9a578bd7ed40abc6f7103ae47b3fb"><td class="memItemLeft" align="right" valign="top"><a id="a5eb9a578bd7ed40abc6f7103ae47b3fb"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>ux</b></td></tr>
+<tr class="memitem:a5eb9a578bd7ed40abc6f7103ae47b3fb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a5eb9a578bd7ed40abc6f7103ae47b3fb">ux</a></td></tr>
+<tr class="memdesc:a5eb9a578bd7ed40abc6f7103ae47b3fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper X-Coordinate. Do not set manually after constructing! Use the property instead!  <a href="#a5eb9a578bd7ed40abc6f7103ae47b3fb">More...</a><br /></td></tr>
 <tr class="separator:a5eb9a578bd7ed40abc6f7103ae47b3fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae25969523e322b6bd1f181476cf2243c"><td class="memItemLeft" align="right" valign="top"><a id="ae25969523e322b6bd1f181476cf2243c"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>uy</b></td></tr>
+<tr class="memitem:ae25969523e322b6bd1f181476cf2243c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#ae25969523e322b6bd1f181476cf2243c">uy</a></td></tr>
+<tr class="memdesc:ae25969523e322b6bd1f181476cf2243c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper Y-Coordinate. Do not set manually after constructing! Use the property instead!  <a href="#ae25969523e322b6bd1f181476cf2243c">More...</a><br /></td></tr>
 <tr class="separator:ae25969523e322b6bd1f181476cf2243c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35362a75e3fe95e287464c370f1b6f99"><td class="memItemLeft" align="right" valign="top"><a id="a35362a75e3fe95e287464c370f1b6f99"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>uz</b></td></tr>
+<tr class="memitem:a35362a75e3fe95e287464c370f1b6f99"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a35362a75e3fe95e287464c370f1b6f99">uz</a></td></tr>
+<tr class="memdesc:a35362a75e3fe95e287464c370f1b6f99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper Z-Coordinate. Do not set manually after constructing! Use the property instead!  <a href="#a35362a75e3fe95e287464c370f1b6f99">More...</a><br /></td></tr>
 <tr class="separator:a35362a75e3fe95e287464c370f1b6f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a5b1c5fb7f1aa969b229ddc3b90eebd4f"><td class="memItemLeft" align="right" valign="top"><a id="a5b1c5fb7f1aa969b229ddc3b90eebd4f"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Lx</b><code> [get, set]</code></td></tr>
+<tr class="memitem:a5b1c5fb7f1aa969b229ddc3b90eebd4f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a5b1c5fb7f1aa969b229ddc3b90eebd4f">Lx</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a5b1c5fb7f1aa969b229ddc3b90eebd4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower X-Value  <a href="#a5b1c5fb7f1aa969b229ddc3b90eebd4f">More...</a><br /></td></tr>
 <tr class="separator:a5b1c5fb7f1aa969b229ddc3b90eebd4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c6bc25680269352356dd8dfbdba6d56"><td class="memItemLeft" align="right" valign="top"><a id="a8c6bc25680269352356dd8dfbdba6d56"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Ly</b><code> [get, set]</code></td></tr>
+<tr class="memitem:a8c6bc25680269352356dd8dfbdba6d56"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a8c6bc25680269352356dd8dfbdba6d56">Ly</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a8c6bc25680269352356dd8dfbdba6d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower Y-Value  <a href="#a8c6bc25680269352356dd8dfbdba6d56">More...</a><br /></td></tr>
 <tr class="separator:a8c6bc25680269352356dd8dfbdba6d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a419d5665cf475e9f21747d651162e7e4"><td class="memItemLeft" align="right" valign="top"><a id="a419d5665cf475e9f21747d651162e7e4"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Lz</b><code> [get, set]</code></td></tr>
+<tr class="memitem:a419d5665cf475e9f21747d651162e7e4"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a419d5665cf475e9f21747d651162e7e4">Lz</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a419d5665cf475e9f21747d651162e7e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower Z-Value  <a href="#a419d5665cf475e9f21747d651162e7e4">More...</a><br /></td></tr>
 <tr class="separator:a419d5665cf475e9f21747d651162e7e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebeb49a340501e573d02d828c4457560"><td class="memItemLeft" align="right" valign="top"><a id="aebeb49a340501e573d02d828c4457560"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Ux</b><code> [get, set]</code></td></tr>
+<tr class="memitem:aebeb49a340501e573d02d828c4457560"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#aebeb49a340501e573d02d828c4457560">Ux</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:aebeb49a340501e573d02d828c4457560"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper X-Value  <a href="#aebeb49a340501e573d02d828c4457560">More...</a><br /></td></tr>
 <tr class="separator:aebeb49a340501e573d02d828c4457560"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6949e58d591077d9989177883bbd46ea"><td class="memItemLeft" align="right" valign="top"><a id="a6949e58d591077d9989177883bbd46ea"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Uy</b><code> [get, set]</code></td></tr>
+<tr class="memitem:a6949e58d591077d9989177883bbd46ea"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a6949e58d591077d9989177883bbd46ea">Uy</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a6949e58d591077d9989177883bbd46ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper Y-Value  <a href="#a6949e58d591077d9989177883bbd46ea">More...</a><br /></td></tr>
 <tr class="separator:a6949e58d591077d9989177883bbd46ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d242c32897b18aa60d6ce3659278ee6"><td class="memItemLeft" align="right" valign="top"><a id="a5d242c32897b18aa60d6ce3659278ee6"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Uz</b><code> [get, set]</code></td></tr>
+<tr class="memitem:a5d242c32897b18aa60d6ce3659278ee6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_bounding_box.html#a5d242c32897b18aa60d6ce3659278ee6">Uz</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a5d242c32897b18aa60d6ce3659278ee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper Z-Value  <a href="#a5d242c32897b18aa60d6ce3659278ee6">More...</a><br /></td></tr>
 <tr class="separator:a5d242c32897b18aa60d6ce3659278ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>An Axis-Aligned Bounding Box for a <a class="el" href="class_cloud_data_1_1_node.html" title="Resembles a node of the nested octree. ">Node</a>. Note that the values of the bounding box are not final, but might be changed. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a86e10f02158869d5ccc808e1826733da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86e10f02158869d5ccc808e1826733da">&#9670;&nbsp;</a></span>BoundingBox() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CloudData.BoundingBox.BoundingBox </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>ly</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>ux</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>uy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>uz</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new Bounding Box with the given parameters </p>
+
+</div>
+</div>
+<a id="a282c814d3b23ca4cd8597ed7e3ac2267"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a282c814d3b23ca4cd8597ed7e3ac2267">&#9670;&nbsp;</a></span>BoundingBox() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CloudData.BoundingBox.BoundingBox </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td>
+          <td class="paramname"><em>max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new Bounding Box with the given Parameters </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">min</td><td>Vector containing lx, ly and lz</td></tr>
+    <tr><td class="paramname">max</td><td>Vector containing ux, uy and uz</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad645b50a22a9d532bc64012513b5bae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad645b50a22a9d532bc64012513b5bae7">&#9670;&nbsp;</a></span>Center()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> CloudData.BoundingBox.Center </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the center of the box </p>
+
+</div>
+</div>
+<a id="af805e886dc37ca582682256e3f7c282b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af805e886dc37ca582682256e3f7c282b">&#9670;&nbsp;</a></span>GetBoundsObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Bounds CloudData.BoundingBox.GetBoundsObject </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the Bounds-Object (Unity-Class for BoundingBoxes) </p>
+
+</div>
+</div>
+<a id="a9fed7b597fc4bcded540dbb8484c9327"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fed7b597fc4bcded540dbb8484c9327">&#9670;&nbsp;</a></span>Max()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> CloudData.BoundingBox.Max </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the highest corner of the bounding box </p>
+
+</div>
+</div>
+<a id="aa477d033f2fb789db62444d388508767"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa477d033f2fb789db62444d388508767">&#9670;&nbsp;</a></span>Min()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> CloudData.BoundingBox.Min </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the lowest corner of the bounding box </p>
+
+</div>
+</div>
+<a id="a46071c421dcd1259018cd1132a70eeb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46071c421dcd1259018cd1132a70eeb6">&#9670;&nbsp;</a></span>MoveAlong()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CloudData.BoundingBox.MoveAlong </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td>
+          <td class="paramname"><em>vector</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Moves the box along the given vector </p>
+
+</div>
+</div>
+<a id="a00101639964ec22073a0f5b40e65d051"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00101639964ec22073a0f5b40e65d051">&#9670;&nbsp;</a></span>MoveToOrigin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CloudData.BoundingBox.MoveToOrigin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Moves the boxes, so its center is in the origin </p>
+
+</div>
+</div>
+<a id="a080446f806f02227b9b45da11f8d02d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a080446f806f02227b9b45da11f8d02d6">&#9670;&nbsp;</a></span>Radius()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Radius </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the radius of the circumscribed sphere (half the length of the diagonal) </p>
+
+</div>
+</div>
+<a id="adca189994b00ae2faf2293b8ef46f9cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adca189994b00ae2faf2293b8ef46f9cd">&#9670;&nbsp;</a></span>Size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_cloud_data_1_1_vector3d.html">Vector3d</a> CloudData.BoundingBox.Size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the width (x-length), length(y-length) and height (z-length) of the box </p>
+
+</div>
+</div>
+<a id="afdab2adfb0afb14d7b9f92f552d7d768"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdab2adfb0afb14d7b9f92f552d7d768">&#9670;&nbsp;</a></span>SwitchYZ()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CloudData.BoundingBox.SwitchYZ </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Switches the Y and Z coordinates of the bounding box. This might be neccessary because of different coordinate systems </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="afccc6119b7307c1a4847797155455939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afccc6119b7307c1a4847797155455939">&#9670;&nbsp;</a></span>lx</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.lx</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Lower X-Coordinate. Do not set manually after constructing! Use the property instead! </p>
+
+</div>
+</div>
+<a id="a338a758672564c211249b8eb2388b2b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a338a758672564c211249b8eb2388b2b2">&#9670;&nbsp;</a></span>ly</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.ly</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Lower Y-Coordinate. Do not set manually after constructing! Use the property instead! </p>
+
+</div>
+</div>
+<a id="a9ce1d3eca3a29640c7c8591802e1c795"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ce1d3eca3a29640c7c8591802e1c795">&#9670;&nbsp;</a></span>lz</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.lz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Lower Z-Coordinate. Do not set manually after constructing! Use the property instead! </p>
+
+</div>
+</div>
+<a id="a5eb9a578bd7ed40abc6f7103ae47b3fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eb9a578bd7ed40abc6f7103ae47b3fb">&#9670;&nbsp;</a></span>ux</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.ux</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Upper X-Coordinate. Do not set manually after constructing! Use the property instead! </p>
+
+</div>
+</div>
+<a id="ae25969523e322b6bd1f181476cf2243c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae25969523e322b6bd1f181476cf2243c">&#9670;&nbsp;</a></span>uy</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.uy</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Upper Y-Coordinate. Do not set manually after constructing! Use the property instead! </p>
+
+</div>
+</div>
+<a id="a35362a75e3fe95e287464c370f1b6f99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35362a75e3fe95e287464c370f1b6f99">&#9670;&nbsp;</a></span>uz</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.uz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Upper Z-Coordinate. Do not set manually after constructing! Use the property instead! </p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="a5b1c5fb7f1aa969b229ddc3b90eebd4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b1c5fb7f1aa969b229ddc3b90eebd4f">&#9670;&nbsp;</a></span>Lx</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Lx</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Lower X-Value </p>
+
+</div>
+</div>
+<a id="a8c6bc25680269352356dd8dfbdba6d56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c6bc25680269352356dd8dfbdba6d56">&#9670;&nbsp;</a></span>Ly</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Ly</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Lower Y-Value </p>
+
+</div>
+</div>
+<a id="a419d5665cf475e9f21747d651162e7e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a419d5665cf475e9f21747d651162e7e4">&#9670;&nbsp;</a></span>Lz</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Lz</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Lower Z-Value </p>
+
+</div>
+</div>
+<a id="aebeb49a340501e573d02d828c4457560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebeb49a340501e573d02d828c4457560">&#9670;&nbsp;</a></span>Ux</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Ux</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Upper X-Value </p>
+
+</div>
+</div>
+<a id="a6949e58d591077d9989177883bbd46ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6949e58d591077d9989177883bbd46ea">&#9670;&nbsp;</a></span>Uy</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Uy</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Upper Y-Value </p>
+
+</div>
+</div>
+<a id="a5d242c32897b18aa60d6ce3659278ee6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d242c32897b18aa60d6ce3659278ee6">&#9670;&nbsp;</a></span>Uz</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CloudData.BoundingBox.Uz</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Upper Z-Value </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>CloudData/BoundingBox.cs</li>
 </ul>

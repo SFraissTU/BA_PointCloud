@@ -8,6 +8,10 @@ using System.Threading;
 using UnityEngine;
 
 namespace Loading {
+    /// <summary>
+    /// The traversal thread of the V2 Rendering System. Checks constantly, which nodes are visible and should be rendered and which not. Described in the Bachelor Thesis in chapter 3.1.4 "Traversal Thread".
+    /// This is the place, where most of the magic happens.
+    /// </summary>
     class V2TraversalThread {
 
         private object locker = new object();
@@ -33,6 +37,9 @@ namespace Loading {
         private V2LoadingThread loadingThread;
         private V2Cache cache;
 
+        /// <summary>
+        /// Creates the object, but does not start the thread yet
+        /// </summary>
         public V2TraversalThread(V2Renderer mainThread, V2LoadingThread loadingThread, List<Node> rootNodes, double minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsPerFrame, V2Cache cache) {
             this.mainThread = mainThread;
             this.loadingThread = loadingThread;
@@ -45,6 +52,9 @@ namespace Loading {
             this.nodesGOsPerFrame = nodesGOsPerFrame;
         }
 
+        /// <summary>
+        /// Starts the thread
+        /// </summary>
         public void Start() {
             new Thread(Run).Start();
         }
@@ -69,6 +79,14 @@ namespace Loading {
             Debug.Log("Traversal Thread stopped");
         }
 
+        /// <summary>
+        /// Sets the current camera data
+        /// </summary>
+        /// <param name="cameraPosition">Camera Position</param>
+        /// <param name="camForward">Forward Vector</param>
+        /// <param name="frustum">View Frustum</param>
+        /// <param name="screenHeight">Screen Height</param>
+        /// <param name="fieldOfView">Field of View</param>
         public void SetNextCameraData(Vector3 cameraPosition, Vector3 camForward, Plane[] frustum, float screenHeight, float fieldOfView) {
             lock (locker) {
                 this.cameraPosition = cameraPosition;

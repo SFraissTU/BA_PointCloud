@@ -8,18 +8,36 @@ using System.Threading;
 using UnityEngine;
 
 namespace Controllers {
-
-    /* This PointSetController updates the loading queue every frame, so at every frame the nodes which should be loaded are adapted to the current camera position.
-     */
+    
+     /// <summary>
+     /// The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed
+     /// </summary>
     public class PointCloudSetRealTimeController : AbstractPointSetController {
         
+        /// <summary>
+        /// Point Budget - Maximum Number of Points in Memory / to Render
+        /// </summary>
         public uint pointBudget;
+        /// <summary>
+        /// Minimum Node Size
+        /// </summary>
         public int minNodeSize;
+        /// <summary>
+        /// Maximum number of nodes loaded per frame
+        /// </summary>
         public uint nodesLoadedPerFrame = 35;
+        /// <summary>
+        /// Maximum number of nodes having their gameobjects created per frame
+        /// </summary>
         public uint nodesGOsPerFrame = 30;
-        //Defines the type of PointCloud (Points, Quads, Circles)
+        /// <summary>
+        /// MeshConfiguration. Defines how to render the points.
+        /// </summary>
         public MeshConfiguration meshConfiguration;
-        public uint cacheSizeInPoints = 0;
+        /// <summary>
+        /// Cache Size in POints
+        /// </summary>
+        public uint cacheSizeInPoints = 1000000;
 
         private Camera userCamera;
 

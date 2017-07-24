@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -70,22 +70,21 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_abstract_point_set_controller.html">AbstractPointSetController</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A PointSetController enables loading and rendering several point clouds at once using an AbstractRenderer. Everytime you want to use an AbstractRenderer it is recommended to use an <a class="el" href="class_controllers_1_1_abstract_point_set_controller.html" title="A PointSetController enables loading and rendering several point clouds at once using an AbstractRend...">AbstractPointSetController</a>, even if you have only one cloud. The configured options of the point set controller (for example point budget) work for all point clouds attached to this set. Every pointcloud has its own controller (for example a <a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a>), which has to register itself at the PointSetController via the methods RegisterController, UpdateBoundingBox and AddRootNode. The only current implementation of this class is <a class="el" href="class_controllers_1_1_point_cloud_set_real_time_controller.html" title="The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed ">PointCloudSetRealTimeController</a>.  <a href="class_controllers_1_1_abstract_point_set_controller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_camera_controller.html">CameraController</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_clouds_from_directory_loader.html">CloudsFromDirectoryLoader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this loader, if you have several pointcloud-folders in the same directory and want to load all of them at once. This controller will create a <a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">DynamicLoaderController</a> for each of the point clouds.  <a href="class_controllers_1_1_clouds_from_directory_loader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_dynamic_loader_controller.html">DynamicLoaderController</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_f_p_s_output_controller.html">FPSOutputController</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this script to load a single PointCloud from a directory.  <a href="class_controllers_1_1_dynamic_loader_controller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_loader_controller.html">PointCloudLoaderController</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_set_multi_time_controller.html">PointCloudSetMultiTimeController</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_set_one_time_controller.html">PointCloudSetOneTimeController</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads and renders a PointCloud from a folder completely at once. For each node a GameObject is created.  <a href="class_controllers_1_1_point_cloud_loader_controller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_set_real_time_controller.html">PointCloudSetRealTimeController</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed  <a href="class_controllers_1_1_point_cloud_set_real_time_controller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->

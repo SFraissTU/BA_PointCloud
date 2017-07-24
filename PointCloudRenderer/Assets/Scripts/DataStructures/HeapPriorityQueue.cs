@@ -6,6 +6,11 @@ using System.Text;
 using UnityEngine;
 
 namespace DataStructures {
+    /// <summary>
+    /// A priority queue implemented with a Max Heap. This queue is threadsafe. Each function locks over a mutex-object
+    /// </summary>
+    /// <typeparam name="I">Priority-Type</typeparam>
+    /// <typeparam name="T">Value-Type</typeparam>
     public class HeapPriorityQueue<I, T> : PriorityQueue<I, T> where I : IComparable<I> {
 
         private Entry[] heapArray;
@@ -16,6 +21,10 @@ namespace DataStructures {
         public HeapPriorityQueue() : this(20) {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="capacity">Initial array length</param>
         public HeapPriorityQueue(int capacity) {
             lock (locker) {
                 initialCapacity = capacity;
@@ -23,6 +32,10 @@ namespace DataStructures {
             }
         }
 
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        /// <param name="original">not null</param>
         public HeapPriorityQueue(HeapPriorityQueue<I, T> original) {
             lock (locker) {
                 initialCapacity = original.initialCapacity;
@@ -65,6 +78,9 @@ namespace DataStructures {
             }
         }
 
+        /// <summary>
+        /// Number of Elements inserted in the Heap
+        /// </summary>
         public override int Count {
             get {
                 lock (locker) {
@@ -73,20 +89,29 @@ namespace DataStructures {
             }
         }
 
+        /// <summary>
+        /// Removes all elements from the heap
+        /// </summary>
         public override void Clear() {
             lock (locker) {
                 count = 0;
                 heapArray = new Entry[initialCapacity];
             }
         }
-
-        //Complexity: O(logn)
+        
+        /// <summary>
+        /// Removes the element with the highest priority from the heap and returns it. Throws an InvalidOperationException if queue is empty.
+        /// Runs in O(logn)
+        /// </summary>
         public override T Dequeue() {
             I p;
             return Dequeue(out p);
         }
-
-        //Removes and returns the element with the highest priority from the queue. The priority is given through the parameter. Throws an InvalidOperationExcpetion if no element exists
+        
+        /// <summary>
+        /// Removes the element with the highest priority from the heap and returns it. Its priority is given through the parameter. Throws an InvalidOperationException if queue is empty.
+        /// Runs in O(logn)
+        /// </summary>
         public override T Dequeue(out I priority) {
             lock (locker) {
                 if (count == 0) throw new InvalidOperationException("Queue is empty!");
@@ -100,14 +125,22 @@ namespace DataStructures {
             }
         }
 
+        /// <summary>
+        /// Returns the maximum priority in the queue. Throws an InvalidOperationException if the queue is empty
+        /// </summary>
         public override I MaxPriority() {
             lock (locker) {
                 if (count == 0) throw new InvalidOperationException("Queue is empty!");
                 return heapArray[0].priority;
             }
         }
-
-        //Complexity: O(logn)
+        
+        /// <summary>
+        /// Inserts an element into the queue.
+        /// Runs in O(logn)
+        /// </summary>
+        /// <param name="element">Value</param>
+        /// <param name="priority">Priority</param>
         public override void Enqueue(T element, I priority) {
             lock (locker) {
                 if (count == heapArray.Length) {
@@ -136,28 +169,40 @@ namespace DataStructures {
             heapArray[j] = ei;
         }
 
-        //Complexity: O(n)
+        /// <summary>
+        /// Returns an Enumerator, which enables enumerating in priority order through the queue. Changes in the queue after calling this function are not seen in the iterator, as the queue is copied.
+        /// This runs in O(n)
+        /// </summary>
         public override IEnumerator<T> GetEnumerator() {
             lock (locker) {
                 return new HeapPriorityQueueEnumerator(this);
             }
         }
 
+        /// <summary>
+        /// Returns true, iff Count is zero
+        /// </summary>
         public override bool IsEmpty() {
             lock (locker) {
                 return count == 0;
             }
         }
-
-        //Complexity: O(1)
+        
+        /// <summary>
+        /// Returns the element with the highest priority without removing it. If the queue is empty, an InvalidOperationException is thrown.
+        /// Runs in O(1)
+        /// </summary>
         public override T Peek() {
             lock (locker) {
                 if (Count == 0) throw new InvalidOperationException("Queue is empty!");
                 return heapArray[0].element;
             }
         }
-
-        //Complexity: O(n)
+        
+        /// <summary>
+        /// Removes the element from the queue, if it exists.
+        /// Runs in O(n)
+        /// </summary>
         public override void Remove(T element) {
             lock (locker) {
                 for (int i = 0; i < count; i++) {
@@ -168,8 +213,11 @@ namespace DataStructures {
                 }
             }
         }
-
-        //Complexity: O(n)
+        
+        /// <summary>
+        /// Removes the given element with the given priority from the queue, if it exists. Providing the priority might speed up the process.
+        /// Runs in O(n)
+        /// </summary>
         public override void Remove(T element, I priority) {
             lock (locker) {
                 if (count == 0) return;

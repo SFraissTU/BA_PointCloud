@@ -7,8 +7,6 @@ using System.Text;
 using UnityEngine;
 
 namespace CloudData {
-    /* Resembles a node of the nested octree
-    */
     /// <summary>
     /// Resembles a node of the nested octree.
     /// </summary>

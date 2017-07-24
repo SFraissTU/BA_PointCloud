@@ -6,8 +6,15 @@ using CloudData;
 using UnityEngine;
 
 namespace Loading {
+    /// <summary>
+    /// Various help functions
+    /// </summary>
     class Util {
 
+        /// <summary>
+        /// Checks whether the bounding box is inside the frustum.
+        /// Actually, there is a Unity function for this, however that one can only be called from the main thread.
+        /// </summary>
         public static bool InsideFrustum(BoundingBox box, Plane[] frustum) {
             bool inside;
             for (int i = 1; i < 5; i++) {
@@ -33,6 +40,10 @@ namespace Loading {
             return true;
         }
 
+        /// <summary>
+        /// Checks whether the vector is inside the frustum.
+        /// Actually, there is a Unity function for this, however that one can only be called from the main thread.
+        /// </summary>
         public static bool InsideFrustum(Vector3 vec, Plane[] frustum) {
             bool inside;
             for (int i = 0; i < 5; i++) {

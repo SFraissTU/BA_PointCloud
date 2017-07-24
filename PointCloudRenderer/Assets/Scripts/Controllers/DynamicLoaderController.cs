@@ -12,23 +12,28 @@ namespace Controllers {
     /* While PointCloudLoaderController will load the complete file as one and render the comlete one, 
      * the DynamicLoaderController will first only load the hierarchy. It can be given registered at a PointCloudSetController to render it.
      */
+     /// <summary>
+     /// Use this script to load a single PointCloud from a directory.
+     /// </summary>
     public class DynamicLoaderController : MonoBehaviour {
-
-        //-----Public Options-----
-        //Path to the folder in which the cloud.js is
+        
+        /// <summary>
+        /// Path to the folder which contains the cloud.js file
+        /// </summary>
         public string cloudPath;
 
+        /// <summary>
+        /// The PointSetController to use
+        /// </summary>
         public AbstractPointSetController setController;
 
-
-        // Use this for initialization
         void Start() {
             setController.RegisterController(this);
             Thread thread = new Thread(LoadHierarchy);
             thread.Start();
         }
-
-        void LoadHierarchy() {
+        
+        private void LoadHierarchy() {
             try {
                 if (!cloudPath.EndsWith("\\")) {
                     cloudPath = cloudPath + "\\";

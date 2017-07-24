@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -67,71 +67,513 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="class_data_structures_1_1_heap_priority_queue-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">DataStructures.HeapPriorityQueue&lt; I, T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>A priority queue implemented with a Max Heap. This queue is threadsafe. Each function locks over a mutex-object  
+ <a href="class_data_structures_1_1_heap_priority_queue.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for DataStructures.HeapPriorityQueue&lt; I, T &gt;:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_data_structures_1_1_heap_priority_queue.png" usemap="#DataStructures.HeapPriorityQueue_3C_20I_2C_20T_20_3E_map" alt=""/>
   <map id="DataStructures.HeapPriorityQueue_3C_20I_2C_20T_20_3E_map" name="DataStructures.HeapPriorityQueue_3C_20I_2C_20T_20_3E_map">
-<area href="class_data_structures_1_1_priority_queue.html" alt="DataStructures.PriorityQueue&lt; I, T &gt;" shape="rect" coords="0,56,252,80"/>
+<area href="class_data_structures_1_1_priority_queue.html" title="A threadsafe PriorityQueue. " alt="DataStructures.PriorityQueue&lt; I, T &gt;" shape="rect" coords="0,56,252,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a534860c61751a4b72ec6960259f0202e"><td class="memItemLeft" align="right" valign="top"><a id="a534860c61751a4b72ec6960259f0202e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HeapPriorityQueue</b> (int capacity)</td></tr>
+<tr class="memitem:a534860c61751a4b72ec6960259f0202e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a534860c61751a4b72ec6960259f0202e">HeapPriorityQueue</a> (int capacity)</td></tr>
 <tr class="separator:a534860c61751a4b72ec6960259f0202e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad591fc63bc6be7028267e66d90f55d22"><td class="memItemLeft" align="right" valign="top"><a id="ad591fc63bc6be7028267e66d90f55d22"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HeapPriorityQueue</b> (<a class="el" href="class_data_structures_1_1_heap_priority_queue.html">HeapPriorityQueue</a>&lt; I, T &gt; original)</td></tr>
+<tr class="memitem:ad591fc63bc6be7028267e66d90f55d22"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#ad591fc63bc6be7028267e66d90f55d22">HeapPriorityQueue</a> (<a class="el" href="class_data_structures_1_1_heap_priority_queue.html">HeapPriorityQueue</a>&lt; I, T &gt; original)</td></tr>
+<tr class="memdesc:ad591fc63bc6be7028267e66d90f55d22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Constructor  <a href="#ad591fc63bc6be7028267e66d90f55d22">More...</a><br /></td></tr>
 <tr class="separator:ad591fc63bc6be7028267e66d90f55d22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00b61bd157c306de51be32441419521b"><td class="memItemLeft" align="right" valign="top"><a id="a00b61bd157c306de51be32441419521b"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr>
+<tr class="memitem:a00b61bd157c306de51be32441419521b"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a00b61bd157c306de51be32441419521b">Clear</a> ()</td></tr>
+<tr class="memdesc:a00b61bd157c306de51be32441419521b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all elements from the heap  <a href="#a00b61bd157c306de51be32441419521b">More...</a><br /></td></tr>
 <tr class="separator:a00b61bd157c306de51be32441419521b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09e40d86cc08d7476bb3319e6b37515b"><td class="memItemLeft" align="right" valign="top"><a id="a09e40d86cc08d7476bb3319e6b37515b"></a>
-override T&#160;</td><td class="memItemRight" valign="bottom"><b>Dequeue</b> ()</td></tr>
+<tr class="memitem:a09e40d86cc08d7476bb3319e6b37515b"><td class="memItemLeft" align="right" valign="top">override T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a09e40d86cc08d7476bb3319e6b37515b">Dequeue</a> ()</td></tr>
+<tr class="memdesc:a09e40d86cc08d7476bb3319e6b37515b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the element with the highest priority from the heap and returns it. Throws an InvalidOperationException if queue is empty. Runs in O(logn)  <a href="#a09e40d86cc08d7476bb3319e6b37515b">More...</a><br /></td></tr>
 <tr class="separator:a09e40d86cc08d7476bb3319e6b37515b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc2b3a152c93202b4e3a7cf9292ce9d1"><td class="memItemLeft" align="right" valign="top"><a id="abc2b3a152c93202b4e3a7cf9292ce9d1"></a>
-override T&#160;</td><td class="memItemRight" valign="bottom"><b>Dequeue</b> (out I priority)</td></tr>
+<tr class="memitem:abc2b3a152c93202b4e3a7cf9292ce9d1"><td class="memItemLeft" align="right" valign="top">override T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#abc2b3a152c93202b4e3a7cf9292ce9d1">Dequeue</a> (out I priority)</td></tr>
+<tr class="memdesc:abc2b3a152c93202b4e3a7cf9292ce9d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the element with the highest priority from the heap and returns it. Its priority is given through the parameter. Throws an InvalidOperationException if queue is empty. Runs in O(logn)  <a href="#abc2b3a152c93202b4e3a7cf9292ce9d1">More...</a><br /></td></tr>
 <tr class="separator:abc2b3a152c93202b4e3a7cf9292ce9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb33bb5d4372b108889f6bf26084860c"><td class="memItemLeft" align="right" valign="top"><a id="abb33bb5d4372b108889f6bf26084860c"></a>
-override I&#160;</td><td class="memItemRight" valign="bottom"><b>MaxPriority</b> ()</td></tr>
+<tr class="memitem:abb33bb5d4372b108889f6bf26084860c"><td class="memItemLeft" align="right" valign="top">override I&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#abb33bb5d4372b108889f6bf26084860c">MaxPriority</a> ()</td></tr>
+<tr class="memdesc:abb33bb5d4372b108889f6bf26084860c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum priority in the queue. Throws an InvalidOperationException if the queue is empty  <a href="#abb33bb5d4372b108889f6bf26084860c">More...</a><br /></td></tr>
 <tr class="separator:abb33bb5d4372b108889f6bf26084860c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae76c92ec00718a34dc2c97fc79088d5f"><td class="memItemLeft" align="right" valign="top"><a id="ae76c92ec00718a34dc2c97fc79088d5f"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>Enqueue</b> (T element, I priority)</td></tr>
+<tr class="memitem:ae76c92ec00718a34dc2c97fc79088d5f"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#ae76c92ec00718a34dc2c97fc79088d5f">Enqueue</a> (T element, I priority)</td></tr>
+<tr class="memdesc:ae76c92ec00718a34dc2c97fc79088d5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts an element into the queue. Runs in O(logn)  <a href="#ae76c92ec00718a34dc2c97fc79088d5f">More...</a><br /></td></tr>
 <tr class="separator:ae76c92ec00718a34dc2c97fc79088d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a494343382d19d56e05302ce33c9104"><td class="memItemLeft" align="right" valign="top"><a id="a1a494343382d19d56e05302ce33c9104"></a>
-override IEnumerator&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetEnumerator</b> ()</td></tr>
+<tr class="memitem:a1a494343382d19d56e05302ce33c9104"><td class="memItemLeft" align="right" valign="top">override IEnumerator&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a1a494343382d19d56e05302ce33c9104">GetEnumerator</a> ()</td></tr>
+<tr class="memdesc:a1a494343382d19d56e05302ce33c9104"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an Enumerator, which enables enumerating in priority order through the queue. Changes in the queue after calling this function are not seen in the iterator, as the queue is copied. This runs in O(n)  <a href="#a1a494343382d19d56e05302ce33c9104">More...</a><br /></td></tr>
 <tr class="separator:a1a494343382d19d56e05302ce33c9104"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab867fe3b8dbbe4635445e0e2209cab57"><td class="memItemLeft" align="right" valign="top"><a id="ab867fe3b8dbbe4635445e0e2209cab57"></a>
-override bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsEmpty</b> ()</td></tr>
+<tr class="memitem:ab867fe3b8dbbe4635445e0e2209cab57"><td class="memItemLeft" align="right" valign="top">override bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#ab867fe3b8dbbe4635445e0e2209cab57">IsEmpty</a> ()</td></tr>
+<tr class="memdesc:ab867fe3b8dbbe4635445e0e2209cab57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, iff Count is zero  <a href="#ab867fe3b8dbbe4635445e0e2209cab57">More...</a><br /></td></tr>
 <tr class="separator:ab867fe3b8dbbe4635445e0e2209cab57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ba85a275a772c791c3a3e794a67429c"><td class="memItemLeft" align="right" valign="top"><a id="a2ba85a275a772c791c3a3e794a67429c"></a>
-override T&#160;</td><td class="memItemRight" valign="bottom"><b>Peek</b> ()</td></tr>
+<tr class="memitem:a2ba85a275a772c791c3a3e794a67429c"><td class="memItemLeft" align="right" valign="top">override T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a2ba85a275a772c791c3a3e794a67429c">Peek</a> ()</td></tr>
+<tr class="memdesc:a2ba85a275a772c791c3a3e794a67429c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the element with the highest priority without removing it. If the queue is empty, an InvalidOperationException is thrown. Runs in O(1)  <a href="#a2ba85a275a772c791c3a3e794a67429c">More...</a><br /></td></tr>
 <tr class="separator:a2ba85a275a772c791c3a3e794a67429c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae082d3747d6a2421a34abea334fbb560"><td class="memItemLeft" align="right" valign="top"><a id="ae082d3747d6a2421a34abea334fbb560"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (T element)</td></tr>
+<tr class="memitem:ae082d3747d6a2421a34abea334fbb560"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#ae082d3747d6a2421a34abea334fbb560">Remove</a> (T element)</td></tr>
+<tr class="memdesc:ae082d3747d6a2421a34abea334fbb560"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the element from the queue, if it exists. Runs in O(n)  <a href="#ae082d3747d6a2421a34abea334fbb560">More...</a><br /></td></tr>
 <tr class="separator:ae082d3747d6a2421a34abea334fbb560"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8caf23c97ecbbb8ed80c81fa5031fbad"><td class="memItemLeft" align="right" valign="top"><a id="a8caf23c97ecbbb8ed80c81fa5031fbad"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (T element, I priority)</td></tr>
+<tr class="memitem:a8caf23c97ecbbb8ed80c81fa5031fbad"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a8caf23c97ecbbb8ed80c81fa5031fbad">Remove</a> (T element, I priority)</td></tr>
+<tr class="memdesc:a8caf23c97ecbbb8ed80c81fa5031fbad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the given element with the given priority from the queue, if it exists. Providing the priority might speed up the process. Runs in O(n)  <a href="#a8caf23c97ecbbb8ed80c81fa5031fbad">More...</a><br /></td></tr>
 <tr class="separator:a8caf23c97ecbbb8ed80c81fa5031fbad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a2c1ecbee7a2b790cc3b7e81f396c8bda"><td class="memItemLeft" align="right" valign="top"><a id="a2c1ecbee7a2b790cc3b7e81f396c8bda"></a>
+object&#160;</td><td class="memItemRight" valign="bottom"><b>locker</b> = new object()</td></tr>
+<tr class="separator:a2c1ecbee7a2b790cc3b7e81f396c8bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a39882f58019d6f6c16702ef5dd16b174"><td class="memItemLeft" align="right" valign="top"><a id="a39882f58019d6f6c16702ef5dd16b174"></a>
-override int&#160;</td><td class="memItemRight" valign="bottom"><b>Count</b><code> [get]</code></td></tr>
+<tr class="memitem:a39882f58019d6f6c16702ef5dd16b174"><td class="memItemLeft" align="right" valign="top">override int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html#a39882f58019d6f6c16702ef5dd16b174">Count</a><code> [get]</code></td></tr>
+<tr class="memdesc:a39882f58019d6f6c16702ef5dd16b174"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of Elements inserted in the Heap  <a href="#a39882f58019d6f6c16702ef5dd16b174">More...</a><br /></td></tr>
 <tr class="separator:a39882f58019d6f6c16702ef5dd16b174"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header properties_class_data_structures_1_1_priority_queue"><td colspan="2" onclick="javascript:toggleInherit('properties_class_data_structures_1_1_priority_queue')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="class_data_structures_1_1_priority_queue.html">DataStructures.PriorityQueue&lt; I, T &gt;</a></td></tr>
-<tr class="memitem:aec35247de1b30d371da5c9d3d2e01407 inherit properties_class_data_structures_1_1_priority_queue"><td class="memItemLeft" align="right" valign="top"><a id="aec35247de1b30d371da5c9d3d2e01407"></a>
-abstract int&#160;</td><td class="memItemRight" valign="bottom"><b>Count</b><code> [get]</code></td></tr>
+<tr class="memitem:aec35247de1b30d371da5c9d3d2e01407 inherit properties_class_data_structures_1_1_priority_queue"><td class="memItemLeft" align="right" valign="top">abstract int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_data_structures_1_1_priority_queue.html#aec35247de1b30d371da5c9d3d2e01407">Count</a><code> [get]</code></td></tr>
+<tr class="memdesc:aec35247de1b30d371da5c9d3d2e01407 inherit properties_class_data_structures_1_1_priority_queue"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of elements in this queue  <a href="class_data_structures_1_1_priority_queue.html#aec35247de1b30d371da5c9d3d2e01407">More...</a><br /></td></tr>
 <tr class="separator:aec35247de1b30d371da5c9d3d2e01407 inherit properties_class_data_structures_1_1_priority_queue"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A priority queue implemented with a Max Heap. This queue is threadsafe. Each function locks over a mutex-object </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">I</td><td>Priority-Type</td></tr>
+    <tr><td class="paramname">T</td><td>Value-Type</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="typeconstraint">
+<dl><dt><b>Type Constraints</b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>I</em></td><td>&#160;:</td><td valign="top"><em>IComparable&lt;I&gt;</em></td><td>&#160;</td></tr>
+</table>
+</dd>
+</dl>
+</div>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a534860c61751a4b72ec6960259f0202e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a534860c61751a4b72ec6960259f0202e">&#9670;&nbsp;</a></span>HeapPriorityQueue() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.<a class="el" href="class_data_structures_1_1_heap_priority_queue.html">HeapPriorityQueue</a> </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>capacity</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">capacity</td><td>Initial array length</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad591fc63bc6be7028267e66d90f55d22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad591fc63bc6be7028267e66d90f55d22">&#9670;&nbsp;</a></span>HeapPriorityQueue() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.<a class="el" href="class_data_structures_1_1_heap_priority_queue.html">HeapPriorityQueue</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_data_structures_1_1_heap_priority_queue.html">HeapPriorityQueue</a>&lt; I, T &gt;&#160;</td>
+          <td class="paramname"><em>original</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Copy Constructor </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">original</td><td>not null</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a00b61bd157c306de51be32441419521b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00b61bd157c306de51be32441419521b">&#9670;&nbsp;</a></span>Clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes all elements from the heap </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a8dfb2ec9123a0c60c28098b388e1e545">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a09e40d86cc08d7476bb3319e6b37515b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09e40d86cc08d7476bb3319e6b37515b">&#9670;&nbsp;</a></span>Dequeue() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override T <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Dequeue </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the element with the highest priority from the heap and returns it. Throws an InvalidOperationException if queue is empty. Runs in O(logn) </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a8a732750bad53930ba59e9d53893efd0">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="abc2b3a152c93202b4e3a7cf9292ce9d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc2b3a152c93202b4e3a7cf9292ce9d1">&#9670;&nbsp;</a></span>Dequeue() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override T <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Dequeue </td>
+          <td>(</td>
+          <td class="paramtype">out I&#160;</td>
+          <td class="paramname"><em>priority</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the element with the highest priority from the heap and returns it. Its priority is given through the parameter. Throws an InvalidOperationException if queue is empty. Runs in O(logn) </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a9e1ce2ebad51263dee248c2e2538946a">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ae76c92ec00718a34dc2c97fc79088d5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae76c92ec00718a34dc2c97fc79088d5f">&#9670;&nbsp;</a></span>Enqueue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Enqueue </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>element</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>priority</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inserts an element into the queue. Runs in O(logn) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">element</td><td>Value</td></tr>
+    <tr><td class="paramname">priority</td><td>Priority</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a61be8a39a46e024b9c525e303c2e3a9c">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1a494343382d19d56e05302ce33c9104"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a494343382d19d56e05302ce33c9104">&#9670;&nbsp;</a></span>GetEnumerator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override IEnumerator&lt;T&gt; <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.GetEnumerator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns an Enumerator, which enables enumerating in priority order through the queue. Changes in the queue after calling this function are not seen in the iterator, as the queue is copied. This runs in O(n) </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a91546a1854a4aa9c404b83c4f2f630b7">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ab867fe3b8dbbe4635445e0e2209cab57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab867fe3b8dbbe4635445e0e2209cab57">&#9670;&nbsp;</a></span>IsEmpty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override bool <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.IsEmpty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns true, iff Count is zero </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#ae632f425192bffb62ba226b3c4a09111">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="abb33bb5d4372b108889f6bf26084860c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb33bb5d4372b108889f6bf26084860c">&#9670;&nbsp;</a></span>MaxPriority()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override I <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.MaxPriority </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the maximum priority in the queue. Throws an InvalidOperationException if the queue is empty </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#ab4b2bddca269934a3f208bf0070fd392">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a2ba85a275a772c791c3a3e794a67429c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ba85a275a772c791c3a3e794a67429c">&#9670;&nbsp;</a></span>Peek()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override T <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Peek </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the element with the highest priority without removing it. If the queue is empty, an InvalidOperationException is thrown. Runs in O(1) </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a91777550673283c472a559a87735b7a9">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ae082d3747d6a2421a34abea334fbb560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae082d3747d6a2421a34abea334fbb560">&#9670;&nbsp;</a></span>Remove() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Remove </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>element</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the element from the queue, if it exists. Runs in O(n) </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#a5736c78300aa3cfcb633d3676c8fb20e">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a8caf23c97ecbbb8ed80c81fa5031fbad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8caf23c97ecbbb8ed80c81fa5031fbad">&#9670;&nbsp;</a></span>Remove() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Remove </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>element</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>priority</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the given element with the given priority from the queue, if it exists. Providing the priority might speed up the process. Runs in O(n) </p>
+
+<p>Implements <a class="el" href="class_data_structures_1_1_priority_queue.html#abc51f812d0d3fac90e7d5b5ef9a1e245">DataStructures.PriorityQueue&lt; I, T &gt;</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="a39882f58019d6f6c16702ef5dd16b174"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39882f58019d6f6c16702ef5dd16b174">&#9670;&nbsp;</a></span>Count</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override int <a class="el" href="class_data_structures_1_1_heap_priority_queue.html">DataStructures.HeapPriorityQueue</a>&lt; I, T &gt;.Count</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Number of Elements inserted in the Heap </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>DataStructures/HeapPriorityQueue.cs</li>
 </ul>

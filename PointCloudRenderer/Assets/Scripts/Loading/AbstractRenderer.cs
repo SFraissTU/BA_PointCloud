@@ -6,28 +6,36 @@ using System.Linq;
 using System.Text;
 
 namespace Loading {
-    /* The job of Renderers is to create GameObjects from PointCloud-Nodes. Therefore the renderer has to check, which nodes should be visible (Hierarchy Traversal), load these and create GameObjects with help of the MeshConfiguration-Class.
-     * There are OneTime- and MultiTime-Renderers. OneTime-Renderers check which nodes should be visible, then loads them and creates the GameObjects. Only when that is done, visibility can be checked again.
-     * MultiTime-Renderers however can check the visibility anytime and adjust the nodes to load also during loading.
-     * There are also SingleThreaded- and Concurrent-Renderers. ConcurrentRenderers use several threads.
-     */
+    /// <summary>
+     /// The job of an AbstractRenderer is to create GameObjects from PointCloud-Nodes and update these each frame.
+     /// There used to be several implementations for experimenting purposes, the only implementation right now is the V2Renderer.
+     /// </summary>
     public interface AbstractRenderer {
-
-        /* Registers the root node of a pointcloud in the renderer, so it will be considered in future visibility checks and GameObject creations.
-         * The given rootNode may not be null! */
+        
+         /// <summary>
+         /// Registers the root node of a point cloud in the renderer.
+         /// </summary>
+         /// <param name="rootNode">not null</param>
         void AddRootNode(Node rootNode);
-
-        /* Returns how man root nodes have been added */
+        
+        /// <summary>
+        /// Returns how many root nodes have been added
+        /// </summary>
         int GetRootNodeCount();
-
-        /* This methods stops and disables the renderer. Method calls should not leed to any GameObject-modifications anymore. Concurrent threads are scheduled to stop.
-         * Consistency is not guaranteed after the call of this method. This should only be called at the end of the program to stop concurrent threads. */
+        
+         /// <summary>
+         /// Stops the rendering process and all concurrent threads get scheduled to stop.
+         /// </summary>
         void ShutDown();
-
-        /* This method returns the current pointcount, so how many points should be visible (including points that are not yet visible, but are loaded and scheduled for GO-creation, not including points that are visible, but are scheduled for GO-destruction).
-         */
+        
+         /// <summary>
+         /// Returns the current PointCount, so how many points are loaded / visible
+         /// </summary>
         uint GetPointCount();
 
+        /// <summary>
+        /// Has to be called each frame
+        /// </summary>
         void Update();
     }
 }

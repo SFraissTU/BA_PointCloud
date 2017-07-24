@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -71,13 +71,16 @@ $(function() {
 <div class="title">ObjectCreation.PointMeshConfiguration Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Renders every point as a single pixel using the points primitive. As described in the Bachelor Thesis in chapter 3.2.1 "Single-Pixel Point Rendering".  
+ <a href="class_object_creation_1_1_point_mesh_configuration.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for ObjectCreation.PointMeshConfiguration:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_object_creation_1_1_point_mesh_configuration.png" usemap="#ObjectCreation.PointMeshConfiguration_map" alt=""/>
   <map id="ObjectCreation.PointMeshConfiguration_map" name="ObjectCreation.PointMeshConfiguration_map">
-<area href="class_object_creation_1_1_mesh_configuration.html" alt="ObjectCreation.MeshConfiguration" shape="rect" coords="0,56,236,80"/>
+<area href="class_object_creation_1_1_mesh_configuration.html" title="Defines how the points of a point cloud are rendered (points / quads / spheres etc.). Even though this is a MonoBehaviour-Script, it does not use the Start- or Update-Function. Having it as an object in your scene graph makes it easier to test different configuartions though. " alt="ObjectCreation.MeshConfiguration" shape="rect" coords="0,56,236,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -86,16 +89,146 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad910bfac398c68f9b65103df5de9f9ec"><td class="memItemLeft" align="right" valign="top"><a id="ad910bfac398c68f9b65103df5de9f9ec"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Start</b> ()</td></tr>
 <tr class="separator:ad910bfac398c68f9b65103df5de9f9ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bf5872344d3848dc39b9287396d4bd8"><td class="memItemLeft" align="right" valign="top"><a id="a9bf5872344d3848dc39b9287396d4bd8"></a>
-override GameObject&#160;</td><td class="memItemRight" valign="bottom"><b>CreateGameObject</b> (string name, Vector3[] vertexData, Color[] colorData, <a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox)</td></tr>
+<tr class="memitem:a9bf5872344d3848dc39b9287396d4bd8"><td class="memItemLeft" align="right" valign="top">override GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_object_creation_1_1_point_mesh_configuration.html#a9bf5872344d3848dc39b9287396d4bd8">CreateGameObject</a> (string name, Vector3[] vertexData, Color[] colorData, <a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox)</td></tr>
+<tr class="memdesc:a9bf5872344d3848dc39b9287396d4bd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a single GameObject for the given data.  <a href="#a9bf5872344d3848dc39b9287396d4bd8">More...</a><br /></td></tr>
 <tr class="separator:a9bf5872344d3848dc39b9287396d4bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52ff0f63947113009274de7e815f472a"><td class="memItemLeft" align="right" valign="top"><a id="a52ff0f63947113009274de7e815f472a"></a>
-override int&#160;</td><td class="memItemRight" valign="bottom"><b>GetMaximumPointsPerMesh</b> ()</td></tr>
+<tr class="memitem:a52ff0f63947113009274de7e815f472a"><td class="memItemLeft" align="right" valign="top">override int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_object_creation_1_1_point_mesh_configuration.html#a52ff0f63947113009274de7e815f472a">GetMaximumPointsPerMesh</a> ()</td></tr>
+<tr class="memdesc:a52ff0f63947113009274de7e815f472a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum number of points a mesh can contain. 4-Vertex Quad Rendering for example only allows 16250, while most others allow 65000.  <a href="#a52ff0f63947113009274de7e815f472a">More...</a><br /></td></tr>
 <tr class="separator:a52ff0f63947113009274de7e815f472a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8b986ffcec27061b4277605b2641aca"><td class="memItemLeft" align="right" valign="top"><a id="aa8b986ffcec27061b4277605b2641aca"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>RemoveGameObject</b> (GameObject gameObject)</td></tr>
+<tr class="memitem:aa8b986ffcec27061b4277605b2641aca"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_object_creation_1_1_point_mesh_configuration.html#aa8b986ffcec27061b4277605b2641aca">RemoveGameObject</a> (GameObject gameObject)</td></tr>
+<tr class="memdesc:aa8b986ffcec27061b4277605b2641aca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the GameObject  <a href="#aa8b986ffcec27061b4277605b2641aca">More...</a><br /></td></tr>
 <tr class="separator:aa8b986ffcec27061b4277605b2641aca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Renders every point as a single pixel using the points primitive. As described in the Bachelor Thesis in chapter 3.2.1 "Single-Pixel Point Rendering". </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9bf5872344d3848dc39b9287396d4bd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bf5872344d3848dc39b9287396d4bd8">&#9670;&nbsp;</a></span>CreateGameObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override GameObject ObjectCreation.PointMeshConfiguration.CreateGameObject </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector3 []&#160;</td>
+          <td class="paramname"><em>vertexData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Color []&#160;</td>
+          <td class="paramname"><em>colorData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a>&#160;</td>
+          <td class="paramname"><em>boundingBox</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a single GameObject for the given data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Name of the GameObject</td></tr>
+    <tr><td class="paramname">vertexData</td><td>Vertices (same size as colorData and the length is not higher than GetMaximumPointsPerMesh)</td></tr>
+    <tr><td class="paramname">colorData</td><td>Colors (same size as vertexData and the length is not higher than GetMaximumPointsPerMesh)</td></tr>
+    <tr><td class="paramname">boundingBox</td><td>Bounding Box</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implements <a class="el" href="class_object_creation_1_1_mesh_configuration.html#a23fa629a42465c46ab797169344c233c">ObjectCreation.MeshConfiguration</a>.</p>
+
+</div>
+</div>
+<a id="a52ff0f63947113009274de7e815f472a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52ff0f63947113009274de7e815f472a">&#9670;&nbsp;</a></span>GetMaximumPointsPerMesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override int ObjectCreation.PointMeshConfiguration.GetMaximumPointsPerMesh </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the maximum number of points a mesh can contain. 4-Vertex Quad Rendering for example only allows 16250, while most others allow 65000. </p>
+
+<p>Implements <a class="el" href="class_object_creation_1_1_mesh_configuration.html#ad5c68a195c3dcf49d75b3b6d57765265">ObjectCreation.MeshConfiguration</a>.</p>
+
+</div>
+</div>
+<a id="aa8b986ffcec27061b4277605b2641aca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8b986ffcec27061b4277605b2641aca">&#9670;&nbsp;</a></span>RemoveGameObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void ObjectCreation.PointMeshConfiguration.RemoveGameObject </td>
+          <td>(</td>
+          <td class="paramtype">GameObject&#160;</td>
+          <td class="paramname"><em>gameObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes the GameObject </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gameObject</td><td>Should be a GameObject created by this <a class="el" href="class_object_creation_1_1_mesh_configuration.html" title="Defines how the points of a point cloud are rendered (points / quads / spheres etc.). Even though this is a MonoBehaviour-Script, it does not use the Start- or Update-Function. Having it as an object in your scene graph makes it easier to test different configuartions though. ">MeshConfiguration</a></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="class_object_creation_1_1_mesh_configuration.html#ad6658e84abae937703fdad3b7e64de6e">ObjectCreation.MeshConfiguration</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>ObjectCreation/PointMeshConfiguration.cs</li>
 </ul>

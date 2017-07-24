@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -71,6 +71,9 @@ $(function() {
 <div class="title">Controllers.PointCloudLoaderController Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Loads and renders a PointCloud from a folder completely at once. For each node a GameObject is created.  
+ <a href="class_controllers_1_1_point_cloud_loader_controller.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for Controllers.PointCloudLoaderController:</div>
 <div class="dyncontent">
@@ -82,16 +85,67 @@ Inheritance diagram for Controllers.PointCloudLoaderController:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab078f86da48d6f30533fc56e55afd46a"><td class="memItemLeft" align="right" valign="top"><a id="ab078f86da48d6f30533fc56e55afd46a"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>cloudPath</b></td></tr>
+<tr class="memitem:ab078f86da48d6f30533fc56e55afd46a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_loader_controller.html#ab078f86da48d6f30533fc56e55afd46a">cloudPath</a></td></tr>
+<tr class="memdesc:ab078f86da48d6f30533fc56e55afd46a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to the folder which contains the cloud.js file  <a href="#ab078f86da48d6f30533fc56e55afd46a">More...</a><br /></td></tr>
 <tr class="separator:ab078f86da48d6f30533fc56e55afd46a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bb507914cb9523f6199752ea6f94408"><td class="memItemLeft" align="right" valign="top"><a id="a9bb507914cb9523f6199752ea6f94408"></a>
-<a class="el" href="class_object_creation_1_1_mesh_configuration.html">MeshConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><b>meshConfiguration</b></td></tr>
+<tr class="memitem:a9bb507914cb9523f6199752ea6f94408"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_object_creation_1_1_mesh_configuration.html">MeshConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_loader_controller.html#a9bb507914cb9523f6199752ea6f94408">meshConfiguration</a></td></tr>
+<tr class="memdesc:a9bb507914cb9523f6199752ea6f94408"><td class="mdescLeft">&#160;</td><td class="mdescRight">How to render the PointCloud  <a href="#a9bb507914cb9523f6199752ea6f94408">More...</a><br /></td></tr>
 <tr class="separator:a9bb507914cb9523f6199752ea6f94408"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44e6b8b4c81612f9376d587033b4220f"><td class="memItemLeft" align="right" valign="top"><a id="a44e6b8b4c81612f9376d587033b4220f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>moveToOrigin</b></td></tr>
+<tr class="memitem:a44e6b8b4c81612f9376d587033b4220f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_controllers_1_1_point_cloud_loader_controller.html#a44e6b8b4c81612f9376d587033b4220f">moveToOrigin</a></td></tr>
+<tr class="memdesc:a44e6b8b4c81612f9376d587033b4220f"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the center of the cloud should be moved to the origin  <a href="#a44e6b8b4c81612f9376d587033b4220f">More...</a><br /></td></tr>
 <tr class="separator:a44e6b8b4c81612f9376d587033b4220f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Loads and renders a PointCloud from a folder completely at once. For each node a GameObject is created. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="ab078f86da48d6f30533fc56e55afd46a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab078f86da48d6f30533fc56e55afd46a">&#9670;&nbsp;</a></span>cloudPath</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Controllers.PointCloudLoaderController.cloudPath</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Path to the folder which contains the cloud.js file </p>
+
+</div>
+</div>
+<a id="a9bb507914cb9523f6199752ea6f94408"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bb507914cb9523f6199752ea6f94408">&#9670;&nbsp;</a></span>meshConfiguration</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_object_creation_1_1_mesh_configuration.html">MeshConfiguration</a> Controllers.PointCloudLoaderController.meshConfiguration</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>How to render the PointCloud </p>
+
+</div>
+</div>
+<a id="a44e6b8b4c81612f9376d587033b4220f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44e6b8b4c81612f9376d587033b4220f">&#9670;&nbsp;</a></span>moveToOrigin</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Controllers.PointCloudLoaderController.moveToOrigin</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>If the center of the cloud should be moved to the origin </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>Controllers/PointCloudLoaderController.cs</li>
 </ul>

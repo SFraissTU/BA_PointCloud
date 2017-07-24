@@ -5,7 +5,9 @@ using System.Text;
 
 namespace Loading
 {
-    //Attributes for FileReading
+    /// <summary>
+    /// Attributes for FileReading
+    /// </summary>
     class PointAttributes
     {
         public const string POSITION_CARTESIAN = "POSITION_CARTESIAN";

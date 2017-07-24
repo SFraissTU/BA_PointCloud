@@ -6,11 +6,13 @@ using System.Text;
 using UnityEngine;
 
 namespace Loading {
-    /* This struct can be used to describe the rendering priority.
-     * The special thing here is, that the octree-level is also considered.
-     * So nodes with a lower level will have a higher priority than nodes with a higher level
-     * For nodes at the same level, the given priority-double-value determines the order.
-     */
+
+    /// <summary>
+    /// This struct can be used to describe the rendering priority. (See Bachelor Thesis chapter 3.1.5 "Loading Priority")
+    /// The octree-level as well as the calculated priority value are considered.
+    /// So (grand-)parents will have a higher priority than their (grand-)children.
+    /// For nodes without such a relationship, the given priority-double-value determines the order.
+    /// </summary>
     struct LoadingPriority : IComparable<LoadingPriority> {
 
         public readonly PointCloudMetaData cloud;
@@ -18,6 +20,13 @@ namespace Loading {
         public readonly double calculatedPriority;
         public readonly int invert;
 
+        /// <summary>
+        /// Creates a new Loading Priority
+        /// </summary>
+        /// <param name="cloud">CloudMetaData, to identify the cloud the node belongs to</param>
+        /// <param name="nodeName">The name of the node</param>
+        /// <param name="calculatedPriority">Calculated Priority Value</param>
+        /// <param name="invert">True, if the priority should be inverted, such that high priority becomes low priority and vice versa.</param>
         public LoadingPriority(PointCloudMetaData cloud, string nodeName, double calculatedPriority, bool invert) {
             this.cloud = cloud;
             this.nodeName = nodeName;
@@ -66,6 +75,9 @@ namespace Loading {
             return a.CompareTo(b) > 0;
         }
 
+        /// <summary>
+        /// Inverts the priority
+        /// </summary>
         public static LoadingPriority operator- (LoadingPriority p) {
             return new LoadingPriority(p.cloud, p.nodeName, p.calculatedPriority, p.invert == +1);
         }

@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -73,6 +73,9 @@ $(function() {
 <div class="title">Loading.LoadingPriority Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>This struct can be used to describe the rendering priority. (See Bachelor Thesis chapter 3.1.5 "Loading Priority") The octree-level as well as the calculated priority value are considered. So (grand-)parents will have a higher priority than their (grand-)children. For nodes without such a relationship, the given priority-double-value determines the order.  
+ <a href="struct_loading_1_1_loading_priority.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for Loading.LoadingPriority:</div>
 <div class="dyncontent">
@@ -84,8 +87,8 @@ Inheritance diagram for Loading.LoadingPriority:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a598efdfb29010f81259575c1b5b6a4bc"><td class="memItemLeft" align="right" valign="top"><a id="a598efdfb29010f81259575c1b5b6a4bc"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>LoadingPriority</b> (<a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> cloud, string nodeName, double calculatedPriority, bool invert)</td></tr>
+<tr class="memitem:a598efdfb29010f81259575c1b5b6a4bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_loading_1_1_loading_priority.html#a598efdfb29010f81259575c1b5b6a4bc">LoadingPriority</a> (<a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> cloud, string nodeName, double calculatedPriority, bool invert)</td></tr>
+<tr class="memdesc:a598efdfb29010f81259575c1b5b6a4bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new <a class="el" href="namespace_loading.html">Loading</a> Priority  <a href="#a598efdfb29010f81259575c1b5b6a4bc">More...</a><br /></td></tr>
 <tr class="separator:a598efdfb29010f81259575c1b5b6a4bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a953a6e0248f7224fe88ec1eca46c832d"><td class="memItemLeft" align="right" valign="top"><a id="a953a6e0248f7224fe88ec1eca46c832d"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>CompareTo</b> (<a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a> other)</td></tr>
@@ -99,8 +102,8 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;</
 <tr class="memitem:ab5fd0b00e75e50839a0d3ddfe115112c"><td class="memItemLeft" align="right" valign="top"><a id="ab5fd0b00e75e50839a0d3ddfe115112c"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;</b> (<a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a> a, <a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a> b)</td></tr>
 <tr class="separator:ab5fd0b00e75e50839a0d3ddfe115112c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5edd56d05daf22b47d1d6375627f3487"><td class="memItemLeft" align="right" valign="top"><a id="a5edd56d05daf22b47d1d6375627f3487"></a>
-static <a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> (<a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a> p)</td></tr>
+<tr class="memitem:a5edd56d05daf22b47d1d6375627f3487"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_loading_1_1_loading_priority.html#a5edd56d05daf22b47d1d6375627f3487">operator-</a> (<a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a> p)</td></tr>
+<tr class="memdesc:a5edd56d05daf22b47d1d6375627f3487"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inverts the priority  <a href="#a5edd56d05daf22b47d1d6375627f3487">More...</a><br /></td></tr>
 <tr class="separator:a5edd56d05daf22b47d1d6375627f3487"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -118,6 +121,97 @@ readonly double&#160;</td><td class="memItemRight" valign="bottom"><b>calculated
 readonly int&#160;</td><td class="memItemRight" valign="bottom"><b>invert</b></td></tr>
 <tr class="separator:a3e1cca3f2f6b39cb1f213754a45f2541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>This struct can be used to describe the rendering priority. (See Bachelor Thesis chapter 3.1.5 "Loading Priority") The octree-level as well as the calculated priority value are considered. So (grand-)parents will have a higher priority than their (grand-)children. For nodes without such a relationship, the given priority-double-value determines the order. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a598efdfb29010f81259575c1b5b6a4bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a598efdfb29010f81259575c1b5b6a4bc">&#9670;&nbsp;</a></span>LoadingPriority()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Loading.LoadingPriority.LoadingPriority </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td>
+          <td class="paramname"><em>cloud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>nodeName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>calculatedPriority</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>invert</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new <a class="el" href="namespace_loading.html">Loading</a> Priority </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cloud</td><td>CloudMetaData, to identify the cloud the node belongs to</td></tr>
+    <tr><td class="paramname">nodeName</td><td>The name of the node</td></tr>
+    <tr><td class="paramname">calculatedPriority</td><td>Calculated Priority Value</td></tr>
+    <tr><td class="paramname">invert</td><td>True, if the priority should be inverted, such that high priority becomes low priority and vice versa.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5edd56d05daf22b47d1d6375627f3487"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5edd56d05daf22b47d1d6375627f3487">&#9670;&nbsp;</a></span>operator-()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a> Loading.LoadingPriority.operator- </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_loading_1_1_loading_priority.html">LoadingPriority</a>&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inverts the priority </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>Loading/LoadingPriority.cs</li>
 </ul>

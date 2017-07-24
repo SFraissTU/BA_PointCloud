@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['getchild',['GetChild',['../class_cloud_data_1_1_node.html#a93ba39401d22c904ec3a9631fca1c222',1,'CloudData::Node']]],
-  ['getenumerator',['GetEnumerator',['../class_cloud_data_1_1_node.html#adbc0168d2d1b1c9600c2f91720f00c18',1,'CloudData::Node']]],
-  ['getlevel',['GetLevel',['../class_cloud_data_1_1_node.html#af70f14b2486f62d63e1155a1a7d4f34f',1,'CloudData::Node']]]
+  ['enqueue',['Enqueue',['../class_data_structures_1_1_heap_priority_queue.html#ae76c92ec00718a34dc2c97fc79088d5f',1,'DataStructures.HeapPriorityQueue.Enqueue()'],['../class_data_structures_1_1_priority_queue.html#a61be8a39a46e024b9c525e303c2e3a9c',1,'DataStructures.PriorityQueue.Enqueue()'],['../class_data_structures_1_1_random_access_queue.html#a4596a5d2823e0bd998677cc66b2289ed',1,'DataStructures.RandomAccessQueue.Enqueue()']]]
 ];

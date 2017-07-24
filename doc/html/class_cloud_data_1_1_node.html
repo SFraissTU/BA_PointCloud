@@ -22,9 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">UnityRenderingsystemforlargepointclouds</div>
+   <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
  </tr>
  </tbody>
@@ -108,12 +108,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a397ec14bfc75899441b6edfcabb004ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#a397ec14bfc75899441b6edfcabb004ad">DeactivateGameObjects</a> ()</td></tr>
 <tr class="memdesc:a397ec14bfc75899441b6edfcabb004ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deactivates the GameObjects of this node. Has to be called from the main thread.  <a href="#a397ec14bfc75899441b6edfcabb004ad">More...</a><br /></td></tr>
 <tr class="separator:a397ec14bfc75899441b6edfcabb004ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a7c01462a603882108e401c8119e388"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#a8a7c01462a603882108e401c8119e388">ReactivateGameObjects</a> ()</td></tr>
-<tr class="memdesc:a8a7c01462a603882108e401c8119e388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activates the GameObjects of this node (GameObjects are usually active after creation. A call of this function only makes sense after previously calling DeactivateGameObjects). Has to be called from the main thread.  <a href="#a8a7c01462a603882108e401c8119e388">More...</a><br /></td></tr>
-<tr class="separator:a8a7c01462a603882108e401c8119e388"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb88a03cff66169770082a2e72a9f326"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#aeb88a03cff66169770082a2e72a9f326">AreGameObjectsActive</a> ()</td></tr>
-<tr class="memdesc:aeb88a03cff66169770082a2e72a9f326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, iff there are Game Objects and they are active OR there are not Game Objects for this object.  <a href="#aeb88a03cff66169770082a2e72a9f326">More...</a><br /></td></tr>
-<tr class="separator:aeb88a03cff66169770082a2e72a9f326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af82be4d0f143e8894ec6d2ecf4ae8c31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#af82be4d0f143e8894ec6d2ecf4ae8c31">SetPoints</a> (Vector3[] vertices, Color[] colors)</td></tr>
 <tr class="memdesc:af82be4d0f143e8894ec6d2ecf4ae8c31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the point data. Throws an exception if gameobjects already exist or vertices or colors are null or their length do not match. Also sets the point count.  <a href="#af82be4d0f143e8894ec6d2ecf4ae8c31">More...</a><br /></td></tr>
 <tr class="separator:af82be4d0f143e8894ec6d2ecf4ae8c31"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,7 +142,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:ad6676243e485f19675af4055c164071b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the node, which is the path of the node in the tree. For example "023" for the forth child of the third child of the first child of the root node. (readonly)  <a href="#ad6676243e485f19675af4055c164071b">More...</a><br /></td></tr>
 <tr class="separator:ad6676243e485f19675af4055c164071b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad82330bd7fb62f8c25512d2f3ecd7888"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#ad82330bd7fb62f8c25512d2f3ecd7888">BoundingBox</a><code> [get]</code></td></tr>
-<tr class="memdesc:ad82330bd7fb62f8c25512d2f3ecd7888"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a> of the node (readonly)  <a href="#ad82330bd7fb62f8c25512d2f3ecd7888">More...</a><br /></td></tr>
+<tr class="memdesc:ad82330bd7fb62f8c25512d2f3ecd7888"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_cloud_data_1_1_bounding_box.html" title="An Axis-Aligned Bounding Box for a Node. Note that the values of the bounding box are not final...">BoundingBox</a> of the node (readonly)  <a href="#ad82330bd7fb62f8c25512d2f3ecd7888">More...</a><br /></td></tr>
 <tr class="separator:ad82330bd7fb62f8c25512d2f3ecd7888"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7600b8769acc09e7d3a6d4a5382fed8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_node.html">Node</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#ae7600b8769acc09e7d3a6d4a5382fed8">Parent</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:ae7600b8769acc09e7d3a6d4a5382fed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The parent of this node (may be null, if this is a root node)  <a href="#ae7600b8769acc09e7d3a6d4a5382fed8">More...</a><br /></td></tr>
@@ -159,9 +153,6 @@ Properties</h2></td></tr>
 <tr class="memitem:acc0afd56fb7f3c0c22fdfda9c43dce0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#acc0afd56fb7f3c0c22fdfda9c43dce0c">MetaData</a><code> [get]</code></td></tr>
 <tr class="memdesc:acc0afd56fb7f3c0c22fdfda9c43dce0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The metadata identifying which pointcloud this node belongs to  <a href="#acc0afd56fb7f3c0c22fdfda9c43dce0c">More...</a><br /></td></tr>
 <tr class="separator:acc0afd56fb7f3c0c22fdfda9c43dce0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add6b3b455a1b95a74506a849a1081f28"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cloud_data_1_1_node.html#add6b3b455a1b95a74506a849a1081f28">NodeStatus</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:add6b3b455a1b95a74506a849a1081f28"><td class="mdescLeft">&#160;</td><td class="mdescRight">The status of this node. The meaning and use of the <a class="el" href="class_cloud_data_1_1_node_status.html">NodeStatus</a> is dependent from the used renderer and does not have to be used consistently by all renders. Currently its only used by the ConcurrentMultiTimeRenderer.  <a href="#add6b3b455a1b95a74506a849a1081f28">More...</a><br /></td></tr>
-<tr class="separator:add6b3b455a1b95a74506a849a1081f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Resembles a node of the nested octree. </p>
@@ -226,33 +217,6 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aeb88a03cff66169770082a2e72a9f326"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb88a03cff66169770082a2e72a9f326">&#9670;&nbsp;</a></span>AreGameObjectsActive()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool CloudData.Node.AreGameObjectsActive </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns true, iff there are Game Objects and they are active OR there are not Game Objects for this object. </p>
-
-</div>
-</div>
 <a id="a75101ac753ab2b540c0a1f8e761f79df"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a75101ac753ab2b540c0a1f8e761f79df">&#9670;&nbsp;</a></span>CreateAllGameObjects()</h2>
 
@@ -581,33 +545,6 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a8a7c01462a603882108e401c8119e388"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a7c01462a603882108e401c8119e388">&#9670;&nbsp;</a></span>ReactivateGameObjects()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CloudData.Node.ReactivateGameObjects </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Activates the GameObjects of this node (GameObjects are usually active after creation. A call of this function only makes sense after previously calling DeactivateGameObjects). Has to be called from the main thread. </p>
-
-</div>
-</div>
 <a id="a98647399470b2adc5c6ac27ca78c5ddb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98647399470b2adc5c6ac27ca78c5ddb">&#9670;&nbsp;</a></span>RemoveGameObjects()</h2>
 
@@ -781,7 +718,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>The <a class="el" href="class_cloud_data_1_1_bounding_box.html">BoundingBox</a> of the node (readonly) </p>
+<p>The <a class="el" href="class_cloud_data_1_1_bounding_box.html" title="An Axis-Aligned Bounding Box for a Node. Note that the values of the bounding box are not final...">BoundingBox</a> of the node (readonly) </p>
 
 </div>
 </div>
@@ -830,30 +767,6 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The name of the node, which is the path of the node in the tree. For example "023" for the forth child of the third child of the first child of the root node. (readonly) </p>
-
-</div>
-</div>
-<a id="add6b3b455a1b95a74506a849a1081f28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add6b3b455a1b95a74506a849a1081f28">&#9670;&nbsp;</a></span>NodeStatus</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">byte CloudData.Node.NodeStatus</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The status of this node. The meaning and use of the <a class="el" href="class_cloud_data_1_1_node_status.html">NodeStatus</a> is dependent from the used renderer and does not have to be used consistently by all renders. Currently its only used by the ConcurrentMultiTimeRenderer. </p>
 
 </div>
 </div>

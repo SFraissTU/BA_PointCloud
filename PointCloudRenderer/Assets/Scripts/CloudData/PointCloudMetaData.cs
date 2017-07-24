@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace CloudData
 {
+    /// <summary>
+    /// Description of a Bounding Box. Created from the cloud.js-File.
+    /// Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud)
+    /// </summary>
     [Serializable]
     public class PointCloudMetaData
     {
@@ -22,6 +26,11 @@ namespace CloudData
         [NonSerialized]
         public string cloudName;
 
+        /// <summary>
+        /// Reads the metadata from a json-string.
+        /// </summary>
+        /// <param name="json">Json-String</param>
+        /// <param name="moveToOrigin">True, iff the center of the bounding boxes should be moved to the origin</param>
         public static PointCloudMetaData ReadFromJson(string json, bool moveToOrigin)
         {
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);

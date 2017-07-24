@@ -6,6 +6,10 @@ using System.Text;
 
 namespace DataStructures
 {
+    /// <summary>
+    /// A thredsafe queue
+    /// </summary>
+    /// <typeparam name="T">Value-Type</typeparam>
     class ThreadSafeQueue<T> : IEnumerable<T>
     {
         private Queue<T> queue;

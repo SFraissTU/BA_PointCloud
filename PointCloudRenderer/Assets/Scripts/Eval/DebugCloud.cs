@@ -5,6 +5,9 @@ using CloudData;
 using ObjectCreation;
 
 namespace Eval {
+    /// <summary>
+    /// Creates a simple Debug-Point-Cloud to test the MeshConfigurations. Creates a circle of 12 points near the origin.
+    /// </summary>
     public class DebugCloud : MonoBehaviour {
 
         public MeshConfiguration configuration;

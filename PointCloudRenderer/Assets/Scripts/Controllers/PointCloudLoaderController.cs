@@ -6,16 +6,23 @@ using CloudData;
 using Loading;
 
 namespace Controllers {
-    /* MonoBehaviour for loading PointClouds from a file. All points are loaded at once at the beginning and are then displayed.
-     * No dynamic changing is possible afterwards
-     */
+    
+     /// <summary>
+     /// Loads and renders a PointCloud from a folder completely at once. For each node a GameObject is created.
+     /// </summary>
     public class PointCloudLoaderController : MonoBehaviour {
-
-        //Path to the folder in which the cloud.js is
+        
+        /// <summary>
+        /// Path to the folder which contains the cloud.js file
+        /// </summary>
         public string cloudPath;
-        //Defines the type of PointCloud (Points, Quads, Circles)
+        /// <summary>
+        /// How to render the PointCloud
+        /// </summary>
         public MeshConfiguration meshConfiguration;
-        //If the cloud should be moved to the origin
+        /// <summary>
+        /// If the center of the cloud should be moved to the origin
+        /// </summary>
         public bool moveToOrigin;
 
         private PointCloudMetaData metaData;
@@ -39,7 +46,7 @@ namespace Controllers {
 
                 metaData = CloudLoader.LoadMetaData(cloudPath, moveToOrigin);
 
-                rootNode = CloudLoader.LoadPointCloud(cloudPath, metaData);
+                rootNode = CloudLoader.LoadPointCloud(metaData);
 
                 Debug.Log("Finished Loading");
 
@@ -53,7 +60,7 @@ namespace Controllers {
         void Update() {
             if (!fileLoading && rootNode != null) {
                 rootNode.CreateAllGameObjects(meshConfiguration);
-                rootNode = null; //TODO: temporary line, so this doesnt happen every frame
+                rootNode = null;
                 Debug.Log("Created GameObject");
             }
         }
