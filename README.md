@@ -12,7 +12,7 @@ Projects:
 	There are currently three demo projects:
 	
 	Assets/Scenes/BigCloudScene.unity:
-		In this example scene, all clouds from all folders in the folder "Clouds/other/Simeon_Klein" are loaded.
+		In this example scene, all clouds from all folders in the folder "Clouds/big" are loaded.
 		It contains three cameras: "Main Camera" is a freely moveable (WASDEQ, Speed Change with Shift and C) camera. DebugCamera is fixed on a certain position and closes the scene after 10 seconds.
 		DebugCamera2 moves on a predefined path for 40 seconds before closing the application.
 	
