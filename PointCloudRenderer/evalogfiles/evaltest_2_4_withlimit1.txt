@@ -1,6 +1,0 @@
-TestRun: 6/26/2017 7:42:26 PM - evalogfiles/evaltest_2_4_withlimit1
-1587
-
-Avg/Dev
-38.67142
-17.54696
