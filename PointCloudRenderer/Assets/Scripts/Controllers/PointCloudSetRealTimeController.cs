@@ -17,11 +17,11 @@ namespace Controllers {
         /// <summary>
         /// Point Budget - Maximum Number of Points in Memory / to Render
         /// </summary>
-        public uint pointBudget;
+        public uint pointBudget = 1000000;
         /// <summary>
         /// Minimum Node Size
         /// </summary>
-        public int minNodeSize;
+        public int minNodeSize = 10;
         /// <summary>
         /// Maximum number of nodes loaded per frame
         /// </summary>
