@@ -3,11 +3,14 @@ PointCloud-BachelorThesis
 
 Project files for my bachelor thesis on rendering large point clouds in Unity.
 
+## Ressources
+Please refer to the code documentation for details about the classes and scripts (Folder "/doc").
+For details about the algorithms please refer to the bachelor thesis (will be linked here soon).
+Below you will find a Getting-Started-Guide
+
 ## Projects & Demo-Scenes:
 * PointCloudRenderer: Main-Project.  
 	This project is able to load a pointcloud in the Potree-format, as described in the bachelor thesis.
-	Please refer to the code documentation for details about the classes and scripts (Folder "/doc").
-	For details about the algorithms please refer to the bachelor thesis (will be linked here soon).
 	
 	There are currently three demo scenes:
 	
@@ -27,7 +30,7 @@ Project files for my bachelor thesis on rendering large point clouds in Unity.
 	  
 * Tests: Used to test several classes in the other projects.
 
-## Getting started
+## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
 1. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter and convert your cloud into the Potree format.
 2. Open the project "PointCloudRenderer" in Unity. Go to "File"->"New Scene" to create a new scene. Press Crtl+S to save it (prefferably in the Scenes-folder).
