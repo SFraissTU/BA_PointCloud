@@ -61,9 +61,9 @@ namespace Loading {
 
         private void Run() {
             try {
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
                 while (running) {
-                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                    sw.Start();
                     toDelete = new Queue<Node>();
                     toRender = new Queue<Node>();
                     //var toProcess = Traverse();
@@ -77,6 +77,8 @@ namespace Loading {
                     }
                     sw.Stop();
                     Eval.FPSLogger.NextUpdateFrame(sw.ElapsedMilliseconds / 1000f);
+                    sw.Reset();
+                    sw.Start();
                 }
             } catch (Exception ex) {
                 Debug.LogError(ex);
@@ -110,7 +112,7 @@ namespace Loading {
             float screenHeight;
             float fieldOfView;
 
-            PriorityQueue<LoadingPriority, Node> toProcess = new HeapPriorityQueue<LoadingPriority, Node>();
+            PriorityQueue<double, Node> toProcess = new HeapPriorityQueue<double, Node>();
 
             lock (locker) {
                 if (this.frustum == null) {
@@ -138,7 +140,7 @@ namespace Loading {
                     double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
                     double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
                     double priority = projectedSize / angleWeight;
-                    toProcess.Enqueue(rootNode, new LoadingPriority(rootNode.MetaData, rootNode.Name, priority, false));
+                    toProcess.Enqueue(rootNode, priority);
                 } else {
                     DeleteNode(rootNode);
                 }
@@ -190,7 +192,7 @@ namespace Loading {
                             double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
                             double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
                             double priority = projectedSize / angleWeight;
-                            toProcess.Enqueue(child, new LoadingPriority(child.MetaData, child.Name, priority, false));
+                            toProcess.Enqueue(child, priority);
                         } else {
                             DeleteNode(child);
                         }
