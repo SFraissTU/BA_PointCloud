@@ -64,8 +64,9 @@ namespace Loading {
                 while (running) {
                     toDelete = new Queue<Node>();
                     toRender = new Queue<Node>();
-                    var toProcess = Traverse();
-                    uint pointcount = BuildRenderingQueue(toProcess);
+                    //var toProcess = Traverse();
+                    //uint pointcount = BuildRenderingQueue(toProcess);
+                    uint pointcount = TraverseAndBuildRenderingQueue();
                     mainThread.SetQueues(toRender, toDelete, pointcount);
                     lock (this) {
                         if (running) {
@@ -95,6 +96,112 @@ namespace Loading {
                 this.screenHeight = screenHeight;
                 this.fieldOfView = fieldOfView;
             }
+        }
+
+        private uint TraverseAndBuildRenderingQueue() {
+            //Camera Data
+            Vector3 cameraPosition;
+            Vector3 camForward;
+            Plane[] frustum;
+            float screenHeight;
+            float fieldOfView;
+
+            PriorityQueue<LoadingPriority, Node> toProcess = new HeapPriorityQueue<LoadingPriority, Node>();
+
+            lock (locker) {
+                if (this.frustum == null) {
+                    return 0;
+                }
+                cameraPosition = this.cameraPosition;
+                camForward = this.camForward;
+                frustum = this.frustum;
+                screenHeight = this.screenHeight;
+                fieldOfView = this.fieldOfView;
+            }
+            //Clearing Queues
+            uint renderingpointcount = 0;
+            uint maxnodestoprocess = nodesLoadedPerFrame;
+            uint maxnodestorender = nodesGOsPerFrame;
+            HashSet<Node> newVisibleNodes = new HashSet<Node>();
+
+            foreach (Node rootNode in rootNodes) {
+                Vector3 center = rootNode.BoundingBox.GetBoundsObject().center;
+                double distance = (center - cameraPosition).magnitude;
+                double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
+                double projectedSize = (screenHeight / 2.0) * rootNode.BoundingBox.Radius() / (slope * distance);
+                if (projectedSize > minNodeSize) {
+                    Vector3 camToNodeCenterDir = (center - cameraPosition).normalized;
+                    double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
+                    double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
+                    double priority = projectedSize / angleWeight;
+                    toProcess.Enqueue(rootNode, new LoadingPriority(rootNode.MetaData, rootNode.Name, priority, false));
+                } else {
+                    DeleteNode(rootNode);
+                }
+            }
+            
+            while (maxnodestoprocess > 0 && maxnodestorender > 0 && !toProcess.IsEmpty() && running) {
+                Node n = toProcess.Dequeue(); //Min Node Size was already checked
+
+                //Is Node inside frustum?
+                if (Util.InsideFrustum(n.BoundingBox, frustum)) {
+                    
+                    lock (n) {
+                        if (n.PointCount == -1) {
+                            loadingThread.ScheduleForLoading(n);
+                            --maxnodestoprocess;
+                        } else if (renderingpointcount + n.PointCount <= pointBudget) {
+                            if (n.HasGameObjects()) {
+                                renderingpointcount += (uint)n.PointCount;
+                                visibleNodes.Remove(n);
+                                newVisibleNodes.Add(n);
+                            } else if (n.HasPointsToRender()) {
+                                //Might be in Cache -> Withdraw
+                                cache.Withdraw(n);
+                                renderingpointcount += (uint)n.PointCount;
+                                toRender.Enqueue(n);
+                                --maxnodestorender;
+                                newVisibleNodes.Add(n);
+                            } else {
+                                loadingThread.ScheduleForLoading(n);
+                                --maxnodestoprocess;
+                            }
+                        } else {
+                            maxnodestoprocess = 0;
+                            maxnodestorender = 0;
+                            if (n.HasGameObjects()) {
+                                visibleNodes.Remove(n);
+                                DeleteNode(n);
+                            }
+                        }
+                    }
+
+                    foreach (Node child in n) {
+                        Vector3 center = child.BoundingBox.GetBoundsObject().center;
+                        double distance = (center - cameraPosition).magnitude;
+                        double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
+                        double projectedSize = (screenHeight / 2.0) * child.BoundingBox.Radius() / (slope * distance);
+                        if (projectedSize > minNodeSize) {
+                            Vector3 camToNodeCenterDir = (center - cameraPosition).normalized;
+                            double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
+                            double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
+                            double priority = projectedSize / angleWeight;
+                            toProcess.Enqueue(child, new LoadingPriority(child.MetaData, child.Name, priority, false));
+                        } else {
+                            DeleteNode(child);
+                        }
+                    }
+                        
+                } else {
+                    //This node or its children might be visible
+                    DeleteNode(n);
+                }
+            }
+            foreach (Node n in visibleNodes) {
+                DeleteNode(n);
+            }
+            visibleNodes = newVisibleNodes;
+            return renderingpointcount;
         }
 
         private PriorityQueue<LoadingPriority, Node> Traverse() {
