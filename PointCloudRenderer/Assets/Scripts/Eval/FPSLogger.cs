@@ -18,7 +18,6 @@ namespace Eval {
 
         private List<float> deltaTs = new List<float>(115 * 60);
         private static List<float> updateDTs = new List<float>(115 * 60);
-        private static float acdt = 0;
 
         // Use this for initialization
         void Start() {
@@ -29,12 +28,8 @@ namespace Eval {
             deltaTs.Add(Time.deltaTime);
         }
 
-        public static void NextUpdateFrame(bool updated) {
-            acdt += Time.deltaTime;
-            if (updated) {
-                updateDTs.Add(acdt);
-                acdt = 0;
-            }
+        public static void NextUpdateFrame(float updated) {
+            updateDTs.Add(updated);
         }
 
         private void OnApplicationQuit() {

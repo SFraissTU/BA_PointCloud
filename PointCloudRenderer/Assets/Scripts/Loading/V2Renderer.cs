@@ -87,7 +87,6 @@ namespace Loading {
                 this.toDelete = null;
             }
             if (toRender == null) {
-                Eval.FPSLogger.NextUpdateFrame(false);
                 return;
             }
             while (toDelete.Count != 0) {
@@ -112,7 +111,6 @@ namespace Loading {
             lock (traversalThread) {
                 Monitor.PulseAll(traversalThread);
             }
-            Eval.FPSLogger.NextUpdateFrame(true);
         }
 
         /// <summary>

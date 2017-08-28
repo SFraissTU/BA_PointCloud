@@ -62,6 +62,8 @@ namespace Loading {
         private void Run() {
             try {
                 while (running) {
+                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
                     toDelete = new Queue<Node>();
                     toRender = new Queue<Node>();
                     //var toProcess = Traverse();
@@ -73,6 +75,8 @@ namespace Loading {
                             Monitor.Wait(this);
                         }
                     }
+                    sw.Stop();
+                    Eval.FPSLogger.NextUpdateFrame(sw.ElapsedMilliseconds / 1000f);
                 }
             } catch (Exception ex) {
                 Debug.LogError(ex);
