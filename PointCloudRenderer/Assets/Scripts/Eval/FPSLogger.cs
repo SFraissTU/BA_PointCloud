@@ -58,30 +58,30 @@ namespace Eval {
             Debug.Log("MinFPS: " + minfps);
             Debug.Log("MaxFPS: " + maxfps);
 
-            sum = 0;
-            float minUdT = float.PositiveInfinity;
-            float maxUdT = float.NegativeInfinity;
-            foreach (float dT in updateDTs) {
-                sum += dT;
-                if (dT < minUdT) {
-                    minUdT = dT;
-                }
-                if (dT > maxUdT) {
-                    maxUdT = dT;
-                }
-            }
-            float avgups = updateDTs.Count / sum;
-            devsum = 0;
-            foreach (float dT in updateDTs) {
-                devsum += Mathf.Pow(((1 / dT) - avgups), 2) * dT;
-            }
-            float devups = Mathf.Sqrt(devsum / sum);
-            float minups = 1 / maxUdT;
-            float maxups = 1 / minUdT;
-            Debug.Log("AvgUPS: " + avgups);
-            Debug.Log("DevUPS: " + devups);
-            Debug.Log("MinUPS: " + minups);
-            Debug.Log("MaxUPS: " + maxups);
+            //sum = 0;
+            //float minUdT = float.PositiveInfinity;
+            //float maxUdT = float.NegativeInfinity;
+            //foreach (float dT in updateDTs) {
+            //    sum += dT;
+            //    if (dT < minUdT) {
+            //        minUdT = dT;
+            //    }
+            //    if (dT > maxUdT) {
+            //        maxUdT = dT;
+            //    }
+            //}
+            //float avgups = updateDTs.Count / sum;
+            //devsum = 0;
+            //foreach (float dT in updateDTs) {
+            //    devsum += Mathf.Pow(((1 / dT) - avgups), 2) * dT;
+            //}
+            //float devups = Mathf.Sqrt(devsum / sum);
+            //float minups = 1 / maxUdT;
+            //float maxups = 1 / minUdT;
+            //Debug.Log("AvgUPS: " + avgups);
+            //Debug.Log("DevUPS: " + devups);
+            //Debug.Log("MinUPS: " + minups);
+            //Debug.Log("MaxUPS: " + maxups);
 
             
             if (log) {
@@ -106,10 +106,10 @@ namespace Eval {
                 output.WriteLine("DevFPS: " + devfps);
                 output.WriteLine("MinFPS: " + minfps);
                 output.WriteLine("MaxFPS: " + maxfps);
-                output.WriteLine("AvgUPS: " + avgups);
-                output.WriteLine("DevUPS: " + devups);
-                output.WriteLine("MinUPS: " + minups);
-                output.WriteLine("MaxUPS: " + maxups);
+                //output.WriteLine("AvgUPS: " + avgups);
+                //output.WriteLine("DevUPS: " + devups);
+                //output.WriteLine("MinUPS: " + minups);
+                //output.WriteLine("MaxUPS: " + maxups);
                 output.Flush();
                 output.Close();
             }

@@ -61,8 +61,8 @@ namespace Loading {
 
         private void Run() {
             try {
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
+                //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                //sw.Start();
                 while (running) {
                     toDelete = new Queue<Node>();
                     toRender = new Queue<Node>();
@@ -75,10 +75,10 @@ namespace Loading {
                             Monitor.Wait(this);
                         }
                     }
-                    sw.Stop();
-                    Eval.FPSLogger.NextUpdateFrame(sw.ElapsedMilliseconds / 1000f);
-                    sw.Reset();
-                    sw.Start();
+                    //sw.Stop();
+                    //Eval.FPSLogger.NextUpdateFrame(sw.ElapsedMilliseconds / 1000f);
+                    //sw.Reset();
+                    //sw.Start();
                 }
             } catch (Exception ex) {
                 Debug.LogError(ex);
