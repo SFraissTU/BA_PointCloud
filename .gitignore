@@ -43,6 +43,7 @@ _ignore/
 
 *.avi
 PointCloudRenderer/evalogfiles/*
+PointCloudRenderer/evalapps/*
 
 #Clouds
 PointCloudRenderer/Clouds/big/*
