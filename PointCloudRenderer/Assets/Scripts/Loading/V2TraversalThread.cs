@@ -61,13 +61,9 @@ namespace Loading {
 
         private void Run() {
             try {
-                //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                //sw.Start();
                 while (running) {
                     toDelete = new Queue<Node>();
                     toRender = new Queue<Node>();
-                    //var toProcess = Traverse();
-                    //uint pointcount = BuildRenderingQueue(toProcess);
                     uint pointcount = TraverseAndBuildRenderingQueue();
                     mainThread.SetQueues(toRender, toDelete, pointcount);
                     lock (this) {
@@ -75,10 +71,6 @@ namespace Loading {
                             Monitor.Wait(this);
                         }
                     }
-                    //sw.Stop();
-                    //Eval.FPSLogger.NextUpdateFrame(sw.ElapsedMilliseconds / 1000f);
-                    //sw.Reset();
-                    //sw.Start();
                 }
             } catch (Exception ex) {
                 Debug.LogError(ex);
@@ -210,80 +202,6 @@ namespace Loading {
             return renderingpointcount;
         }
 
-        private PriorityQueue<LoadingPriority, Node> Traverse() {
-            //Camera Data
-            Vector3 cameraPosition;
-            Vector3 camForward;
-            Plane[] frustum;
-            float screenHeight;
-            float fieldOfView;
-
-            PriorityQueue<LoadingPriority, Node> toProcess = new HeapPriorityQueue<LoadingPriority, Node>();
-
-            lock (locker) {
-                if (this.frustum == null) {
-                    return toProcess;
-                }
-                cameraPosition = this.cameraPosition;
-                camForward = this.camForward;
-                frustum = this.frustum;
-                screenHeight = this.screenHeight;
-                fieldOfView = this.fieldOfView;
-            }
-            //Clearing Queues
-
-            //Initializing Checking-Queue
-            Queue<Node> toCheck = new Queue<Node>();
-            foreach (Node rootNode in rootNodes) {
-                toCheck.Enqueue(rootNode);
-            }
-            //Radii & Level
-            Dictionary<PointCloudMetaData, double> radii = new Dictionary<PointCloudMetaData, double>(rootNodes.Count);
-            for (int i = 0; i < rootNodes.Count; i++) {
-                radii.Add(rootNodes[i].MetaData, rootNodes[i].BoundingBox.Radius());
-            }
-            int lastLevel = 0;
-            //Check all nodes - Breadth first
-            while (toCheck.Count != 0 && running) {
-                Node currentNode = toCheck.Dequeue();
-                //Check Level and radius
-                if (currentNode.GetLevel() > lastLevel) {
-                    for (int i = 0; i < rootNodes.Count; i++) {
-                        radii[rootNodes[i].MetaData] /= 2;
-                    }
-                    ++lastLevel;
-                }
-                //Is Node inside frustum?
-                if (Util.InsideFrustum(currentNode.BoundingBox, frustum)) {
-                    //Calculate projected size
-                    Vector3 center = currentNode.BoundingBox.GetBoundsObject().center;
-                    double distance = (center - cameraPosition).magnitude;
-                    double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
-                    double projectedSize = (screenHeight / 2.0) * radii[currentNode.MetaData] / (slope * distance);
-                    if (projectedSize >= minNodeSize) {
-                        Vector3 camToNodeCenterDir = (center - cameraPosition).normalized;
-                        double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
-                        double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
-                        double priority = projectedSize / angleWeight;
-
-                        toProcess.Enqueue(currentNode, new LoadingPriority(currentNode.MetaData, currentNode.Name, priority, false));
-
-                        foreach (Node child in currentNode) {
-                            toCheck.Enqueue(child);
-                        }
-
-                    } else {
-                        //This node or its children might be visible
-                        DeleteNode(currentNode);
-                    }
-                } else {
-                    //This node or its children might be visible
-                    DeleteNode(currentNode);
-                }
-            }
-            return toProcess;
-        }
-
         private void DeleteNode(Node currentNode) {
             lock (currentNode) {
                 if (!currentNode.HasGameObjects()) {
@@ -312,51 +230,6 @@ namespace Loading {
                 Node n = tempToDelete.Pop();
                 toDelete.Enqueue(n);
             }
-        }
-
-        private uint BuildRenderingQueue(PriorityQueue<LoadingPriority, Node> toProcess) {
-            uint renderingpointcount = 0;
-            uint maxnodestoprocess = nodesLoadedPerFrame;
-            uint maxnodestorender = nodesGOsPerFrame;
-            HashSet<Node> newVisibleNodes = new HashSet<Node>();
-            while (maxnodestoprocess > 0 && maxnodestorender > 0 && !toProcess.IsEmpty()) {
-                LoadingPriority p;
-                Node n = toProcess.Dequeue(out p);
-                lock (n) {
-                    if (n.PointCount == -1) {
-                        loadingThread.ScheduleForLoading(n);
-                        --maxnodestoprocess;
-                    } else if (renderingpointcount + n.PointCount <= pointBudget) {
-                        if (n.HasGameObjects()) {
-                            renderingpointcount += (uint)n.PointCount;
-                            visibleNodes.Remove(n);
-                            newVisibleNodes.Add(n);
-                        } else if (n.HasPointsToRender()) {
-                            //Might be in Cache -> Withdraw
-                            cache.Withdraw(n);
-                            renderingpointcount += (uint)n.PointCount;
-                            toRender.Enqueue(n);
-                            --maxnodestorender;
-                            newVisibleNodes.Add(n);
-                        } else {
-                            loadingThread.ScheduleForLoading(n);
-                            --maxnodestoprocess;
-                        }
-                    } else {
-                        maxnodestoprocess = 0;
-                        maxnodestorender = 0;
-                        if (n.HasGameObjects()) {
-                            visibleNodes.Remove(n);
-                            DeleteNode(n);
-                        }
-                    }
-                }
-            }
-            foreach (Node n  in visibleNodes) {
-                DeleteNode(n);
-            }
-            visibleNodes = newVisibleNodes;
-            return renderingpointcount;
         }
 
         public void Stop() {
