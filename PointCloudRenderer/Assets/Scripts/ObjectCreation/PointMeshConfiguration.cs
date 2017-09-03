@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ObjectCreation
 {
     /// <summary>
-    /// Renders every point as a single pixel using the points primitive. As described in the Bachelor Thesis in chapter 3.2.1 "Single-Pixel Point Rendering".
+    /// Renders every point as a single pixel using the points primitive. As described in the Bachelor Thesis in chapter 3.3.1 "Single-Pixel Point Rendering".
     /// </summary>
     class PointMeshConfiguration : MeshConfiguration
     {

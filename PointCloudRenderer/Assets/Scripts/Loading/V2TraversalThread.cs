@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Loading {
     /// <summary>
-    /// The traversal thread of the V2 Rendering System. Checks constantly, which nodes are visible and should be rendered and which not. Described in the Bachelor Thesis in chapter 3.1.4 "Traversal Thread".
+    /// The traversal thread of the V2 Rendering System. Checks constantly, which nodes are visible and should be rendered and which not. Described in the Bachelor Thesis in chapter 3.2.4 "Traversal Thread".
     /// This is the place, where most of the magic happens.
     /// </summary>
     class V2TraversalThread {

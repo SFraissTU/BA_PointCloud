@@ -7,7 +7,7 @@ using CloudData;
 
 namespace Loading {
     /// <summary>
-    /// The LRU Cache used by the V2Renderer (See Bachelor Thesis chapter 3.1.7 "LRU Cache").
+    /// The LRU Cache used by the V2Renderer (See Bachelor Thesis chapter 3.2.7 "LRU Cache").
     /// </summary>
     class V2Cache {
 

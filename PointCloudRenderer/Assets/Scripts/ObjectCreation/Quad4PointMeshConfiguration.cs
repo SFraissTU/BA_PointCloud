@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ObjectCreation
 {
     /// <summary>
-    /// 4-Vertex Quad Rendering, as described in the thesis in chapter 3.2.2.
+    /// 4-Vertex Quad Rendering, as described in the thesis in chapter 3.3.2.
     /// Creates sceen faced squares or circles for each point with a given size in pixels, by passing each vertex 4 times to the GPU
     /// </summary>
     class Quad4PointMeshConfiguration : MeshConfiguration {

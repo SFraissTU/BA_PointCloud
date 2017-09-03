@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Loading {
     /// <summary>
-    /// The multithreaded Real-Time-Renderer as described in the Bachelor Thesis in chapter 3.1.2 - 3.1.7
+    /// The multithreaded Real-Time-Renderer as described in the Bachelor Thesis in chapter 3.2.2 - 3.2.7
     /// </summary>
     class V2Renderer : AbstractRenderer {
 

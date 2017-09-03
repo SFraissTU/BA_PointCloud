@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Loading {
     /// <summary>
-    /// The Loading Thread of the V2-Rendering-System (see Bachelor Thesis chapter 3.1.6 "The Loading Thread").
+    /// The Loading Thread of the V2-Rendering-System (see Bachelor Thesis chapter 3.2.6 "The Loading Thread").
     /// Responsible for loading the point data.
     /// </summary>
     class V2LoadingThread {

@@ -42,9 +42,9 @@ namespace ObjectCreation {
     }
 
     /// <summary>
-    /// Geometry Shader Quad Rendering, as described in the Bachelor Thesis in chapter 3.2.3.
+    /// Geometry Shader Quad Rendering, as described in the Bachelor Thesis in chapter 3.3.3.
     /// Creates a screen facing square or circle for each point using the Geometry Shader.
-    /// Also supports various interpolation modes (see Thesis chapter 3.2.4 "Interpolation").
+    /// Also supports various interpolation modes (see Thesis chapter 3.3.4 "Interpolation").
     /// This configuration also supports changes of the parameters while the application is running. Just change the parameters and check the checkbox "reload".
     /// </summary>
     class GeoQuadMeshConfiguration : MeshConfiguration {
