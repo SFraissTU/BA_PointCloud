@@ -25,7 +25,7 @@ namespace Controllers {
         /// <summary>
         /// Maximum number of nodes loaded per frame
         /// </summary>
-        public uint nodesLoadedPerFrame = 35;
+        public uint nodesLoadedPerFrame = 15;
         /// <summary>
         /// Maximum number of nodes having their gameobjects created per frame
         /// </summary>
