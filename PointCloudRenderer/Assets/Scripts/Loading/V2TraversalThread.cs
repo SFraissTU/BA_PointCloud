@@ -118,7 +118,7 @@ namespace Loading {
             }
             //Clearing Queues
             uint renderingpointcount = 0;
-            uint maxnodestoprocess = nodesLoadedPerFrame;
+            uint maxnodestoload = nodesLoadedPerFrame;
             uint maxnodestorender = nodesGOsPerFrame;
             HashSet<Node> newVisibleNodes = new HashSet<Node>();
 
@@ -138,34 +138,45 @@ namespace Loading {
                 }
             }
             
-            while (maxnodestoprocess > 0 && maxnodestorender > 0 && !toProcess.IsEmpty() && running) {
+            while (!toProcess.IsEmpty() && running) {
                 Node n = toProcess.Dequeue(); //Min Node Size was already checked
 
                 //Is Node inside frustum?
                 if (Util.InsideFrustum(n.BoundingBox, frustum)) {
-                    
+
+                    bool loadchildren = false;
                     lock (n) {
                         if (n.PointCount == -1) {
-                            loadingThread.ScheduleForLoading(n);
-                            --maxnodestoprocess;
+                            if (maxnodestoload > 0) {
+                                loadingThread.ScheduleForLoading(n);
+                                --maxnodestoload;
+                                loadchildren = true;
+                            }
                         } else if (renderingpointcount + n.PointCount <= pointBudget) {
                             if (n.HasGameObjects()) {
                                 renderingpointcount += (uint)n.PointCount;
                                 visibleNodes.Remove(n);
                                 newVisibleNodes.Add(n);
+                                loadchildren = true;
                             } else if (n.HasPointsToRender()) {
                                 //Might be in Cache -> Withdraw
-                                cache.Withdraw(n);
-                                renderingpointcount += (uint)n.PointCount;
-                                toRender.Enqueue(n);
-                                --maxnodestorender;
-                                newVisibleNodes.Add(n);
+                                if (maxnodestorender > 0) {
+                                    cache.Withdraw(n);
+                                    renderingpointcount += (uint)n.PointCount;
+                                    toRender.Enqueue(n);
+                                    --maxnodestorender;
+                                    newVisibleNodes.Add(n);
+                                    loadchildren = true;
+                                }
                             } else {
-                                loadingThread.ScheduleForLoading(n);
-                                --maxnodestoprocess;
+                                if (maxnodestoload > 0) {
+                                    loadingThread.ScheduleForLoading(n);
+                                    --maxnodestoload;
+                                    loadchildren = true;
+                                }
                             }
                         } else {
-                            maxnodestoprocess = 0;
+                            maxnodestoload = 0;
                             maxnodestorender = 0;
                             if (n.HasGameObjects()) {
                                 visibleNodes.Remove(n);
@@ -174,22 +185,24 @@ namespace Loading {
                         }
                     }
 
-                    foreach (Node child in n) {
-                        Vector3 center = child.BoundingBox.GetBoundsObject().center;
-                        double distance = (center - cameraPosition).magnitude;
-                        double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
-                        double projectedSize = (screenHeight / 2.0) * child.BoundingBox.Radius() / (slope * distance);
-                        if (projectedSize > minNodeSize) {
-                            Vector3 camToNodeCenterDir = (center - cameraPosition).normalized;
-                            double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
-                            double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
-                            double priority = projectedSize / angleWeight;
-                            toProcess.Enqueue(child, priority);
-                        } else {
-                            DeleteNode(child);
+                    if (loadchildren) {
+                        foreach (Node child in n) {
+                            Vector3 center = child.BoundingBox.GetBoundsObject().center;
+                            double distance = (center - cameraPosition).magnitude;
+                            double slope = Math.Tan(fieldOfView / 2 * Mathf.Deg2Rad);
+                            double projectedSize = (screenHeight / 2.0) * child.BoundingBox.Radius() / (slope * distance);
+                            if (projectedSize > minNodeSize) {
+                                Vector3 camToNodeCenterDir = (center - cameraPosition).normalized;
+                                double angle = Math.Acos(camForward.x * camToNodeCenterDir.x + camForward.y * camToNodeCenterDir.y + camForward.z * camToNodeCenterDir.z);
+                                double angleWeight = Math.Abs(angle) + 1.0; //+1, to prevent divsion by zero
+                                double priority = projectedSize / angleWeight;
+                                toProcess.Enqueue(child, priority);
+                            } else {
+                                DeleteNode(child);
+                            }
                         }
                     }
-                        
+
                 } else {
                     //This node or its children might be visible
                     DeleteNode(n);
