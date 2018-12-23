@@ -45,7 +45,6 @@ namespace Loading {
             } catch (Exception ex) {
                 Debug.LogError(ex);
             }
-            Debug.Log("Loading Thread stopped");
         }
 
         public void Stop() {

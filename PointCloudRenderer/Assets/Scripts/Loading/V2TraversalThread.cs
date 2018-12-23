@@ -37,6 +37,8 @@ namespace Loading {
         private V2LoadingThread loadingThread;
         private V2Cache cache;
 
+        private Thread thread;
+
         /// <summary>
         /// Creates the object, but does not start the thread yet
         /// </summary>
@@ -56,7 +58,9 @@ namespace Loading {
         /// Starts the thread
         /// </summary>
         public void Start() {
-            new Thread(Run).Start();
+            thread = new Thread(Run);
+            running = true;
+            thread.Start();
         }
 
         private void Run() {
@@ -75,7 +79,6 @@ namespace Loading {
             } catch (Exception ex) {
                 Debug.LogError(ex);
             }
-            Debug.Log("Traversal Thread stopped");
         }
 
         /// <summary>
@@ -249,6 +252,15 @@ namespace Loading {
             lock (this) {
                 running = false;
             }
+        }
+
+        public void StopAndWait() {
+            running = false;
+            if (thread != null) {
+                thread.Join();
+                thread = null;
+            }
+
         }
 
     }

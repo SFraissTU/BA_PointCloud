@@ -17,6 +17,12 @@ namespace Loading {
          /// </summary>
          /// <param name="rootNode">not null</param>
         void AddRootNode(Node rootNode);
+
+        /// <summary>
+        /// Removes the root node of a point cloud from the renderer. The node will not be rendered any more.
+        /// </summary>
+        /// <param name="rootNode">not null</param>
+        void RemoveRootNode(Node rootNode);
         
         /// <summary>
         /// Returns how many root nodes have been added

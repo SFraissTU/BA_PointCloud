@@ -1,20 +1,13 @@
-﻿using CloudData;
-using Loading;
+﻿using Loading;
 using ObjectCreation;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
-namespace Controllers {
-
-    /// <summary>
-    /// The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed
-    /// </summary>
-    [Obsolete("This class is outdated. Please use DynamicPointCloudSet instead!")]
-    public class PointCloudSetRealTimeController : AbstractPointSetController {
-        
+namespace CloudController {
+    class DynamicPointCloudSet : AbstractPointCloudSet {
         /// <summary>
         /// Point Budget - Maximum Number of Points in Memory / to Render
         /// </summary>
@@ -34,7 +27,7 @@ namespace Controllers {
         /// <summary>
         /// MeshConfiguration. Defines how to render the points.
         /// </summary>
-        public MeshConfiguration meshConfiguration;
+        public MeshConfiguration meshConfiguration = null;
         /// <summary>
         /// Cache Size in POints
         /// </summary>
@@ -47,7 +40,7 @@ namespace Controllers {
             userCamera = Camera.main;
             PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
         }
-        
+
 
         // Update is called once per frame
         void Update() {

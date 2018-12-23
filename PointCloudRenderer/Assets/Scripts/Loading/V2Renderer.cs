@@ -26,6 +26,7 @@ namespace Loading {
         private object locker = new object();
         private Queue<Node> toRender;
         private Queue<Node> toDelete;
+        private Queue<Node> toDeleteExternal; //Nodes that have been scheduled for removal via removeRoot
 
         /// <summary>
         /// Creates a new V2Renderer and starts all the threads
@@ -46,6 +47,7 @@ namespace Loading {
             loadingThread.Start();
             traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
             traversalThread.Start();
+            toDeleteExternal = new Queue<Node>();
         }
 
         /// <summary>
@@ -57,10 +59,23 @@ namespace Loading {
         }
 
         /// <summary>
+        /// Removes the root node of a point cloud from the renderer. The node will not be rendered any more.
+        /// This has to be called from the main thread!
+        /// </summary>
+        /// <param name="rootNode">not null</param>
+        public void RemoveRootNode(Node rootNode) {
+            lock (toDeleteExternal) {
+                toDeleteExternal.Enqueue(rootNode);
+            }
+        }
+
+        /// <summary>
         /// Returns how many root nodes have been added
         /// </summary>
         public int GetRootNodeCount() {
-            return rootNodes.Count;
+            lock (toDeleteExternal) {
+                return rootNodes.Count - toDeleteExternal.Count;
+            }
         }
 
         /// <summary>
@@ -106,7 +121,28 @@ namespace Loading {
                     }
                 }
             }
-
+            Monitor.Enter(toDeleteExternal);
+            while (toDeleteExternal.Count != 0) {
+                Node rootNode = toDeleteExternal.Dequeue();
+                rootNodes.Remove(rootNode);
+                Queue<Node> toRemove = new Queue<Node>();
+                toRemove.Enqueue(rootNode);
+                while (toRemove.Count != 0) {
+                    Node n = toRemove.Dequeue();
+                    cache.Withdraw(n);
+                    if (n.HasGameObjects()) {
+                        n.RemoveGameObjects(config);
+                    }
+                    if (n.HasPointsToRender()) {
+                        n.ForgetPoints();
+                        foreach (Node child in n) {
+                            toRemove.Enqueue(child);
+                        }
+                    }
+                }
+            }
+            Monitor.Exit(toDeleteExternal);
+            
             //Notify Traversal Thread
             lock (traversalThread) {
                 Monitor.PulseAll(traversalThread);

@@ -119,6 +119,21 @@ namespace CloudData {
         }
 
         /// <summary>
+        /// Removes the GameObjects of this node and all it's children. Has to be called from the main thread.
+        /// </summary>
+        /// <param name="config">The MeshConfiguration which should be used for removing the Game Objects</param>
+        public void RemoveAllGameObjects(MeshConfiguration configuration) {
+            RemoveGameObjects(configuration);
+            for (int i = 0; i < 8; i++) {
+                if (children[i] != null) {
+                    children[i].RemoveGameObjects(configuration);
+                }
+            }
+        }
+
+
+
+        /// <summary>
         /// Deactivates the GameObjects of this node. Has to be called from the main thread.
         /// </summary>
         public void DeactivateGameObjects() {

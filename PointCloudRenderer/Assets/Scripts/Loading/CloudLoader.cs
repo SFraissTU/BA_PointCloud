@@ -177,13 +177,20 @@ namespace Loading {
 
         /* Loads the points for that node and all its children
          */
-        private static void LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
+        private static uint LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
             LoadPoints(dataRPath, metaData, node);
+            uint numpoints = (uint)node.PointCount;
             for (int i = 0; i < 8; i++) {
                 if (node.HasChild(i)) {
-                    LoadAllPoints(dataRPath, metaData, node.GetChild(i));
+                    numpoints += LoadAllPoints(dataRPath, metaData, node.GetChild(i));
                 }
             }
+            return numpoints;
+        }
+
+        public static uint LoadAllPointsForNode(Node node) {
+            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "\\r\\";
+            return LoadAllPoints(dataRPath, node.MetaData, node);
         }
     }
 }

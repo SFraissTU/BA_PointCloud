@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable CS1692
+#pragma warning disable CS0618
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

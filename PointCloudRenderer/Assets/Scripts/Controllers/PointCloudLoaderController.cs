@@ -6,10 +6,11 @@ using CloudData;
 using Loading;
 
 namespace Controllers {
-    
-     /// <summary>
-     /// Loads and renders a PointCloud from a folder completely at once. For each node a GameObject is created.
-     /// </summary>
+
+    /// <summary>
+    /// Loads and renders a PointCloud from a folder completely at once. For each node a GameObject is created.
+    /// </summary>
+    [Obsolete("This class is outdated. Please use StaticPointCloudSet and PointCloudLoader instead!")]
     public class PointCloudLoaderController : MonoBehaviour {
         
         /// <summary>
