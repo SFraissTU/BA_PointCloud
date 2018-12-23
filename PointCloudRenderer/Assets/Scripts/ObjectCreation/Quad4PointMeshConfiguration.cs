@@ -8,6 +8,7 @@ namespace ObjectCreation
     /// 4-Vertex Quad Rendering, as described in the thesis in chapter 3.3.2.
     /// Creates sceen faced squares or circles for each point with a given size in pixels, by passing each vertex 4 times to the GPU
     /// </summary>
+    [Obsolete("This class is for experimental purposes only. For practical usage, please use DefaultMeshConfiguration")]
     class Quad4PointMeshConfiguration : MeshConfiguration {
         /// <summary>
         /// Radius in pixel
