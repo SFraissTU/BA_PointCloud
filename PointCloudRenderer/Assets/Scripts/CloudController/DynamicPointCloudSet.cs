@@ -32,12 +32,16 @@ namespace CloudController {
         /// Cache Size in POints
         /// </summary>
         public uint cacheSizeInPoints = 1000000;
-
-        private Camera userCamera;
+        /// <summary>
+        /// Camera to use. If none is specified, Camera.main is used
+        /// </summary>
+        public Camera userCamera;
 
         // Use this for initialization
         protected override void Initialize() {
-            userCamera = Camera.main;
+            if (userCamera == null) {
+                userCamera = Camera.main;
+            }
             PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
         }
 
