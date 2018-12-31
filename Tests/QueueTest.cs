@@ -1,10 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
 using NUnitLite;
-using DataStructures;
+using BAPointCloudRenderer.DataStructures;
 using System.Collections.Generic;
 
-namespace Tests {
+namespace BAPointCloudRenderer.Tests {
 
     [TestFixture]
     public class QueueTest {
