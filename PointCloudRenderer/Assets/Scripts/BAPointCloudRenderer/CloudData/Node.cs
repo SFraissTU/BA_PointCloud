@@ -125,7 +125,7 @@ namespace BAPointCloudRenderer.CloudData {
             RemoveGameObjects(configuration);
             for (int i = 0; i < 8; i++) {
                 if (children[i] != null) {
-                    children[i].RemoveGameObjects(configuration);
+                    children[i].RemoveAllGameObjects(configuration);
                 }
             }
         }
@@ -140,7 +140,42 @@ namespace BAPointCloudRenderer.CloudData {
                 go.SetActive(false);
             }
         }
-                
+
+        /// <summary>
+        /// Deactivates the GameObjects of this node and of all its children. Has to be called from the main thread.
+        /// </summary>
+        public void DeactivateAllGameObjects() {
+            DeactivateGameObjects();
+            for (int i = 0; i < 8; i++) {
+                if (children[i] != null) {
+                    children[i].DeactivateAllGameObjects();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reactivates the GameObjects of this node. Has to be called from the main thread.
+        /// </summary>
+        public void ReactivateGameObjects() {
+            foreach (GameObject go in gameObjects) {
+                go.SetActive(true);
+            }
+        }
+
+        /// <summary>
+        /// Deactivates the GameObjects of this node and of all its children. Has to be called from the main thread.
+        /// </summary>
+        public void ReactivateAllGameObjects() {
+            ReactivateGameObjects();
+            for (int i = 0; i < 8; i++) {
+                if (children[i] != null) {
+                    children[i].ReactivateAllGameObjects();
+                }
+            }
+        }
+
+
+
         /// <summary>
         /// Sets the point data. Throws an exception if gameobjects already exist or vertices or colors are null or their length do not match.
         /// Also sets the point count.

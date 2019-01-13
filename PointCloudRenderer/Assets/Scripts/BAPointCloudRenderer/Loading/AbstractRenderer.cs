@@ -25,9 +25,20 @@ namespace BAPointCloudRenderer.Loading {
         int GetRootNodeCount();
         
          /// <summary>
-         /// Stops the rendering process and all concurrent threads get scheduled to stop.
+         /// Stops the rendering process and all concurrent threads get scheduled to stop. 
+         /// Also removes all cloud objects created by this renderer from the scene.
          /// </summary>
         void ShutDown();
+        
+        /// <summary>
+        /// Pauses the rendering and hides all visible point clouds.
+        /// </summary>
+        void Hide();
+
+        /// <summary>
+        /// Continues the rendering and displays all visible point clouds after them being hidden via hide.
+        /// </summary>
+        void Display();
         
          /// <summary>
          /// Returns the current PointCount, so how many points are loaded / visible

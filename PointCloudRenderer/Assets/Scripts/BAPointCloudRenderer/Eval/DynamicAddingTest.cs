@@ -18,16 +18,17 @@ namespace BAPointCloudRenderer.Eval {
                     loader1 = go.AddComponent<PointCloudLoader>();
                     loader1.cloudPath = cloudPath1;
                     loader1.setController = set;
-                    status++;
                 } else if (status == 1) {
                     GameObject go = new GameObject("TestCloud2");
                     PointCloudLoader loader = go.AddComponent<PointCloudLoader>();
                     loader.cloudPath = cloudPath2;
                     loader.setController = set;
-                    status++;
                 } else if (status == 2) {
                     loader1.RemovePointCloud();
+                } else if (status == 3) {
+                    set.StopRendering();
                 }
+                status++;
             }
         }
     }

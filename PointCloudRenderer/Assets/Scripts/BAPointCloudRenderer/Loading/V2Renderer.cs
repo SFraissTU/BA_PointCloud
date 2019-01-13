@@ -10,12 +10,13 @@ namespace BAPointCloudRenderer.Loading {
     /// </summary>
     class V2Renderer : AbstractRenderer {
 
-        private bool shuttingDown = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
+        private bool paused = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
         private V2TraversalThread traversalThread;
         private V2LoadingThread loadingThread;
         private V2Cache cache;
         private List<Node> rootNodes;   //List of root nodes of the point clouds
+        private Thread unityThread = null;
 
         private MeshConfiguration config;
         private uint renderingpointcount;
@@ -82,13 +83,15 @@ namespace BAPointCloudRenderer.Loading {
         /// True, if ShutDown() has not been called yet
         /// </summary>
         public bool IsRunning() {
-            return !shuttingDown;
+            return !paused;
         }
 
         /// <summary>
         /// Gives the current camera data to the traversal thread and updates the GameObjects. Called from the MainThread. As described in the Bachelor Thesis in chapter 3.1.3 "Main Thread"
         /// </summary>
         public void Update() {
+            unityThread = Thread.CurrentThread;
+            if (paused) return;
             //Set new Camera Data
             traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera), camera.pixelRect.height, camera.fieldOfView);
             
@@ -151,15 +154,57 @@ namespace BAPointCloudRenderer.Loading {
 
         /// <summary>
         /// Stops the rendering process and all threads
+        /// Must be called from the main thread!
         /// </summary>
         public void ShutDown() {
-            shuttingDown = true;
+            if (unityThread != null && Thread.CurrentThread != unityThread) {
+                throw new System.Exception("ShutDown() has to be called from the Unity Main Thread!");
+            }
+            Pause();
+            foreach (Node node in rootNodes) {
+                node.RemoveAllGameObjects(config);
+            }
+        }
+
+        /// <summary>
+        /// Pauses the updating of the rendering.
+        /// </summary>
+        public void Pause() {
+            paused = true;
             traversalThread.Stop();
             lock (traversalThread) {
                 Monitor.PulseAll(traversalThread);
             }
             loadingThread.Stop();
-            
+        }
+
+        /// <summary>
+        /// Continues the rendering after pausing
+        /// </summary>
+        public void Continue() {
+            loadingThread.Start();
+            traversalThread.Start();
+            paused = false;
+        }
+
+        /// <summary>
+        /// Pauses the rendering and hides all visible point clouds.
+        /// </summary>
+        public void Hide() {
+            Pause();
+            foreach (Node node in rootNodes) {
+                node.DeactivateAllGameObjects();
+            }
+        }
+
+        /// <summary>
+        /// Continues the rendering and displays all visible point clouds after them being hidden via hide.
+        /// </summary>
+        public void Display() {
+            foreach (Node node in rootNodes) {
+                node.ReactivateAllGameObjects();
+            }
+            Continue();
         }
 
         /// <summary>

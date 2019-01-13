@@ -2,6 +2,7 @@
 using BAPointCloudRenderer.CloudData;
 using BAPointCloudRenderer.ObjectCreation;
 using System.Threading;
+using System;
 
 namespace BAPointCloudRenderer.Loading {
     class StaticRenderer : AbstractRenderer {
@@ -15,6 +16,7 @@ namespace BAPointCloudRenderer.Loading {
         private bool running = false;
         private Thread loadingThread;
         private uint pointcount = 0;
+        private bool visible = true;
 
         public StaticRenderer(MeshConfiguration config) {
             rootNodes = new List<Node>();
@@ -61,21 +63,26 @@ namespace BAPointCloudRenderer.Loading {
                 }
             }
             rootNodes.Clear();
+            running = true;
+            Update();
+            running = false;
         }
 
         public void Update() {
-            //TODO: Implement such that it is possible to call the other methods on the main thread?
-            Monitor.Enter(toDisplay);
-            while (toDisplay.Count != 0) {
-                Node n = toDisplay.Dequeue();
-                Monitor.Exit(toDisplay);
-                n.CreateAllGameObjects(config);
-                lock (nodePointcounts) {
-                    pointcount += nodePointcounts[n];
-                }
+            if (!running) return;
+            if (visible) {
                 Monitor.Enter(toDisplay);
+                while (toDisplay.Count != 0) {
+                    Node n = toDisplay.Dequeue();
+                    Monitor.Exit(toDisplay);
+                    n.CreateAllGameObjects(config);
+                    lock (nodePointcounts) {
+                        pointcount += nodePointcounts[n];
+                    }
+                    Monitor.Enter(toDisplay);
+                }
+                Monitor.Exit(toDisplay);
             }
-            Monitor.Exit(toDisplay);
             Monitor.Enter(toRemove);
             while (toRemove.Count != 0) {
                 Node n = toRemove.Dequeue();
@@ -111,6 +118,25 @@ namespace BAPointCloudRenderer.Loading {
                     Monitor.Exit(toLoad);
                 }
             }
+        }
+        
+
+        public void Hide() {
+            visible = false;
+            lock (rootNodes) {
+                foreach (Node n in rootNodes) {
+                    n.DeactivateAllGameObjects();
+                }
+            }
+        }
+
+        public void Display() {
+            lock (rootNodes) {
+                foreach (Node n in rootNodes) {
+                    n.ReactivateAllGameObjects();
+                }
+            }
+            visible = true;
         }
     }
 }

@@ -137,6 +137,12 @@ namespace BAPointCloudRenderer.CloudController {
             return pRenderer.GetPointCount();
         }
 
+        public void StopRendering() {
+            if (pRenderer != null) {
+                pRenderer.ShutDown();
+            }
+        }
+
         /// <summary>
         /// The Renderer (value may not be null at setting)
         /// </summary>

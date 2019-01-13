@@ -21,6 +21,7 @@ namespace BAPointCloudRenderer.Loading {
         }
 
         public void Start() {
+            running = true;
             new Thread(Run).Start();
         }
 
