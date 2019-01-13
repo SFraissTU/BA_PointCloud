@@ -57,15 +57,16 @@ namespace BAPointCloudRenderer.Loading {
                 loadingThread.Join();
             }
             toDisplay.Clear();
+            toRemove.Clear();
             lock (toRemove) {
                 foreach (Node node in rootNodes) {
                     toRemove.Enqueue(node);
                 }
             }
-            rootNodes.Clear();
             running = true;
             Update();
             running = false;
+            rootNodes.Clear();
         }
 
         public void Update() {
@@ -89,8 +90,10 @@ namespace BAPointCloudRenderer.Loading {
                 Monitor.Exit(toRemove);
                 n.RemoveAllGameObjects(config);
                 lock (nodePointcounts) {
-                    nodePointcounts.Remove(n);
-                    pointcount -= nodePointcounts[n];
+                    if (nodePointcounts.ContainsKey(n)) {
+                        pointcount -= nodePointcounts[n];
+                        nodePointcounts.Remove(n);
+                    }
                 }
                 Monitor.Enter(toRemove);
             }
