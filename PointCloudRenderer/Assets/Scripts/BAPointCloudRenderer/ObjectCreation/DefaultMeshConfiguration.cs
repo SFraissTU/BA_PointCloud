@@ -143,8 +143,10 @@ namespace BAPointCloudRenderer.ObjectCreation {
             if (gameObjectCollection != null) {
                 gameObjectCollection.Remove(gameObject);
             }
-            Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
-            Destroy(gameObject);
+            if (gameObject != null) {
+                Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
+                Destroy(gameObject);
+            }
         }
     }
 }

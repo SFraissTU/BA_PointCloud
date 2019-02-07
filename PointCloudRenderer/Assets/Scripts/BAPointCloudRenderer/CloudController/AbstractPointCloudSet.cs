@@ -123,7 +123,7 @@ namespace BAPointCloudRenderer.CloudController {
         /// <summary>
         /// Shuts down the renderer
         /// </summary>
-        public void OnApplicationQuit() {
+        public void OnDestroy() {
             if (pRenderer != null) {
                 pRenderer.ShutDown();
             }

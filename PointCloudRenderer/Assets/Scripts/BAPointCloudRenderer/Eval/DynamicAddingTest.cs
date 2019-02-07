@@ -1,6 +1,7 @@
 ﻿using BAPointCloudRenderer.CloudController;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace BAPointCloudRenderer.Eval {
     class DynamicAddingTest : MonoBehaviour {
@@ -39,6 +40,36 @@ namespace BAPointCloudRenderer.Eval {
                     set.StopRendering();
                 }
                 status++;
+            } else if (Input.GetKeyDown("escape")) {
+                Debug.Log("Quitting");
+                #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+                #else
+                    Application.Quit();
+                #endif
+            } else if (Input.GetKeyDown(KeyCode.O)) {
+                //SceneManager.LoadScene("StaticTestDemo2", LoadSceneMode.Single);
+                Scene s = SceneManager.GetSceneByName("StaticTestDemo2");
+                if (!s.IsValid()) {
+                    SceneManager.LoadScene("StaticTestDemo2");
+                } else {
+                    Debug.Log("Already loaded");
+                    SceneManager.SetActiveScene(s);
+                }
+            } else if (Input.GetKeyDown(KeyCode.P)) {
+                //SceneManager.LoadScene("DynamicDemo", LoadSceneMode.Single);
+                Scene s = SceneManager.GetSceneByName("DynamicDemo");
+                if (!s.IsValid()) {
+                    SceneManager.LoadScene("DynamicDemo");
+                } else {
+                    Debug.Log("Already loaded");
+                    SceneManager.SetActiveScene(s);
+                }
+            } else if (Input.GetKeyDown(KeyCode.R)) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            else if (Input.GetKeyDown(KeyCode.C)) {
+                Debug.Log("PointCount: " + set.GetPointCount());
             }
         }
     }
