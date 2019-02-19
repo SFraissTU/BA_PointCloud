@@ -23,6 +23,8 @@ Download the current version: https://github.com/SFraissTU/BA_PointCloud/release
 * Small bug fixings and improvements
 * The project is now available as a .unitypackage-file, so you don't have to download the whole project anymore.
 
+Please note that because of the restructuring, the project is not fully compatible with previous versions. If you want to update your project, you need to do a bit of refactoring, as the namespaces and paths to the files have changed.
+
 ### Future
 Features that may or may not come in the future (Right now, I do this in my leisure time, so I cannot work a lot on it):
 * Eye-Dome-Lighting
