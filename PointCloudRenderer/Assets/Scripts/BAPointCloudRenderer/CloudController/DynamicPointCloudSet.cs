@@ -3,6 +3,10 @@ using BAPointCloudRenderer.ObjectCreation;
 using UnityEngine;
 
 namespace BAPointCloudRenderer.CloudController {
+
+    /// <summary>
+    /// Point Cloud Set to display a large point cloud. All the time, only the points which are needed for the current camera position are loaded from the disk (as described in the thesis).
+    /// </summary>
     class DynamicPointCloudSet : AbstractPointCloudSet {
         /// <summary>
         /// Point Budget - Maximum Number of Points in Memory / to Render

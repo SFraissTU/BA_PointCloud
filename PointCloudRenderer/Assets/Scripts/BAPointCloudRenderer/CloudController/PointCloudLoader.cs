@@ -24,7 +24,7 @@ namespace BAPointCloudRenderer.CloudController {
         public AbstractPointCloudSet setController;
 
         /// <summary>
-        /// True if the point cloud should be loaded when the behaviour is started
+        /// True if the point cloud should be loaded when the behaviour is started. Otherwise the point cloud is loaded when LoadPointCloud is loaded.
         /// </summary>
         public bool loadOnStart = true;
 
@@ -54,13 +54,19 @@ namespace BAPointCloudRenderer.CloudController {
             }
         }
 
+        /// <summary>
+        /// Starts loading the point cloud. When the hierarchy is loaded it is registered at the corresponding point cloud set
+        /// </summary>
         public void LoadPointCloud() {
             setController.RegisterController(this);
             Thread thread = new Thread(LoadHierarchy);
             thread.Start();
         }
 
-        //Has to be called from the main thread!
+        /// <summary>
+        /// Removes the point cloud from the scene. Should only be called from the main thread!
+        /// </summary>
+        /// <returns>True if the cloud was removed. False, when the cloud hasn't even been loaded yet.</returns>
         public bool RemovePointCloud() {
             if (rootNode == null) {
                 return false;

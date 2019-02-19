@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['peek',['Peek',['../class_data_structures_1_1_heap_priority_queue.html#a2ba85a275a772c791c3a3e794a67429c',1,'DataStructures.HeapPriorityQueue.Peek()'],['../class_data_structures_1_1_priority_queue.html#a91777550673283c472a559a87735b7a9',1,'DataStructures.PriorityQueue.Peek()']]],
-  ['pointcount',['PointCount',['../class_loading_1_1_v2_cache.html#a11f14ebc0b83d6726c5c9abe3c545df8',1,'Loading::V2Cache']]]
+  ['pause',['Pause',['../class_b_a_point_cloud_renderer_1_1_loading_1_1_v2_renderer.html#a55a4721d889ae36fca95270a6df87387',1,'BAPointCloudRenderer::Loading::V2Renderer']]],
+  ['peek',['Peek',['../class_b_a_point_cloud_renderer_1_1_data_structures_1_1_heap_priority_queue.html#a9ee6bae69055656e0bbe1d33c01c1c65',1,'BAPointCloudRenderer.DataStructures.HeapPriorityQueue.Peek()'],['../class_b_a_point_cloud_renderer_1_1_data_structures_1_1_priority_queue.html#a01490460b95c10ed7e9675cb99f5e430',1,'BAPointCloudRenderer.DataStructures.PriorityQueue.Peek()']]],
+  ['pointcount',['PointCount',['../class_b_a_point_cloud_renderer_1_1_loading_1_1_v2_cache.html#aca6ff02743399a4e36b443a70179f87c',1,'BAPointCloudRenderer::Loading::V2Cache']]]
 ];

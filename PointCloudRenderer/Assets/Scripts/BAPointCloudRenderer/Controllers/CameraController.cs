@@ -15,9 +15,20 @@ namespace BAPointCloudRenderer.Controllers {
 
         void Start() {
             //Hide the cursor
+            Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
 
+        void Update() {
+            if (Input.GetKey(KeyCode.Escape)) {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            if (Input.GetMouseButtonDown(0)) {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
 
         void FixedUpdate() {
             //React to controls. (WASD, EQ and Mouse)

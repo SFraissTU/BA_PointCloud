@@ -5,6 +5,10 @@ using System.Threading;
 using System;
 
 namespace BAPointCloudRenderer.Loading {
+    /// <summary>
+    /// Renderer for the StaticPointCloudSet. Each node that is passed to this renderer is loaded completely and then displayed all at once.
+    /// It is possible to add and remove nodes after initialization.
+    /// </summary>
     class StaticRenderer : AbstractRenderer {
 
         private Queue<Node> toLoad;

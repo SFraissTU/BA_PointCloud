@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['geometry0',['GEOMETRY0',['../namespace_object_creation.html#af3220186604e415764b3236d2892ab59a87ec4a15b375c56762e28134f827ebdf',1,'ObjectCreation']]],
-  ['geometry1',['GEOMETRY1',['../namespace_object_creation.html#af3220186604e415764b3236d2892ab59a6473972aeee6288b204db7b820323512',1,'ObjectCreation']]],
-  ['geometry2',['GEOMETRY2',['../namespace_object_creation.html#af3220186604e415764b3236d2892ab59a4bcb3399edc696502cf0b2ac10a28a34',1,'ObjectCreation']]],
-  ['geometry3',['GEOMETRY3',['../namespace_object_creation.html#af3220186604e415764b3236d2892ab59aed0d0a7b254c1ce6d7905e9cd38978cf',1,'ObjectCreation']]]
+  ['fragment_5fcone',['FRAGMENT_CONE',['../namespace_b_a_point_cloud_renderer_1_1_object_creation.html#ab38a227941ae2fb5a45ad02c3b35f8c1a87faf43e8977f904c630210cc41fc831',1,'BAPointCloudRenderer::ObjectCreation']]],
+  ['fragment_5fpara',['FRAGMENT_PARA',['../namespace_b_a_point_cloud_renderer_1_1_object_creation.html#ab38a227941ae2fb5a45ad02c3b35f8c1a1e697e4fac5cfb4bf01b637bac3dae1e',1,'BAPointCloudRenderer::ObjectCreation']]]
 ];

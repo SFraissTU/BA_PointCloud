@@ -15,7 +15,7 @@ namespace BAPointCloudRenderer.CloudController {
     public abstract class AbstractPointCloudSet: MonoBehaviour {
 
         /// <summary>
-        /// Whether the center of the cloud should be moved to the position of this component
+        /// Whether the center of the cloud should be moved to the position of this component. To calculate the center, only the point clouds are considered that exist in the beginning of the scene.
         /// </summary>
         public bool moveCenterToTransformPosition = true;
 
@@ -43,7 +43,7 @@ namespace BAPointCloudRenderer.CloudController {
         protected abstract void Initialize();
 
         /// <summary>
-        /// Registers a PointCloud-Controller (See DynamicLoaderController). This should be done in the start-method of the pc-controller and is neccessary for the bounding-box-recalculation.
+        /// Registers a PointCloud-Controller (See PointCloudLoader). This should be done in the start-method of the pc-controller and is neccessary for the bounding-box-recalculation.
         /// The whole cloud will be moved and rendered as soon as for every registererd controller the bounding box was given via UpdateBoundingBox.
         /// Should be called only once for every controller
         /// </summary>
@@ -85,6 +85,9 @@ namespace BAPointCloudRenderer.CloudController {
             }
         }
 
+        /// <summary>
+        /// Removes a point cloud
+        /// </summary>
         public void RemoveRootNode(PointCloudLoader controller, Node node) {
             lock (pRenderer) {
                 pRenderer.RemoveRootNode(node);
