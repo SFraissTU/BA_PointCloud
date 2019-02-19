@@ -32,6 +32,7 @@
 # Builds
 *.apk
 *.unitypackage
+!release/*.unitypackage
 
 #Plugins
 */Assets/Plugins.meta
