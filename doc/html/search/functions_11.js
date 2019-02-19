@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['update',['Update',['../interface_loading_1_1_abstract_renderer.html#a886529d8be72c60dd9c296da950a2e2b',1,'Loading.AbstractRenderer.Update()'],['../class_loading_1_1_v2_renderer.html#a752e46fe1b8359eb6b9c2bab5ef81683',1,'Loading.V2Renderer.Update()']]],
-  ['updateboundingbox',['UpdateBoundingBox',['../class_controllers_1_1_abstract_point_set_controller.html#a10ea36265d82091cd92355ed64c2581c',1,'Controllers::AbstractPointSetController']]]
+  ['update',['Update',['../interface_b_a_point_cloud_renderer_1_1_loading_1_1_abstract_renderer.html#af72b96214e7b6576f0c8e7c87fe419cb',1,'BAPointCloudRenderer.Loading.AbstractRenderer.Update()'],['../class_b_a_point_cloud_renderer_1_1_loading_1_1_static_renderer.html#a16e93c1f519d68712980b7045416f296',1,'BAPointCloudRenderer.Loading.StaticRenderer.Update()'],['../class_b_a_point_cloud_renderer_1_1_loading_1_1_v2_renderer.html#a6e45bb1e0cc2195a89a1957dc3b8b975',1,'BAPointCloudRenderer.Loading.V2Renderer.Update()']]],
+  ['updateboundingbox',['UpdateBoundingBox',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a5922d14d7758830f1c656b4e80752416',1,'BAPointCloudRenderer.CloudController.AbstractPointCloudSet.UpdateBoundingBox()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_abstract_point_set_controller.html#a0695a2f4198308e2b6404951036417a0',1,'BAPointCloudRenderer.Controllers.AbstractPointSetController.UpdateBoundingBox()']]]
 ];

@@ -32,6 +32,7 @@
 # Builds
 *.apk
 *.unitypackage
+!release/*.unitypackage
 
 #Plugins
 */Assets/Plugins.meta
@@ -63,3 +64,7 @@ PointCloudRenderer/Assets/Scenes/10SecondStop.anim
 PointCloudRenderer/Assets/Scenes/DebugCamera2.controller.meta
 PointCloudRenderer/Assets/Scenes/DebugCamera2.controller
 PointCloudRenderer/Assets/Scenes/TestCamera.anim
+PointCloudRenderer/Assets/Scenes/old.meta
+PointCloudRenderer/Assets/Scenes/old
+PointCloudRenderer/Assets/Scenes/old/*
+PointCloudRenderer/Logs/Packages-Update.log

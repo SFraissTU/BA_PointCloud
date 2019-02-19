@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tests {
+namespace BAPointCloudRenderer.Tests {
     class Start {
         public static void Main(string[] args) {
             QueueTest.Run();

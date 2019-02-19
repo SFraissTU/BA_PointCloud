@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['name',['Name',['../class_cloud_data_1_1_node.html#ad6676243e485f19675af4055c164071b',1,'CloudData::Node']]]
+  ['name',['Name',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#acbbd4d60f409fcedec2ef26f7c179ae7',1,'BAPointCloudRenderer::CloudData::Node']]]
 ];

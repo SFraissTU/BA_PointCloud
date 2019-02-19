@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['enqueue',['Enqueue',['../class_data_structures_1_1_heap_priority_queue.html#ae76c92ec00718a34dc2c97fc79088d5f',1,'DataStructures.HeapPriorityQueue.Enqueue()'],['../class_data_structures_1_1_priority_queue.html#a61be8a39a46e024b9c525e303c2e3a9c',1,'DataStructures.PriorityQueue.Enqueue()'],['../class_data_structures_1_1_random_access_queue.html#a4596a5d2823e0bd998677cc66b2289ed',1,'DataStructures.RandomAccessQueue.Enqueue()']]],
-  ['eval',['Eval',['../namespace_eval.html',1,'']]]
+  ['enqueue',['Enqueue',['../class_b_a_point_cloud_renderer_1_1_data_structures_1_1_heap_priority_queue.html#af866b65633459f58cc89c1708f0987f3',1,'BAPointCloudRenderer.DataStructures.HeapPriorityQueue.Enqueue()'],['../class_b_a_point_cloud_renderer_1_1_data_structures_1_1_priority_queue.html#a3af4461ca13ec391c6d0276613a5f500',1,'BAPointCloudRenderer.DataStructures.PriorityQueue.Enqueue()'],['../class_b_a_point_cloud_renderer_1_1_data_structures_1_1_random_access_queue.html#acaa4d84a1d6156280e974fd2a2e05a86',1,'BAPointCloudRenderer.DataStructures.RandomAccessQueue.Enqueue()']]]
 ];

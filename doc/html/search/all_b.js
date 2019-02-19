@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['name',['Name',['../class_cloud_data_1_1_node.html#ad6676243e485f19675af4055c164071b',1,'CloudData::Node']]],
-  ['node',['Node',['../class_cloud_data_1_1_node.html',1,'CloudData.Node'],['../class_cloud_data_1_1_node.html#a6540b5d8cb8fc40067560b3c002d574c',1,'CloudData.Node.Node()']]],
-  ['nodesgosperframe',['nodesGOsPerFrame',['../class_controllers_1_1_point_cloud_set_real_time_controller.html#a860b479fb9ac442cb02d3deb9205a007',1,'Controllers::PointCloudSetRealTimeController']]],
-  ['nodesloadedperframe',['nodesLoadedPerFrame',['../class_controllers_1_1_point_cloud_set_real_time_controller.html#af771ffbea77f881b16cac38855421d97',1,'Controllers::PointCloudSetRealTimeController']]],
-  ['normalize',['Normalize',['../class_cloud_data_1_1_vector3d.html#a4c52053302fdfe5c09a69397b80df797',1,'CloudData::Vector3d']]]
+  ['name',['Name',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#acbbd4d60f409fcedec2ef26f7c179ae7',1,'BAPointCloudRenderer::CloudData::Node']]],
+  ['node',['Node',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html',1,'BAPointCloudRenderer.CloudData.Node'],['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#ad2f3b4df0493e8ec02bc5067c6364080',1,'BAPointCloudRenderer.CloudData.Node.Node()']]],
+  ['nodesgosperframe',['nodesGOsPerFrame',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#a0181ac28dd612cc0fdd3c72a01ef835e',1,'BAPointCloudRenderer.CloudController.DynamicPointCloudSet.nodesGOsPerFrame()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_point_cloud_set_real_time_controller.html#a06a3b7c47e66c6ee3d9060039cdae65d',1,'BAPointCloudRenderer.Controllers.PointCloudSetRealTimeController.nodesGOsPerFrame()']]],
+  ['nodesloadedperframe',['nodesLoadedPerFrame',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#ac5670c2ecbc6c96132ce5a25855417df',1,'BAPointCloudRenderer.CloudController.DynamicPointCloudSet.nodesLoadedPerFrame()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_point_cloud_set_real_time_controller.html#abf09a7429deb0caa7fa2eea4c9b70d59',1,'BAPointCloudRenderer.Controllers.PointCloudSetRealTimeController.nodesLoadedPerFrame()']]],
+  ['normalize',['Normalize',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_vector3d.html#a7ea598fe4a5907a4d5215b8ef2f217b5',1,'BAPointCloudRenderer::CloudData::Vector3d']]]
 ];

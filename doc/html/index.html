@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Point Cloud Renderer: Main Page</title>
+<title>BA Point Cloud Renderer: Main Page</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,8 +21,8 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Point Cloud Renderer
-   &#160;<span id="projectnumber">1.0</span>
+   <div id="projectname">BA Point Cloud Renderer
+   &#160;<span id="projectnumber">1.2</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -61,24 +61,25 @@ $(function() {
 
 <div class="header">
   <div class="headertitle">
-<div class="title">Point Cloud Renderer Documentation</div>  </div>
+<div class="title">BA Point Cloud Renderer Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Rendering Large Point Clouds in Unity</p>
 <p>Bachelor Thesis, Simon Fraiss</p>
 <p><a href="#" onclick="location.href='mai'+'lto:'+'sim'+'on'+'.fr'+'ai'+'ss@'+'gm'+'x.a'+'t'; return false;">simon<span style="display: none;">.nosp@m.</span>.fra<span style="display: none;">.nosp@m.</span>iss@g<span style="display: none;">.nosp@m.</span>mx.a<span style="display: none;">.nosp@m.</span>t</a></p>
 <p>Namespaces:</p><ul>
-<li><a class="el" href="namespace_cloud_data.html">CloudData</a>: Containing data structures for storing the cloud data</li>
-<li><a class="el" href="namespace_controllers.html">Controllers</a>: MonoBehaviour-Scripts for loading PointClouds</li>
-<li><a class="el" href="namespace_data_structures.html">DataStructures</a>: Useful data structures used in the Project</li>
-<li><a class="el" href="namespace_eval.html">Eval</a>: Helper classes used during Evaluation</li>
-<li><a class="el" href="namespace_loading.html">Loading</a>: The GameObject-Update-System</li>
-<li><a class="el" href="namespace_object_creation.html">ObjectCreation</a>: MeshConfigurations defining how the points should be rendered</li>
+<li>CloudData: Containing data structures for storing the cloud data</li>
+<li>CloudController: MonoBehaviour-Scripts for loading PointClouds</li>
+<li>Controllers: Mostly old obselete classes. You can use the CameraController if you want though.</li>
+<li>DataStructures: Useful data structures used in the Project</li>
+<li>Loading: The GameObject-Update-System</li>
+<li>ObjectCreation: MeshConfigurations defining how the points should be rendered</li>
 </ul>
 <p>Important classes for usage:</p><ul>
-<li><a class="el" href="class_controllers_1_1_point_cloud_set_real_time_controller.html" title="The PointSetController for RealTimeRendering described in the thesis. Uses a V2Renderer, so each frame the displayed GameObjects get refreshed ">Controllers.PointCloudSetRealTimeController</a>: Attach this script to your scene to set rendering options like point budget etc.</li>
-<li><a class="el" href="class_controllers_1_1_dynamic_loader_controller.html" title="Use this script to load a single PointCloud from a directory. ">Controllers.DynamicLoaderController</a>: Use this script to load one point cloud and attach it to the PointCloudSetRealTimeController</li>
-<li><a class="el" href="class_object_creation_1_1_mesh_configuration.html" title="Defines how the points of a point cloud are rendered (points / quads / spheres etc.). Even though this is a MonoBehaviour-Script, it does not use the Start- or Update-Function. Having it as an object in your scene graph makes it easier to test different configuartions though. ">ObjectCreation.MeshConfiguration</a>: Attach one of its subclasses to your scene and attach it to the PointCloudSetRealTimeController, in order to determine how the points should be rendered </li>
+<li>CloudController.StaticPointCloudSet: Needed for simple point cloud rendering (everything is rendered at once)</li>
+<li>CloudController.DynamicPointCloudSet: Needed for dynamic point cloud rendering (based on current camera position)</li>
+<li>CloudController.PointCloudLoader: Use this script to load one point cloud and attach it to the PointCloudSet</li>
+<li>ObjectCreation.MeshConfiguration: Attach one of its subclasses to your scene and attach it to the PointCloudSet, in order to determine how the points should be rendered </li>
 </ul>
 </div></div><!-- contents -->
 <!-- start footer part -->
