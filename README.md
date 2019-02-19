@@ -8,6 +8,8 @@ Please refer to the code documentation for details about the classes and scripts
 For details about the algorithms please refer to the bachelor thesis (https://www.cg.tuwien.ac.at/research/publications/2017/FRAISS-2017-PCU/).
 Below you will find a Getting-Started-Guide
 
+Download the current version: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/BAPC-v01.02.unitypackage
+
 ## Change Log
 ### Version 1.2 (19.02.2019):
 * Did some renaming and made some components easier to use.
