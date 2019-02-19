@@ -8,7 +8,7 @@ Please refer to the code documentation for details about the classes and scripts
 For details about the algorithms please refer to the bachelor thesis (https://www.cg.tuwien.ac.at/research/publications/2017/FRAISS-2017-PCU/).
 Below you will find a Getting-Started-Guide
 
-Download the current version: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/BAPC-v01.02.unitypackage
+Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/download/v1.2/BAPC-v01.02.unitypackage
 
 ## Change Log
 ### Version 1.2 (19.02.2019):
@@ -37,7 +37,7 @@ Feel free to send me feedback! It's great to see that many people are using this
 
 ## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
-1. Download the current .unitypackage file here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/BAPC-v01.02.unitypackage
+1. Download the current .unitypackage file here: https://github.com/SFraissTU/BA_PointCloud/releases/download/v1.2/BAPC-v01.02.unitypackage
 2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip
 3. Create a new project and go to Assets->Import Package and import the downloaded .unitypackage-file.
 4. There is now a BAPC-Example-scene in the project. You can either use that or follow the steps below in your own scene to get the same result.
