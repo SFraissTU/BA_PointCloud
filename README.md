@@ -3,8 +3,13 @@ PointCloud-BachelorThesis
 
 Project files for my bachelor thesis on rendering large point clouds in Unity.
 
+## Ressources
+Please refer to the code documentation for details about the classes and scripts (Folder "/doc").
+For details about the algorithms please refer to the bachelor thesis (https://www.cg.tuwien.ac.at/research/publications/2017/FRAISS-2017-PCU/).
+Below you will find a Getting-Started-Guide
+
 ## Change Log
-Version 1.2 (19.02.2019):
+### Version 1.2 (19.02.2019):
 * Did some renaming and made some components easier to use.
   * All the packages are subpackages of "BAPointCloudRenderer"
   * There is a new package "BAPointCloudRenderer.CloudController" containing new versions of the classes from the  old "Controllers"-package
@@ -16,6 +21,7 @@ Version 1.2 (19.02.2019):
 * Small bug fixings and improvements
 * The project is now available as a .unitypackage-file, so you don't have to download the whole project anymore.
 
+### Future
 Features that may or may not come in the future (Right now, I do this in my leisure time, so I cannot work a lot on it):
 * Eye-Dome-Lighting
 * Adaptive Point Sizes
@@ -26,11 +32,6 @@ Features that may or may not come in the future (Right now, I do this in my leis
 * PointCloud-transformations
 
 Feel free to send me feedback! It's great to see that many people are using this project!
-
-## Ressources
-Please refer to the code documentation for details about the classes and scripts (Folder "/doc").
-For details about the algorithms please refer to the bachelor thesis (https://www.cg.tuwien.ac.at/research/publications/2017/FRAISS-2017-PCU/).
-Below you will find a Getting-Started-Guide
 
 ## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
