@@ -30,6 +30,7 @@ Features that may or may not come in the future (Right now, I do this in my leis
 * Eye-Dome-Lighting
 * Adaptive Point Sizes
 * Test WebGL/VR-Support
+* On-Demand-Hierarchy-Loading
 * Loading Point Clouds from the Resources-folder
 * laz-support
 * PointCloud-preview in editor
