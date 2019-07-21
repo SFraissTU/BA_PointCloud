@@ -139,7 +139,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
                     material.SetMatrix("_InverseProjMatrix", invP);
                     material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
                 }
-                Rect screen = Camera.main.pixelRect;
+                Rect screen = mainCamera.pixelRect;
                 material.SetInt("_ScreenWidth", (int)screen.width);
                 material.SetInt("_ScreenHeight", (int)screen.height);
             }
