@@ -143,7 +143,7 @@ namespace BAPointCloudRenderer.Loading {
                 Node n = toProcess.Dequeue(); //Min Node Size was already checked
 
                 //Is Node inside frustum?
-                if (Util.InsideFrustum(n.BoundingBox, frustum)) {
+                if (Util.CameraFrustumBoundingBoxIntersection(n.BoundingBox, cameraPosition, frustum)) {
 
                     bool loadchildren = false;
                     lock (n) {

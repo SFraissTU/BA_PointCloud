@@ -49,5 +49,31 @@ namespace BAPointCloudRenderer.Loading {
             }
             return true;
         }
+		
+		        /// <summary>
+        /// Checks whether:
+        /// (a) the camera is inside the node bounding box,
+        /// (b) the bounding box center is inside the camera frustum, and
+        /// (c) a vertex of the bounding box is inside the camera frustum
+        /// </summary>
+        public static bool CameraFrustumBoundingBoxIntersection(BoundingBox box, Vector3 cameraPos, Plane[] frustum)
+        {
+            Vector3 sphereCenter = box.GetBoundsObject().center;
+            float sphereRadius = (float) box.Radius();
+            Vector3 heading = sphereCenter - cameraPos;
+            float distance = heading.magnitude;
+
+            if (sphereRadius > distance) return true; // Camera is inside the bounding box of the node
+            if (InsideFrustum(sphereCenter, frustum)) return true; // BoundingBox center lies within the frustum
+            if (InsideFrustum(new Vector3((float) box.Lx, (float) box.Ly, (float) box.Lz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Lx, (float) box.Ly, (float) box.Uz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Lx, (float) box.Uy, (float) box.Lz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Lx, (float) box.Uy, (float) box.Uz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Ux, (float) box.Ly, (float) box.Lz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Ux, (float) box.Ly, (float) box.Uz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Ux, (float) box.Uy, (float) box.Lz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            if (InsideFrustum(new Vector3((float) box.Ux, (float) box.Uy, (float) box.Uz), frustum)) return true; // BoundingBox vertex lies withing the frustum
+            return false;
+        }
     }
 }
