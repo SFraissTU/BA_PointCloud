@@ -29,12 +29,15 @@ namespace BAPointCloudRenderer.CloudController {
 
         private AbstractRenderer pRenderer;
 
+        private ManualResetEvent initializedEvent = new ManualResetEvent(false);
+
         void Start() {
             if (!moveCenterToTransformPosition) hasMoved = true;
             Initialize();
             if (pRenderer == null) {
                 throw new InvalidOperationException("PointRenderer has not been set!");
             }
+            initializedEvent.Set();
         }
 
         /// <summary>
@@ -80,6 +83,7 @@ namespace BAPointCloudRenderer.CloudController {
         /// Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox.
         /// </summary>
         public void AddRootNode(Node node) {
+            initializedEvent.WaitOne();
             lock (pRenderer) {
                 pRenderer.AddRootNode(node);
             }
