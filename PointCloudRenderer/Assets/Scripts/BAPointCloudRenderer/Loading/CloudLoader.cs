@@ -24,7 +24,7 @@ namespace BAPointCloudRenderer.Loading {
             }
             PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
             metaData.cloudPath = cloudPath;
-            metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("\\") + 1);
+            metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("/") + 1);
             return metaData;
         }
         
@@ -34,7 +34,7 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="metaData">MetaData-Object, as received by LoadMetaData</param>
         /// <returns>The Root Node of the point cloud</returns>
         public static Node LoadPointCloud(PointCloudMetaData metaData) {
-            string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
+            string dataRPath = metaData.cloudPath + metaData.octreeDir + "/r/";
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             LoadAllPoints(dataRPath, metaData, rootNode);
@@ -47,7 +47,7 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="metaData">MetaData-Object, as received by LoadMetaData</param>
         /// <returns>The Root Node of the point cloud</returns>
         public static Node LoadHierarchyOnly(PointCloudMetaData metaData) {
-            string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
+            string dataRPath = metaData.cloudPath + metaData.octreeDir + "/r/";
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             return rootNode;
@@ -57,7 +57,7 @@ namespace BAPointCloudRenderer.Loading {
         /// Loads the points for the given node
         /// </summary>
         public static void LoadPointsForNode(Node node) {
-            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "\\r\\";
+            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "/r/";
             LoadPoints(dataRPath, node.MetaData, node);
         }
 
@@ -168,7 +168,7 @@ namespace BAPointCloudRenderer.Loading {
             int levels = id.Length / metaData.hierarchyStepSize;
             string path = "";
             for (int i = 0; i < levels; i++) {
-                path += id.Substring(i * metaData.hierarchyStepSize, metaData.hierarchyStepSize) + "\\";
+                path += id.Substring(i * metaData.hierarchyStepSize, metaData.hierarchyStepSize) + "/";
             }
             path += "r" + id + fileending;
             return File.ReadAllBytes(dataRPath + path);
@@ -188,7 +188,7 @@ namespace BAPointCloudRenderer.Loading {
         }
 
         public static uint LoadAllPointsForNode(Node node) {
-            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "\\r\\";
+            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "/r/";
             return LoadAllPoints(dataRPath, node.MetaData, node);
         }
     }

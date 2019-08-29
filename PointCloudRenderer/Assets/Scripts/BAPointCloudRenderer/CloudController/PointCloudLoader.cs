@@ -38,8 +38,8 @@ namespace BAPointCloudRenderer.CloudController {
 
         private void LoadHierarchy() {
             try {
-                if (!cloudPath.EndsWith("\\")) {
-                    cloudPath = cloudPath + "\\";
+                if (!cloudPath.EndsWith("/")) {
+                    cloudPath = cloudPath + "/";
                 }
 
                 PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, false);

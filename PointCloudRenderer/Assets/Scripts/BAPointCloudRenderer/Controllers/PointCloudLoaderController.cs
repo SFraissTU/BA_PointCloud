@@ -41,8 +41,8 @@ namespace BAPointCloudRenderer.Controllers {
             try {
                 Debug.Log("Loading file");
                 fileLoading = true;
-                if (!cloudPath.EndsWith("\\")) {
-                    cloudPath = cloudPath + "\\";
+                if (!cloudPath.EndsWith("/")) {
+                    cloudPath = cloudPath + "/";
                 }
 
                 metaData = CloudLoader.LoadMetaData(cloudPath, moveToOrigin);
