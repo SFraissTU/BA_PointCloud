@@ -53,9 +53,13 @@ namespace BAPointCloudRenderer.ObjectCreation {
         /// Set this to true to reload the shaders according to the changed parameters. After applying the changes, the variable will set itself back to false.
         /// </summary>
         public bool reload = false;
+        /// <summary>
+        /// The camera that's used for rendering. If not set, Camera.main is used. 
+        /// This should usually be the same camera that's used as "User Camera" in the point cloud set.
+        /// </summary>
+        public Camera renderCamera = null;
 
         private Material material;
-        private Camera mainCamera;
         private HashSet<GameObject> gameObjectCollection = null;
 
         private void LoadShaders() {
@@ -75,6 +79,10 @@ namespace BAPointCloudRenderer.ObjectCreation {
             }
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
+            if (renderCamera == null)
+            {
+                renderCamera = Camera.main;
+            }
         }
 
         public void Start() {
@@ -82,7 +90,6 @@ namespace BAPointCloudRenderer.ObjectCreation {
                 gameObjectCollection = new HashSet<GameObject>();
             }
             LoadShaders();
-            mainCamera = Camera.main;
         }
 
         public void Update() {
@@ -95,11 +102,11 @@ namespace BAPointCloudRenderer.ObjectCreation {
             }
             if (screenSize) {
                 if (interpolation != FragInterpolationMode.OFF) {
-                    Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
+                    Matrix4x4 invP = (GL.GetGPUProjectionMatrix(renderCamera.projectionMatrix, true)).inverse;
                     material.SetMatrix("_InverseProjMatrix", invP);
-                    material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
+                    material.SetFloat("_FOV", Mathf.Deg2Rad * renderCamera.fieldOfView);
                 }
-                Rect screen = mainCamera.pixelRect;
+                Rect screen = renderCamera.pixelRect;
                 material.SetInt("_ScreenWidth", (int)screen.width);
                 material.SetInt("_ScreenHeight", (int)screen.height);
             }
