@@ -58,7 +58,7 @@ namespace BAPointCloudRenderer.CloudData {
         /// Vertices and Colors have to be set before calling this function (via SetPoints)! This function has to be called from the main thread!
         /// </summary>
         /// <param name="configuration">The MeshConfiguration which should be used for creating the Game Objects</param>
-        public void CreateGameObjects(MeshConfiguration configuration) {
+        public void CreateGameObjects(IMeshConfiguration configuration) {
             int max = configuration.GetMaximumPointsPerMesh();
             if (verticesToStore.Length <= max) {
                 gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox));
@@ -97,7 +97,7 @@ namespace BAPointCloudRenderer.CloudData {
         /// Vertices and Colors have to be set before calling this function (via SetPoints) for this object and all its children! This function has to be called from the main thread!
         /// </summary>
         /// <param name="configuration">The MeshConfiguration which should be used for creating the Game Objects</param>
-        public void CreateAllGameObjects(MeshConfiguration configuration) {
+        public void CreateAllGameObjects(IMeshConfiguration configuration) {
             CreateGameObjects(configuration);
             for (int i = 0; i < 8; i++) {
                 if (children[i] != null) {
@@ -110,7 +110,7 @@ namespace BAPointCloudRenderer.CloudData {
         /// Removes the GameObjects of this node. Has to be called from the main thread.
         /// </summary>
         /// <param name="config">The MeshConfiguration which should be used for removing the Game Objects</param>
-        public void RemoveGameObjects(MeshConfiguration config) {
+        public void RemoveGameObjects(IMeshConfiguration config) {
             foreach (GameObject go in gameObjects) {
                 config.RemoveGameObject(go);
             }
@@ -121,7 +121,7 @@ namespace BAPointCloudRenderer.CloudData {
         /// Removes the GameObjects of this node and all it's children. Has to be called from the main thread.
         /// </summary>
         /// <param name="config">The MeshConfiguration which should be used for removing the Game Objects</param>
-        public void RemoveAllGameObjects(MeshConfiguration configuration) {
+        public void RemoveAllGameObjects(IMeshConfiguration configuration) {
             RemoveGameObjects(configuration);
             for (int i = 0; i < 8; i++) {
                 if (children[i] != null) {
@@ -214,6 +214,14 @@ namespace BAPointCloudRenderer.CloudData {
         /// </summary>
         public bool HasGameObjects() {
             return gameObjects.Count != 0;
+        }
+
+        public Vector3[] VerticesToStore {
+            get { return verticesToStore; }
+        }
+
+        public Color[] ColorsToStore {
+            get { return colorsToStore; }
         }
 
         /// <summary>

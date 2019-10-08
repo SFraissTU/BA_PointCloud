@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEditor;
+using BAPointCloudRenderer.ObjectCreation;
 
 namespace BAPointCloudRenderer.CloudController {
     /// <summary>
@@ -19,20 +21,41 @@ namespace BAPointCloudRenderer.CloudController {
         /// </summary>
         public bool moveCenterToTransformPosition = true;
 
+        public bool showBoundingBox = false;
+
+        /// <summary>
+        /// MeshConfiguration. Defines how to render the points.
+        /// </summary>
+        public MeshConfiguration meshConfiguration = null;
+
         //For origin-moving:
         private bool hasMoved = false;
         private Vector3d moving = new Vector3d(0,0,0);
         private BoundingBox overallBoundingBox = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity,
                                                                     double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
+        private BoundingBox overallTightBoundingBox = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity,
+                                                                    double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
         private Dictionary<PointCloudLoader, BoundingBox> boundingBoxes = new Dictionary<PointCloudLoader, BoundingBox>();
+        private Dictionary<PointCloudLoader, BoundingBox> tightBoundingBoxes = new Dictionary<PointCloudLoader, BoundingBox>();
         private ManualResetEvent waiterForBoundingBoxUpdate = new ManualResetEvent(false);
 
         private AbstractRenderer pRenderer;
 
         private ManualResetEvent initializedEvent = new ManualResetEvent(false);
 
+        protected bool editmode = false;
+        private bool currentbb = true;
+
         void Start() {
-            if (!moveCenterToTransformPosition) hasMoved = true;
+            editmode = !EditorApplication.isPlaying;
+            if (editmode)
+            {
+                EditorApplication.update = this.UpdatePreview;
+            }
+            if (!moveCenterToTransformPosition)
+            {
+                hasMoved = true;
+            }
             Initialize();
             if (pRenderer == null) {
                 throw new InvalidOperationException("PointRenderer has not been set!");
@@ -51,10 +74,11 @@ namespace BAPointCloudRenderer.CloudController {
         /// Should be called only once for every controller
         /// </summary>
         /// <param name="controller">not null</param>
-        /// <seealso cref="DynamicLoaderController"/>
+        /// <seealso cref="PointCloudLoader"/>
         public void RegisterController(PointCloudLoader controller) {
             lock (boundingBoxes) {
                 boundingBoxes[controller] = null;
+                tightBoundingBoxes[controller] = null;
             }
         }
 
@@ -63,29 +87,78 @@ namespace BAPointCloudRenderer.CloudController {
         /// If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update),
         /// so this method should not be called in the main thread.
         /// </summary>
-        public void UpdateBoundingBox(PointCloudLoader controller, BoundingBox boundingBox) {
+        public void UpdateBoundingBox(PointCloudLoader controller, BoundingBox boundingBox, BoundingBox tightBoundingBox) {
+            initializedEvent.WaitOne();
             boundingBox.MoveAlong(moving);
+            tightBoundingBox.MoveAlong(moving);
             lock (boundingBoxes) {
                 boundingBoxes[controller] = boundingBox;
-                overallBoundingBox.Lx = Math.Min(overallBoundingBox.Lx, boundingBox.Lx);
-                overallBoundingBox.Ly = Math.Min(overallBoundingBox.Ly, boundingBox.Ly);
-                overallBoundingBox.Lz = Math.Min(overallBoundingBox.Lz, boundingBox.Lz);
-                overallBoundingBox.Ux = Math.Max(overallBoundingBox.Ux, boundingBox.Ux);
-                overallBoundingBox.Uy = Math.Max(overallBoundingBox.Uy, boundingBox.Uy);
-                overallBoundingBox.Uz = Math.Max(overallBoundingBox.Uz, boundingBox.Uz);
+                tightBoundingBoxes[controller] = tightBoundingBox;
+                if (!editmode)
+                {
+                    overallBoundingBox.Lx = Math.Min(overallBoundingBox.Lx, boundingBox.Lx);
+                    overallBoundingBox.Ly = Math.Min(overallBoundingBox.Ly, boundingBox.Ly);
+                    overallBoundingBox.Lz = Math.Min(overallBoundingBox.Lz, boundingBox.Lz);
+                    overallBoundingBox.Ux = Math.Max(overallBoundingBox.Ux, boundingBox.Ux);
+                    overallBoundingBox.Uy = Math.Max(overallBoundingBox.Uy, boundingBox.Uy);
+                    overallBoundingBox.Uz = Math.Max(overallBoundingBox.Uz, boundingBox.Uz);
+                    overallTightBoundingBox.Lx = Math.Min(overallTightBoundingBox.Lx, tightBoundingBox.Lx);
+                    overallTightBoundingBox.Ly = Math.Min(overallTightBoundingBox.Ly, tightBoundingBox.Ly);
+                    overallTightBoundingBox.Lz = Math.Min(overallTightBoundingBox.Lz, tightBoundingBox.Lz);
+                    overallTightBoundingBox.Ux = Math.Max(overallTightBoundingBox.Ux, tightBoundingBox.Ux);
+                    overallTightBoundingBox.Uy = Math.Max(overallTightBoundingBox.Uy, tightBoundingBox.Uy);
+                    overallTightBoundingBox.Uz = Math.Max(overallTightBoundingBox.Uz, tightBoundingBox.Uz);
+                }
             }
-            if (moveCenterToTransformPosition) {
+            if (!editmode && moveCenterToTransformPosition) {
                 waiterForBoundingBoxUpdate.WaitOne();
+            }
+        }
+
+        private void RecalculateBoundingBox()
+        {
+            lock (boundingBoxes)
+            {
+                BoundingBox noBB = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity,
+                                                                    double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
+                BoundingBox noTBB = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity,
+                                                                    double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
+                foreach (PointCloudLoader key in boundingBoxes.Keys)
+                {
+                    BoundingBox boundingBox = boundingBoxes[key];
+                    BoundingBox tightBoundingBox = tightBoundingBoxes[key];
+                    if (boundingBox != null)
+                    {
+                        noBB.Lx = Math.Min(noBB.Lx, boundingBox.Lx);
+                        noBB.Ly = Math.Min(noBB.Ly, boundingBox.Ly);
+                        noBB.Lz = Math.Min(noBB.Lz, boundingBox.Lz);
+                        noBB.Ux = Math.Max(noBB.Ux, boundingBox.Ux);
+                        noBB.Uy = Math.Max(noBB.Uy, boundingBox.Uy);
+                        noBB.Uz = Math.Max(noBB.Uz, boundingBox.Uz);
+                        noTBB.Lx = Math.Min(noTBB.Lx, tightBoundingBox.Lx);
+                        noTBB.Ly = Math.Min(noTBB.Ly, tightBoundingBox.Ly);
+                        noTBB.Lz = Math.Min(noTBB.Lz, tightBoundingBox.Lz);
+                        noTBB.Ux = Math.Max(noTBB.Ux, tightBoundingBox.Ux);
+                        noTBB.Uy = Math.Max(noTBB.Uy, tightBoundingBox.Uy);
+                        noTBB.Uz = Math.Max(noTBB.Uz, tightBoundingBox.Uz);
+                    }
+                }
+                overallBoundingBox = noBB;
+                overallTightBoundingBox = noTBB;
             }
         }
 
         /// <summary>
         /// Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox.
         /// </summary>
-        public void AddRootNode(Node node) {
+        public void AddRootNode(PointCloudLoader controller, Node node, PointCloudMetaData metaData) {
             initializedEvent.WaitOne();
             lock (pRenderer) {
-                pRenderer.AddRootNode(node);
+                pRenderer.AddRootNode(node, controller);
+            }
+            if (editmode)
+            {
+                currentbb = false;
             }
         }
 
@@ -94,8 +167,78 @@ namespace BAPointCloudRenderer.CloudController {
         /// </summary>
         public void RemoveRootNode(PointCloudLoader controller, Node node) {
             lock (pRenderer) {
-                pRenderer.RemoveRootNode(node);
-                boundingBoxes.Remove(controller);
+                pRenderer.RemoveRootNode(node, controller);
+                lock (boundingBoxes)
+                {
+                    boundingBoxes.Remove(controller);
+                    tightBoundingBoxes.Remove(controller);
+                }
+                if (editmode)
+                {
+                    currentbb = false;
+                }
+            }
+        }
+
+        public void UpdatePreview()
+        {
+            if (editmode)
+            {
+                lock (boundingBoxes)
+                {
+                    RecalculateBoundingBox();
+                    overallTightBoundingBox.MoveAlong(-moving);
+                    overallBoundingBox.MoveAlong(-moving);
+                    Vector3d newmoving = new Vector3d(0,0,0);
+                    if (boundingBoxes.Count != 0)
+                    {
+                        newmoving = new Vector3d(transform.position) - overallTightBoundingBox.Center();
+                    }
+                    Vector3d translation = newmoving - moving;
+                    foreach (BoundingBox bb in boundingBoxes.Values)
+                    {
+                        if (bb != null)
+                        {
+                            bb.MoveAlong(translation);
+                        }
+                    }
+                    foreach (BoundingBox tbb in tightBoundingBoxes.Values)
+                    {
+                        if (tbb != null)
+                        {
+                            tbb.MoveAlong(translation);
+                        }
+                    }
+                    overallBoundingBox.MoveAlong(newmoving);
+                    overallTightBoundingBox.MoveAlong(newmoving);
+                    moving = newmoving;
+                    ((PreviewRenderer)pRenderer).Update();
+                    ((PreviewRenderer)pRenderer).UpdatePreview();
+                    currentbb = true;
+                }
+            }
+        }
+
+        public void HidePreview()
+        {
+            if (editmode)
+            {
+                lock (boundingBoxes)
+                {
+                    ((PreviewRenderer)pRenderer).Hide();
+                }
+            }
+        }
+
+        protected void DrawDebugInfo()
+        {
+            if (!currentbb)
+            {
+                UpdatePreview();
+            }
+            if (showBoundingBox)
+            {
+                Utility.BBDraw.DrawBoundingBox(overallTightBoundingBox, this.transform, currentbb ? Color.cyan : Color.red, true);
             }
         }
 
@@ -103,21 +246,37 @@ namespace BAPointCloudRenderer.CloudController {
         /// Returns true, iff all the nodes are registered, have been moved to the center (if required) and the renderer is loaded.
         /// </summary>
         protected bool CheckReady() {
-            lock (boundingBoxes) {
-                if (!hasMoved) {
-                    if (!boundingBoxes.ContainsValue(null)) {
-                        moving = new Vector3d(transform.position) - overallBoundingBox.Center();
-                        foreach (BoundingBox bb in boundingBoxes.Values) {
-                            bb.MoveAlong(moving);
+            if (!editmode)
+            {
+                lock (boundingBoxes)
+                {
+                    if (!hasMoved)
+                    {
+                        if (!boundingBoxes.ContainsValue(null))
+                        {
+                            moving = new Vector3d(transform.position) - overallTightBoundingBox.Center();
+                            foreach (BoundingBox bb in boundingBoxes.Values)
+                            {
+                                bb.MoveAlong(moving);
+                            }
+                            foreach (BoundingBox tbb in tightBoundingBoxes.Values)
+                            {
+                                tbb.MoveAlong(moving);
+                            }
+                            overallBoundingBox.MoveAlong(moving);
+                            overallTightBoundingBox.MoveAlong(moving);
+
+                            hasMoved = true;
+                            waiterForBoundingBoxUpdate.Set();
                         }
-                        overallBoundingBox.MoveAlong(moving);
-                        hasMoved = true;
-                        waiterForBoundingBoxUpdate.Set();
-                    } else {
-                        return false;
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
             }
+
             lock (pRenderer) {
                 //Checking, weither all RootNodes are there
                 if (pRenderer.GetRootNodeCount() != boundingBoxes.Count) {
@@ -130,10 +289,11 @@ namespace BAPointCloudRenderer.CloudController {
         /// <summary>
         /// Shuts down the renderer
         /// </summary>
-        public void OnDestroy() {
-            if (pRenderer != null) {
-                pRenderer.ShutDown();
-            }
+        public void OnDisable()
+        {
+            StopRendering();
+            boundingBoxes.Clear();
+            tightBoundingBoxes.Clear();
         }
 
         /// <summary>
@@ -146,7 +306,10 @@ namespace BAPointCloudRenderer.CloudController {
 
         public void StopRendering() {
             if (pRenderer != null) {
-                pRenderer.ShutDown();
+                lock (pRenderer)
+                {
+                    pRenderer.ShutDown();
+                }
             }
         }
 
@@ -164,5 +327,6 @@ namespace BAPointCloudRenderer.CloudController {
                 }
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using BAPointCloudRenderer.CloudData;
+﻿using BAPointCloudRenderer.CloudController;
+using BAPointCloudRenderer.CloudData;
 using BAPointCloudRenderer.ObjectCreation;
 using System.Collections.Generic;
 using System.Threading;
@@ -55,7 +56,7 @@ namespace BAPointCloudRenderer.Loading {
         /// Registers the root node of a point cloud in the renderer.
         /// </summary>
         /// <param name="rootNode">not null</param>
-        public void AddRootNode(Node rootNode) {
+        public void AddRootNode(Node rootNode, PointCloudLoader loader) {
             rootNodes.Add(rootNode);
         }
 
@@ -64,7 +65,7 @@ namespace BAPointCloudRenderer.Loading {
         /// This has to be called from the main thread!
         /// </summary>
         /// <param name="rootNode">not null</param>
-        public void RemoveRootNode(Node rootNode) {
+        public void RemoveRootNode(Node rootNode, PointCloudLoader loader) {
             lock (toDeleteExternal) {
                 toDeleteExternal.Enqueue(rootNode);
             }

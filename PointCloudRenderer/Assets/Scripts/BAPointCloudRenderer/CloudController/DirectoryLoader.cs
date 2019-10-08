@@ -6,6 +6,7 @@ namespace BAPointCloudRenderer.CloudController {
     /// Use this loader, if you have several pointcloud-folders in the same directory and want to load all of them at once.
     /// This controller will create a DynamicLoaderController for each of the point clouds.
     /// </summary>
+    [ExecuteInEditMode]
     public class DirectoryLoader : MonoBehaviour {
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace BAPointCloudRenderer.CloudController {
         public AbstractPointCloudSet pointset;
 
 
-        void Start() {
+        public void LoadAll() {
             DirectoryInfo dir = new DirectoryInfo(path);
             foreach (DirectoryInfo sub in dir.GetDirectories()) {
                 GameObject go = new GameObject(sub.Name);

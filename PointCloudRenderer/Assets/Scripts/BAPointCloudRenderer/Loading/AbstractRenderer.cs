@@ -1,4 +1,5 @@
-﻿using BAPointCloudRenderer.CloudData;
+﻿using BAPointCloudRenderer.CloudController;
+using BAPointCloudRenderer.CloudData;
 
 namespace BAPointCloudRenderer.Loading {
     /// <summary>
@@ -11,13 +12,13 @@ namespace BAPointCloudRenderer.Loading {
          /// Registers the root node of a point cloud in the renderer.
          /// </summary>
          /// <param name="rootNode">not null</param>
-        void AddRootNode(Node rootNode);
+        void AddRootNode(Node rootNode, PointCloudLoader loader);
 
         /// <summary>
         /// Removes the root node of a point cloud from the renderer. The node will not be rendered any more.
         /// </summary>
         /// <param name="rootNode">not null</param>
-        void RemoveRootNode(Node rootNode);
+        void RemoveRootNode(Node rootNode, PointCloudLoader loader);
         
         /// <summary>
         /// Returns how many root nodes have been added

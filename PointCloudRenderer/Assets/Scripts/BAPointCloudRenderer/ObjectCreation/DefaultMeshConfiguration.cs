@@ -58,6 +58,10 @@ namespace BAPointCloudRenderer.ObjectCreation {
         /// This should usually be the same camera that's used as "User Camera" in the point cloud set.
         /// </summary>
         public Camera renderCamera = null;
+        /// <summary>
+        /// If set to true, the Bounding Boxes of the individual octree nodes will be displayed.
+        /// </summary>
+        public bool displayLOD = false;
 
         private Material material;
         private HashSet<GameObject> gameObjectCollection = null;
@@ -100,6 +104,13 @@ namespace BAPointCloudRenderer.ObjectCreation {
                 }
                 reload = false;
             }
+            if (displayLOD)
+            {
+                foreach (GameObject go in gameObjectCollection)
+                {
+                    Utility.BBDraw.DrawBoundingBox(go.GetComponent<BoundingBoxComponent>().boundingBox, null, Color.red, false);
+                }
+            }
             if (screenSize) {
                 if (interpolation != FragInterpolationMode.OFF) {
                     Matrix4x4 invP = (GL.GetGPUProjectionMatrix(renderCamera.projectionMatrix, true)).inverse;
@@ -134,6 +145,8 @@ namespace BAPointCloudRenderer.ObjectCreation {
 
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+
+            gameObject.AddComponent<BoundingBoxComponent>().boundingBox = boundingBox; ;
 
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);

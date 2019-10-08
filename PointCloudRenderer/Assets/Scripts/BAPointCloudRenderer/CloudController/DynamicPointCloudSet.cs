@@ -1,13 +1,15 @@
 ﻿using BAPointCloudRenderer.Loading;
 using BAPointCloudRenderer.ObjectCreation;
 using UnityEngine;
+using UnityEditor;
 
 namespace BAPointCloudRenderer.CloudController {
 
     /// <summary>
     /// Point Cloud Set to display a large point cloud. All the time, only the points which are needed for the current camera position are loaded from the disk (as described in the thesis).
     /// </summary>
-    class DynamicPointCloudSet : AbstractPointCloudSet {
+    [ExecuteInEditMode]
+    public class DynamicPointCloudSet : AbstractPointCloudSet {
         /// <summary>
         /// Point Budget - Maximum Number of Points in Memory / to Render
         /// </summary>
@@ -25,10 +27,6 @@ namespace BAPointCloudRenderer.CloudController {
         /// </summary>
         public uint nodesGOsPerFrame = 30;
         /// <summary>
-        /// MeshConfiguration. Defines how to render the points.
-        /// </summary>
-        public MeshConfiguration meshConfiguration = null;
-        /// <summary>
         /// Cache Size in POints
         /// </summary>
         public uint cacheSizeInPoints = 1000000;
@@ -42,14 +40,31 @@ namespace BAPointCloudRenderer.CloudController {
             if (userCamera == null) {
                 userCamera = Camera.main;
             }
-            PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
+            if (editmode)
+            {
+                PointRenderer = new PreviewRenderer(this);
+            } else
+            {
+                if (GetComponent<MeshRenderer>() != null)
+                {
+                    DestroyImmediate(GetComponent<MeshFilter>().sharedMesh);
+                    DestroyImmediate(GetComponent<MeshFilter>());
+                    DestroyImmediate(GetComponent<MeshRenderer>());
+                }
+                PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
+            }
         }
 
 
         // Update is called once per frame
-        void Update() {
-            if (!CheckReady()) return;
+        void Update()
+        {
+            if (!editmode && !CheckReady())
+            {
+                return;
+            }
             PointRenderer.Update();
+            DrawDebugInfo();
         }
     }
 }

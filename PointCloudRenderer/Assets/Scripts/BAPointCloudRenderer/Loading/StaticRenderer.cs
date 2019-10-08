@@ -3,6 +3,7 @@ using BAPointCloudRenderer.CloudData;
 using BAPointCloudRenderer.ObjectCreation;
 using System.Threading;
 using System;
+using BAPointCloudRenderer.CloudController;
 
 namespace BAPointCloudRenderer.Loading {
     /// <summary>
@@ -31,7 +32,7 @@ namespace BAPointCloudRenderer.Loading {
             this.config = config;
         }
 
-        public void AddRootNode(Node rootNode) {
+        public void AddRootNode(Node rootNode, PointCloudLoader loader) {
             toLoad.Enqueue(rootNode);
             if (!running) {
                 if (loadingThread != null) {
@@ -50,7 +51,7 @@ namespace BAPointCloudRenderer.Loading {
             return rootNodes.Count;
         }
 
-        public void RemoveRootNode(Node rootNode) {
+        public void RemoveRootNode(Node rootNode, PointCloudLoader loader) {
             rootNodes.Remove(rootNode);
             toRemove.Enqueue(rootNode);
         }

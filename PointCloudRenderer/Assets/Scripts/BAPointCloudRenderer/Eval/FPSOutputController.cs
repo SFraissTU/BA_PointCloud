@@ -1,10 +1,13 @@
-﻿using BAPointCloudRenderer.Controllers;
+﻿using BAPointCloudRenderer.CloudController;
+using BAPointCloudRenderer.Controllers;
+using System;
 using UnityEngine;
 
 namespace BAPointCloudRenderer.Eval {
     /// <summary>
     /// Used for printing the current FPS contstantly
     /// </summary>
+    [Obsolete]
     public class FPSOutputController : MonoBehaviour {
         
         /// <summary>
@@ -14,7 +17,7 @@ namespace BAPointCloudRenderer.Eval {
         /// <summary>
         /// Used pointcloudsetcontroller to output the current pointcount. May be null, if no pcsc is used.
         /// </summary>
-        public AbstractPointSetController pointset = null;
+        public AbstractPointCloudSet pointset = null;
 
         private float accTime = 0;
 
