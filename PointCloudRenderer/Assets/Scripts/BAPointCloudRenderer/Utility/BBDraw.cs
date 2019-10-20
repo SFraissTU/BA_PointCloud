@@ -21,36 +21,36 @@ namespace BAPointCloudRenderer.Utility
             if (showPosition)
             {
 
-                Debug.DrawLine(boundingBox.Center().ToFloatVector(), boundingBox.Center().ToFloatVector() + Vector3.up, Color.green, duration);
+                Debug.DrawLine(boundingBox.Center().ToFloatVector(), boundingBox.Center().ToFloatVector() + Vector3.up, Color.green, duration, true);
 
-                Debug.DrawLine(boundingBox.Center().ToFloatVector(), boundingBox.Center().ToFloatVector() + Vector3.forward, Color.blue, duration);
+                Debug.DrawLine(boundingBox.Center().ToFloatVector(), boundingBox.Center().ToFloatVector() + Vector3.forward, Color.blue, duration, true);
 
-                Debug.DrawLine(boundingBox.Center().ToFloatVector(), boundingBox.Center().ToFloatVector() + Vector3.right, Color.red, duration);
+                Debug.DrawLine(boundingBox.Center().ToFloatVector(), boundingBox.Center().ToFloatVector() + Vector3.right, Color.red, duration, true);
             }
 
-            Debug.DrawLine(cornerPositions[0], cornerPositions[1], color, duration);
+            Debug.DrawLine(cornerPositions[0], cornerPositions[1], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[1], cornerPositions[3], color, duration);
+            Debug.DrawLine(cornerPositions[1], cornerPositions[3], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[3], cornerPositions[2], color, duration);
+            Debug.DrawLine(cornerPositions[3], cornerPositions[2], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[2], cornerPositions[0], color, duration);
+            Debug.DrawLine(cornerPositions[2], cornerPositions[0], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[4], cornerPositions[5], color, duration);
+            Debug.DrawLine(cornerPositions[4], cornerPositions[5], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[5], cornerPositions[7], color, duration);
+            Debug.DrawLine(cornerPositions[5], cornerPositions[7], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[7], cornerPositions[6], color, duration);
+            Debug.DrawLine(cornerPositions[7], cornerPositions[6], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[6], cornerPositions[4], color, duration);
+            Debug.DrawLine(cornerPositions[6], cornerPositions[4], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[0], cornerPositions[4], color, duration);
+            Debug.DrawLine(cornerPositions[0], cornerPositions[4], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[1], cornerPositions[5], color, duration);
+            Debug.DrawLine(cornerPositions[1], cornerPositions[5], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[3], cornerPositions[7], color, duration);
+            Debug.DrawLine(cornerPositions[3], cornerPositions[7], color, duration, true);
 
-            Debug.DrawLine(cornerPositions[2], cornerPositions[6], color, duration);
+            Debug.DrawLine(cornerPositions[2], cornerPositions[6], color, duration, true);
 
         }
 
