@@ -50,7 +50,7 @@ namespace BAPointCloudRenderer.Loading {
             cache = new V2Cache(cacheSize);
             loadingThread = new V2LoadingThread(cache);
             loadingThread.Start();
-            traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
+            traversalThread = new V2TraversalThread(pcset.gameObject, this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
             traversalThread.Start();
             toDeleteExternal = new Queue<Node>();
         }
@@ -97,7 +97,7 @@ namespace BAPointCloudRenderer.Loading {
             unityThread = Thread.CurrentThread;
             if (paused) return;
             //Set new Camera Data
-            traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera), camera.pixelRect.height, camera.fieldOfView);
+            traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera.projectionMatrix * camera.worldToCameraMatrix * pcset.transform.localToWorldMatrix), camera.pixelRect.height, camera.fieldOfView);
             
             //Update GameObjects
             Queue<Node> toRender;

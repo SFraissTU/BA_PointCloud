@@ -33,6 +33,7 @@ namespace BAPointCloudRenderer.ObjectCreation
         protected class BoundingBoxComponent : MonoBehaviour
         {
             public BoundingBox boundingBox;
+            public Transform parent;
         }
     }
 

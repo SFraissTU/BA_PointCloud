@@ -108,7 +108,8 @@ namespace BAPointCloudRenderer.ObjectCreation {
             {
                 foreach (GameObject go in gameObjectCollection)
                 {
-                    Utility.BBDraw.DrawBoundingBox(go.GetComponent<BoundingBoxComponent>().boundingBox, null, Color.red, false);
+                    BoundingBoxComponent bbc = go.GetComponent<BoundingBoxComponent>();
+                    Utility.BBDraw.DrawBoundingBox(bbc.boundingBox, bbc.parent, Color.red, false);
                 }
             }
             if (screenSize) {
@@ -147,7 +148,9 @@ namespace BAPointCloudRenderer.ObjectCreation {
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
             gameObject.transform.SetParent(parent, false);
 
-            gameObject.AddComponent<BoundingBoxComponent>().boundingBox = boundingBox; ;
+            BoundingBoxComponent bbc = gameObject.AddComponent<BoundingBoxComponent>();
+            bbc.boundingBox = boundingBox; ;
+            bbc.parent = parent;
 
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);

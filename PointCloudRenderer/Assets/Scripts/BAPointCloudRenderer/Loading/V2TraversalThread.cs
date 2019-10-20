@@ -12,6 +12,7 @@ namespace BAPointCloudRenderer.Loading {
     /// </summary>
     class V2TraversalThread {
 
+        private GameObject parent;
         private object locker = new object();
         private List<Node> rootNodes;
         private double minNodeSize; //Min projected node size
@@ -40,7 +41,8 @@ namespace BAPointCloudRenderer.Loading {
         /// <summary>
         /// Creates the object, but does not start the thread yet
         /// </summary>
-        public V2TraversalThread(V2Renderer mainThread, V2LoadingThread loadingThread, List<Node> rootNodes, double minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsPerFrame, V2Cache cache) {
+        public V2TraversalThread(GameObject parent, V2Renderer mainThread, V2LoadingThread loadingThread, List<Node> rootNodes, double minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsPerFrame, V2Cache cache) {
+            this.parent = parent;
             this.mainThread = mainThread;
             this.loadingThread = loadingThread;
             this.rootNodes = rootNodes;
@@ -89,8 +91,8 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="fieldOfView">Field of View</param>
         public void SetNextCameraData(Vector3 cameraPosition, Vector3 camForward, Plane[] frustum, float screenHeight, float fieldOfView) {
             lock (locker) {
-                this.cameraPosition = cameraPosition;
-                this.camForward = camForward;
+                this.cameraPosition = parent.transform.InverseTransformPoint(cameraPosition);
+                this.camForward = parent.transform.InverseTransformDirection(camForward);
                 this.frustum = frustum;
                 this.screenHeight = screenHeight;
                 this.fieldOfView = fieldOfView;
