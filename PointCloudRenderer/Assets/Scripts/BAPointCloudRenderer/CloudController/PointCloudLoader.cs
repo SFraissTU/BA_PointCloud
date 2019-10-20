@@ -6,9 +6,6 @@ using UnityEngine;
 using UnityEditor;
 
 namespace BAPointCloudRenderer.CloudController {
-    /* While PointCloudLoaderController will load the complete file as one and render the comlete one, 
-     * the DynamicLoaderController will first only load the hierarchy. It can be given registered at a PointCloudSetController to render it.
-     */
     /// <summary>
     /// Use this script to load a single PointCloud from a directory.
     /// </summary>
@@ -33,6 +30,7 @@ namespace BAPointCloudRenderer.CloudController {
         private Node rootNode;
 
         void Start() {
+            //Remove potential meshes from the editor preview
             MeshFilter mf = GetComponent<MeshFilter>();
             MeshRenderer mr = GetComponent<MeshRenderer>();
             if (mf != null)

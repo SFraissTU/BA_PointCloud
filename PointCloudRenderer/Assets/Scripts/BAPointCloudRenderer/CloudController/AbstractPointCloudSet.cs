@@ -21,6 +21,9 @@ namespace BAPointCloudRenderer.CloudController {
         /// </summary>
         public bool moveCenterToTransformPosition = true;
 
+        /// <summary>
+        /// Whether a bounding box for the whole point cloud set should be displayed. This is rendered as a gizmo, so it might only be visible in Scene View.
+        /// </summary>
         public bool showBoundingBox = false;
 
         /// <summary>
@@ -55,6 +58,9 @@ namespace BAPointCloudRenderer.CloudController {
             initializedEvent.Set();
         }
 
+        /// <summary>
+        /// Returns true, iff Start has already been executed
+        /// </summary>
         public bool IsInitialized()
         {
             return initializedEvent.WaitOne(0);
@@ -209,6 +215,9 @@ namespace BAPointCloudRenderer.CloudController {
             return true;
         }
 
+        /// <summary>
+        /// If Bounding-Box-Drawing is enabled this will render the bounding box (Gizmos have to be enabled to see them)
+        /// </summary>
         public void DrawDebugInfo()
         {
             if (showBoundingBox)

@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['usercamera',['userCamera',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#ab19c36147ffbe4065165f3dbc45a6d9a',1,'BAPointCloudRenderer::CloudController::DynamicPointCloudSet']]],
-  ['ux',['ux',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html#a312d18d4f49e08f3f4e4119e9c9c6e28',1,'BAPointCloudRenderer::CloudData::BoundingBox']]],
-  ['uy',['uy',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html#a85f11eb8f9b53225f2e47bef4f77d6ce',1,'BAPointCloudRenderer::CloudData::BoundingBox']]],
-  ['uz',['uz',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html#a65e32d45d06562a105331bb61a8f1900',1,'BAPointCloudRenderer::CloudData::BoundingBox']]]
+  ['screensize',['screenSize',['../class_b_a_point_cloud_renderer_1_1_object_creation_1_1_default_mesh_configuration.html#adb4b1c53d6464a66ca8d966e0370695f',1,'BAPointCloudRenderer.ObjectCreation.DefaultMeshConfiguration.screenSize()'],['../class_b_a_point_cloud_renderer_1_1_object_creation_1_1_geo_quad_mesh_configuration.html#a9a1e02e40895881a23588aeb5e6c6519',1,'BAPointCloudRenderer.ObjectCreation.GeoQuadMeshConfiguration.screenSize()']]],
+  ['setcontroller',['setController',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html#a085c7b927b94481fb39cfa9375771511',1,'BAPointCloudRenderer::CloudController::PointCloudLoader']]],
+  ['settopreview',['SetToPreview',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_preview.html#aeb3838c7258e5e03162495da5a6bc390',1,'BAPointCloudRenderer::CloudController::Preview']]],
+  ['showboundingbox',['showBoundingBox',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#ac12064d0211996682f2c20b7d80d7a49',1,'BAPointCloudRenderer::CloudController::AbstractPointCloudSet']]],
+  ['showpoints',['ShowPoints',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_preview.html#ab9cdb38687cfe4f08750d07b6a2392d9',1,'BAPointCloudRenderer::CloudController::Preview']]]
 ];

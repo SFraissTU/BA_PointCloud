@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.2</span>
+   &#160;<span id="projectnumber">1.3</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -90,21 +90,30 @@ Inheritance diagram for BAPointCloudRenderer.CloudController.AbstractPointCloudS
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a61a631e7ee214d5537453f1c56f5989f"><td class="memItemLeft" align="right" valign="top"><a id="a61a631e7ee214d5537453f1c56f5989f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>Start</b> ()</td></tr>
+<tr class="separator:a61a631e7ee214d5537453f1c56f5989f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc0095fd8a70037e6c34708b1e3ba820"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#abc0095fd8a70037e6c34708b1e3ba820">IsInitialized</a> ()</td></tr>
+<tr class="memdesc:abc0095fd8a70037e6c34708b1e3ba820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, iff Start has already been executed  <a href="#abc0095fd8a70037e6c34708b1e3ba820">More...</a><br /></td></tr>
+<tr class="separator:abc0095fd8a70037e6c34708b1e3ba820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa46bb1c909461b0a0c2adbb90aa9667f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#aa46bb1c909461b0a0c2adbb90aa9667f">RegisterController</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html">PointCloudLoader</a> controller)</td></tr>
 <tr class="memdesc:aa46bb1c909461b0a0c2adbb90aa9667f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a PointCloud-Controller (See <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html" title="Use this script to load a single PointCloud from a directory. ">PointCloudLoader</a>). This should be done in the start-method of the pc-controller and is neccessary for the bounding-box-recalculation. The whole cloud will be moved and rendered as soon as for every registererd controller the bounding box was given via UpdateBoundingBox. Should be called only once for every controller  <a href="#aa46bb1c909461b0a0c2adbb90aa9667f">More...</a><br /></td></tr>
 <tr class="separator:aa46bb1c909461b0a0c2adbb90aa9667f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5922d14d7758830f1c656b4e80752416"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a5922d14d7758830f1c656b4e80752416">UpdateBoundingBox</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html">PointCloudLoader</a> controller, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox)</td></tr>
-<tr class="memdesc:a5922d14d7758830f1c656b4e80752416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the bounding box of a given Cloud-Controller, which has been registered via RegisterController first. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update), so this method should not be called in the main thread.  <a href="#a5922d14d7758830f1c656b4e80752416">More...</a><br /></td></tr>
-<tr class="separator:a5922d14d7758830f1c656b4e80752416"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e131b4fa5146b36c11fe67500656e06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a2e131b4fa5146b36c11fe67500656e06">AddRootNode</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a> node)</td></tr>
-<tr class="memdesc:a2e131b4fa5146b36c11fe67500656e06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox.  <a href="#a2e131b4fa5146b36c11fe67500656e06">More...</a><br /></td></tr>
-<tr class="separator:a2e131b4fa5146b36c11fe67500656e06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7acabafe537959058373bed6b05a7a17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a7acabafe537959058373bed6b05a7a17">UpdateBoundingBox</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html">PointCloudLoader</a> controller, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a> tightBoundingBox)</td></tr>
+<tr class="memdesc:a7acabafe537959058373bed6b05a7a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the bounding box of a given Cloud-Controller, which has been registered via RegisterController first. If the bounding box should be moved (moveToOrigin), this method does not terminate until the movement has happened (via update), so this method should not be called in the main thread.  <a href="#a7acabafe537959058373bed6b05a7a17">More...</a><br /></td></tr>
+<tr class="separator:a7acabafe537959058373bed6b05a7a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9739216eebfcaae85762353622cc05ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a9739216eebfcaae85762353622cc05ef">AddRootNode</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html">PointCloudLoader</a> controller, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a> node, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> metaData)</td></tr>
+<tr class="memdesc:a9739216eebfcaae85762353622cc05ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a root node to the renderer. Should be called by the PC-Controller, which also has to call RegisterController and UpdateBoundingBox.  <a href="#a9739216eebfcaae85762353622cc05ef">More...</a><br /></td></tr>
+<tr class="separator:a9739216eebfcaae85762353622cc05ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a585d1055ef404e00c3da226008a2603a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a585d1055ef404e00c3da226008a2603a">RemoveRootNode</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html">PointCloudLoader</a> controller, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a> node)</td></tr>
 <tr class="memdesc:a585d1055ef404e00c3da226008a2603a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a point cloud  <a href="#a585d1055ef404e00c3da226008a2603a">More...</a><br /></td></tr>
 <tr class="separator:a585d1055ef404e00c3da226008a2603a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e229adf233a29543ad4aec9cbbc99cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a5e229adf233a29543ad4aec9cbbc99cf">OnDestroy</a> ()</td></tr>
-<tr class="memdesc:a5e229adf233a29543ad4aec9cbbc99cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down the renderer  <a href="#a5e229adf233a29543ad4aec9cbbc99cf">More...</a><br /></td></tr>
-<tr class="separator:a5e229adf233a29543ad4aec9cbbc99cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3436f533042129a0e699bd7e5906480c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a3436f533042129a0e699bd7e5906480c">DrawDebugInfo</a> ()</td></tr>
+<tr class="memdesc:a3436f533042129a0e699bd7e5906480c"><td class="mdescLeft">&#160;</td><td class="mdescRight">If Bounding-Box-Drawing is enabled this will render the bounding box (Gizmos have to be enabled to see them)  <a href="#a3436f533042129a0e699bd7e5906480c">More...</a><br /></td></tr>
+<tr class="separator:a3436f533042129a0e699bd7e5906480c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a862c4405ec6aa77b8a132ad60ce67112"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a862c4405ec6aa77b8a132ad60ce67112">OnDisable</a> ()</td></tr>
+<tr class="memdesc:a862c4405ec6aa77b8a132ad60ce67112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down the renderer  <a href="#a862c4405ec6aa77b8a132ad60ce67112">More...</a><br /></td></tr>
+<tr class="separator:a862c4405ec6aa77b8a132ad60ce67112"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8de12a9975180e1ab1fe7d3f98321aba"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a8de12a9975180e1ab1fe7d3f98321aba">GetPointCount</a> ()</td></tr>
 <tr class="memdesc:a8de12a9975180e1ab1fe7d3f98321aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the point count  <a href="#a8de12a9975180e1ab1fe7d3f98321aba">More...</a><br /></td></tr>
 <tr class="separator:a8de12a9975180e1ab1fe7d3f98321aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,6 +126,12 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a2b66379b334f58ad3f90b56d6d7ecb2b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a2b66379b334f58ad3f90b56d6d7ecb2b">moveCenterToTransformPosition</a> = true</td></tr>
 <tr class="memdesc:a2b66379b334f58ad3f90b56d6d7ecb2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the center of the cloud should be moved to the position of this component. To calculate the center, only the point clouds are considered that exist in the beginning of the scene.  <a href="#a2b66379b334f58ad3f90b56d6d7ecb2b">More...</a><br /></td></tr>
 <tr class="separator:a2b66379b334f58ad3f90b56d6d7ecb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac12064d0211996682f2c20b7d80d7a49"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#ac12064d0211996682f2c20b7d80d7a49">showBoundingBox</a> = false</td></tr>
+<tr class="memdesc:ac12064d0211996682f2c20b7d80d7a49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether a bounding box for the whole point cloud set should be displayed. This is rendered as a gizmo, so it might only be visible in Scene View.  <a href="#ac12064d0211996682f2c20b7d80d7a49">More...</a><br /></td></tr>
+<tr class="separator:ac12064d0211996682f2c20b7d80d7a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5061c21262ff329ed27bbfe6d410fd2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_mesh_configuration.html">MeshConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a5061c21262ff329ed27bbfe6d410fd2d">meshConfiguration</a> = null</td></tr>
+<tr class="memdesc:a5061c21262ff329ed27bbfe6d410fd2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">MeshConfiguration. Defines how to render the points.  <a href="#a5061c21262ff329ed27bbfe6d410fd2d">More...</a><br /></td></tr>
+<tr class="separator:a5061c21262ff329ed27bbfe6d410fd2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -136,8 +151,8 @@ Properties</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A PointCloudSet enables loading and rendering several point clouds at once. But even if you just have one point cloud to render, you have to attach it to a PointCloudSet. The configured options of the PointCloudSet controller (for example point budget) work for all point clouds attached to this set. Every pointcloud has its own <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html" title="Use this script to load a single PointCloud from a directory. ">PointCloudLoader</a>, which has to register itself at the PointSetController via the methods RegisterController, UpdateBoundingBox and AddRootNode. The current implementations of this class are <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_static_point_cloud_set.html" title="This Point Cloud Set loads the complete point cloud one and displays everything at once...">StaticPointCloudSet</a> and <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html" title="Point Cloud Set to display a large point cloud. All the time, only the points which are needed for th...">DynamicPointCloudSet</a>. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2e131b4fa5146b36c11fe67500656e06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e131b4fa5146b36c11fe67500656e06">&#9670;&nbsp;</a></span>AddRootNode()</h2>
+<a id="a9739216eebfcaae85762353622cc05ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9739216eebfcaae85762353622cc05ef">&#9670;&nbsp;</a></span>AddRootNode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,9 +163,25 @@ Properties</h2></td></tr>
         <tr>
           <td class="memname">void BAPointCloudRenderer.CloudController.AbstractPointCloudSet.AddRootNode </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a>&#160;</td>
-          <td class="paramname"><em>node</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html">PointCloudLoader</a>&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a>&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td>
+          <td class="paramname"><em>metaData</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -188,6 +219,33 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns true, iff all the nodes are registered, have been moved to the center (if required) and the renderer is loaded. </p>
+
+</div>
+</div>
+<a id="a3436f533042129a0e699bd7e5906480c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3436f533042129a0e699bd7e5906480c">&#9670;&nbsp;</a></span>DrawDebugInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BAPointCloudRenderer.CloudController.AbstractPointCloudSet.DrawDebugInfo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If Bounding-Box-Drawing is enabled this will render the bounding box (Gizmos have to be enabled to see them) </p>
 
 </div>
 </div>
@@ -248,8 +306,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a5e229adf233a29543ad4aec9cbbc99cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e229adf233a29543ad4aec9cbbc99cf">&#9670;&nbsp;</a></span>OnDestroy()</h2>
+<a id="abc0095fd8a70037e6c34708b1e3ba820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc0095fd8a70037e6c34708b1e3ba820">&#9670;&nbsp;</a></span>IsInitialized()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -258,7 +316,34 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void BAPointCloudRenderer.CloudController.AbstractPointCloudSet.OnDestroy </td>
+          <td class="memname">bool BAPointCloudRenderer.CloudController.AbstractPointCloudSet.IsInitialized </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns true, iff Start has already been executed </p>
+
+</div>
+</div>
+<a id="a862c4405ec6aa77b8a132ad60ce67112"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a862c4405ec6aa77b8a132ad60ce67112">&#9670;&nbsp;</a></span>OnDisable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BAPointCloudRenderer.CloudController.AbstractPointCloudSet.OnDisable </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -306,7 +391,7 @@ Properties</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd>DynamicLoaderController</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html" title="Use this script to load a single PointCloud from a directory. ">PointCloudLoader</a></dd></dl>
 
 </div>
 </div>
@@ -348,8 +433,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a5922d14d7758830f1c656b4e80752416"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5922d14d7758830f1c656b4e80752416">&#9670;&nbsp;</a></span>UpdateBoundingBox()</h2>
+<a id="a7acabafe537959058373bed6b05a7a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7acabafe537959058373bed6b05a7a17">&#9670;&nbsp;</a></span>UpdateBoundingBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -367,7 +452,13 @@ Properties</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a>&#160;</td>
-          <td class="paramname"><em>boundingBox</em>&#160;</td>
+          <td class="paramname"><em>boundingBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a>&#160;</td>
+          <td class="paramname"><em>tightBoundingBox</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -387,6 +478,22 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5061c21262ff329ed27bbfe6d410fd2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5061c21262ff329ed27bbfe6d410fd2d">&#9670;&nbsp;</a></span>meshConfiguration</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_mesh_configuration.html">MeshConfiguration</a> BAPointCloudRenderer.CloudController.AbstractPointCloudSet.meshConfiguration = null</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>MeshConfiguration. Defines how to render the points. </p>
+
+</div>
+</div>
 <a id="a2b66379b334f58ad3f90b56d6d7ecb2b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2b66379b334f58ad3f90b56d6d7ecb2b">&#9670;&nbsp;</a></span>moveCenterToTransformPosition</h2>
 
@@ -400,6 +507,22 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Whether the center of the cloud should be moved to the position of this component. To calculate the center, only the point clouds are considered that exist in the beginning of the scene. </p>
+
+</div>
+</div>
+<a id="ac12064d0211996682f2c20b7d80d7a49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac12064d0211996682f2c20b7d80d7a49">&#9670;&nbsp;</a></span>showBoundingBox</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BAPointCloudRenderer.CloudController.AbstractPointCloudSet.showBoundingBox = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether a bounding box for the whole point cloud set should be displayed. This is rendered as a gizmo, so it might only be visible in Scene View. </p>
 
 </div>
 </div>

@@ -11,7 +11,15 @@ namespace BAPointCloudRenderer.Utility
 {
     class BBDraw
     {
-        //This function has been provided by Garrison Price. Adapted by Simon M. Fraiss
+        /// <summary>
+        /// This function draws a bounding box using Debug.DrawLine, so Gizmos have to be enabled to see them.
+        /// This functionality has been provided by Garrison Price. Adapted by Simon M. Fraiss.
+        /// </summary>
+        /// <param name="boundingBox">Bounding Box to dislpay</param>
+        /// <param name="transform">Transform that should be applied to the bounding box, or null</param>
+        /// <param name="color">Color to use</param>
+        /// <param name="showPosition">If true, the position will be marked by three vectors</param>
+        /// <param name="duration">Duration to display the box (default is 0.0f, which means just one frame)</param>
         public static void DrawBoundingBox(BoundingBox boundingBox, Transform transform, Color color, bool showPosition, float duration = 0.0f)
         {
             Vector3[] cornerPositions = new Vector3[8];
@@ -54,7 +62,12 @@ namespace BAPointCloudRenderer.Utility
 
         }
 
-        //This function has been provided by Garrison Price. Adapted by Simon M. Fraiss
+        /// <summary>
+        /// This function draws a bounding box using Gizmos.DrawLine and is used for displaying bounding boxes in the editor.
+        /// This functionality has been provided by Garrison Price. Adapted by Simon M. Fraiss.
+        /// </summary>
+        /// <param name="boundingBox">Bounding Box to display</param>
+        /// <param name="transform">Transform to apply on the bounding box, or null</param>
         public static void DrawBoundingBoxInEditor(BoundingBox boundingBox, Transform transform)
         {
             Vector3[] cornerPositions = new Vector3[8];

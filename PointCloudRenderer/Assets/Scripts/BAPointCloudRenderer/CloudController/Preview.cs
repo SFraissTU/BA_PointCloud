@@ -9,6 +9,15 @@ using System.Collections.Generic;
 
 namespace BAPointCloudRenderer.CloudController
 {
+    /// <summary>
+    /// This class enables previewing the point clouds in the editor.
+    /// By default, it displays the bounding box of the attached point cloud set.
+    /// If ShowPoints is set to true it also loads in points (only from the first Level of Detail) 
+    /// to give a coarse approximation of the final point cloud. The points will be approximately equally
+    /// distributed from all the given point clouds. The points will be rendered as 1px-Points.
+    /// In general, the preview doesn't always update live, so please use the "Update Preview"-Button in the editor
+    /// to update the preview after you made changes.
+    /// </summary>
     [ExecuteAlways]
     public class Preview : MonoBehaviour
     {
@@ -22,15 +31,22 @@ namespace BAPointCloudRenderer.CloudController
         private Material _material;
         private bool _createMesh = false;
         private Thread loadingThread = null;
-        private bool _abortLoading = false;
 
+        /// <summary>
+        /// PointCloudSet for which to create the preview
+        /// </summary>
         public AbstractPointCloudSet SetToPreview;
+        /// <summary>
+        /// Whether points should be loaded as well
+        /// </summary>
         public bool ShowPoints = false;
+        /// <summary>
+        /// The maximum number of points to load
+        /// </summary>
         public int PointBudget = 65000;
 
         public void Start()
         {
-            //EditorApplication.update = DrawBoundingBox;
             _material = new Material(Shader.Find("Custom/PointShader"));
         }
 
@@ -46,10 +62,12 @@ namespace BAPointCloudRenderer.CloudController
                 Debug.Log("Another updating process seems to be in progress. Please wait or restart.");
                 return;
             }
+            //Copy current values to make sure they are consistent
             _setToPreview = SetToPreview;
             _showPoints = ShowPoints;
             _setTransform = _setToPreview.transform;
             _pointBudget = PointBudget;
+            //Look for loaders for the given set
             PointCloudLoader[] allLoaders = FindObjectsOfType<PointCloudLoader>();
             _loaders = new List<PointCloudLoader>();
             _nodes = new List<Node>();
@@ -74,14 +92,15 @@ namespace BAPointCloudRenderer.CloudController
             loadingThread.Start();
         }
 
+        //This loads bounding boxes and also point cloud meta data (if showpoints is enabled).
+        //The meshes itself have to be created on the MainThread, so if it's necessary,
+        //this function only sets the flag _createMesh, which will be used later
         private void LoadBoundingBoxes()
         {
             BoundingBox overallBoundingBox = new BoundingBox(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity,
                                                                     double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
             foreach (PointCloudLoader loader in _loaders)
             {
-                if (_abortLoading) { 
-}
                 string path = loader.cloudPath;
                 if (!path.EndsWith("/"))
                 {
@@ -127,6 +146,7 @@ namespace BAPointCloudRenderer.CloudController
         {
             if (_createMesh)
             {
+                //If mesh has to be created, do it now!
                 CreateMesh();
                 _createMesh = false;
                 _loaders = null;
@@ -139,11 +159,11 @@ namespace BAPointCloudRenderer.CloudController
         {
             if (_currentBB != null)
             {
-                //Utility.BBDraw.DrawBoundingBox(currentBB, null, Color.cyan, true, 0.1f);
                 Utility.BBDraw.DrawBoundingBoxInEditor(_currentBB, _setTransform);
             }
         }
 
+        //Creates a mesh on each point cloud loader!
         private void CreateMesh()
         {
             List<Tuple<PointCloudLoader, Vector3[], Color[]>> data = ChoosePoints();
@@ -199,6 +219,7 @@ namespace BAPointCloudRenderer.CloudController
             }
         }
 
+        //Samples the point clouds, so to choose the points equally from all the clouds.
         private List<Tuple<PointCloudLoader, Vector3[], Color[]>> ChoosePoints()
         {
             List<Tuple<PointCloudLoader, Vector3[], Color[]>> result = new List<Tuple<PointCloudLoader, Vector3[], Color[]>>();

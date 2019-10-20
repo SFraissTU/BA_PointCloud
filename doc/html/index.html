@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.2</span>
+   &#160;<span id="projectnumber">1.3</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -70,7 +70,7 @@ $(function() {
 <p>Namespaces:</p><ul>
 <li>CloudData: Containing data structures for storing the cloud data</li>
 <li>CloudController: MonoBehaviour-Scripts for loading PointClouds</li>
-<li>Controllers: Mostly old obselete classes. You can use the CameraController if you want though.</li>
+<li>Controllers: Contains a CameraController for simple navigation.</li>
 <li>DataStructures: Useful data structures used in the Project</li>
 <li>Loading: The GameObject-Update-System</li>
 <li>ObjectCreation: MeshConfigurations defining how the points should be rendered</li>
@@ -79,7 +79,9 @@ $(function() {
 <li>CloudController.StaticPointCloudSet: Needed for simple point cloud rendering (everything is rendered at once)</li>
 <li>CloudController.DynamicPointCloudSet: Needed for dynamic point cloud rendering (based on current camera position)</li>
 <li>CloudController.PointCloudLoader: Use this script to load one point cloud and attach it to the PointCloudSet</li>
-<li>ObjectCreation.MeshConfiguration: Attach one of its subclasses to your scene and attach it to the PointCloudSet, in order to determine how the points should be rendered </li>
+<li>CloudController.DirectoryLoader: Useful if you have several point clouds in the same folder and want to load all of them.</li>
+<li>ObjectCreation.MeshConfiguration: Attach one of its subclasses to your scene and attach it to the PointCloudSet, in order to determine how the points should be rendered</li>
+<li>CloudController.Preview: Use this to show a preview of your point cloud inside the editor. </li>
 </ul>
 </div></div><!-- contents -->
 <!-- start footer part -->
