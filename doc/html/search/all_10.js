@@ -1,7 +1,9 @@
 var searchData=
 [
   ['scheduleforloading',['ScheduleForLoading',['../class_b_a_point_cloud_renderer_1_1_loading_1_1_v2_loading_thread.html#a0d92ae899dac47d9f0f21f586e9b4784',1,'BAPointCloudRenderer::Loading::V2LoadingThread']]],
+  ['screenheight',['ScreenHeight',['../class_b_a_point_cloud_renderer_1_1_edl_1_1_view_camera.html#a06e8a585988976f8122df40ba3a71203',1,'BAPointCloudRenderer::Edl::ViewCamera']]],
   ['screensize',['screenSize',['../class_b_a_point_cloud_renderer_1_1_object_creation_1_1_default_mesh_configuration.html#adb4b1c53d6464a66ca8d966e0370695f',1,'BAPointCloudRenderer.ObjectCreation.DefaultMeshConfiguration.screenSize()'],['../class_b_a_point_cloud_renderer_1_1_object_creation_1_1_geo_quad_mesh_configuration.html#a9a1e02e40895881a23588aeb5e6c6519',1,'BAPointCloudRenderer.ObjectCreation.GeoQuadMeshConfiguration.screenSize()']]],
+  ['screenwidth',['ScreenWidth',['../class_b_a_point_cloud_renderer_1_1_edl_1_1_view_camera.html#a376674ec03903bcabbfb186a80b95251',1,'BAPointCloudRenderer::Edl::ViewCamera']]],
   ['setchild',['SetChild',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#ab64cee005f22967c1bec2cc04c3ac9fa',1,'BAPointCloudRenderer::CloudData::Node']]],
   ['setcontroller',['setController',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html#a085c7b927b94481fb39cfa9375771511',1,'BAPointCloudRenderer::CloudController::PointCloudLoader']]],
   ['setnextcameradata',['SetNextCameraData',['../class_b_a_point_cloud_renderer_1_1_loading_1_1_v2_traversal_thread.html#ab3fd4ac89c873338df71e24a44fba1ea',1,'BAPointCloudRenderer::Loading::V2TraversalThread']]],
