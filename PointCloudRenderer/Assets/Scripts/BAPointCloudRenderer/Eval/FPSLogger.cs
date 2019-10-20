@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using BAPointCloudRenderer.Controllers;
+using BAPointCloudRenderer.CloudController;
 
 namespace BAPointCloudRenderer.Eval {
     /// <summary>
@@ -15,7 +16,7 @@ namespace BAPointCloudRenderer.Eval {
         public string testIdentifier;
         public bool log = false;
 
-        public PointCloudSetRealTimeController controller;
+        public DynamicPointCloudSet controller;
 
         private List<float> deltaTs = new List<float>(115 * 60);
         private static List<float> updateDTs = new List<float>(115 * 60);

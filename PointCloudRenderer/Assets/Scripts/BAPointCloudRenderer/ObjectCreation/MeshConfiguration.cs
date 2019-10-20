@@ -23,12 +23,17 @@ namespace BAPointCloudRenderer.ObjectCreation
         /// <param name="boundingBox">Bounding Box</param>
         /// <returns></returns>
         public abstract GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox);
-        
+
         /// <summary>
         /// Removes the GameObject
         /// </summary>
         /// <param name="gameObject">Should be a GameObject created by this MeshConfiguration</param>
         public abstract void RemoveGameObject(GameObject gameObject);
+
+        protected class BoundingBoxComponent : MonoBehaviour
+        {
+            public BoundingBox boundingBox;
+        }
     }
 
 }

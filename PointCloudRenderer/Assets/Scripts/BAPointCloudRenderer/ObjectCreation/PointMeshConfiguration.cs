@@ -1,4 +1,5 @@
 ﻿using BAPointCloudRenderer.CloudData;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BAPointCloudRenderer.ObjectCreation
@@ -8,11 +9,29 @@ namespace BAPointCloudRenderer.ObjectCreation
     /// </summary>
     class PointMeshConfiguration : MeshConfiguration
     {
+        /// <summary>
+        /// If set to true, the Bounding Boxes of the individual octree nodes will be displayed.
+        /// </summary>
+        public bool displayLOD = false;
+
         private Material material;
+        private HashSet<GameObject> gameObjectCollection = null;
 
         public void Start()
         {
             material = new Material(Shader.Find("Custom/PointShader"));
+            gameObjectCollection = new HashSet<GameObject>();
+        }
+
+        public void Update()
+        {
+            if (displayLOD)
+            {
+                foreach (GameObject go in gameObjectCollection)
+                {
+                    Utility.BBDraw.DrawBoundingBox(go.GetComponent<BoundingBoxComponent>().boundingBox, null, Color.red, false);
+                }
+            }
         }
 
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox)
@@ -40,6 +59,13 @@ namespace BAPointCloudRenderer.ObjectCreation
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
 
+            gameObject.AddComponent<BoundingBoxComponent>().boundingBox = boundingBox; ;
+
+            if (gameObjectCollection != null)
+            {
+                gameObjectCollection.Add(gameObject);
+            }
+
             return gameObject;
         }
 
@@ -48,9 +74,17 @@ namespace BAPointCloudRenderer.ObjectCreation
             return 65000;
         }
 
-        public override void RemoveGameObject(GameObject gameObject) {
-            Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
-            Destroy(gameObject);
+        public override void RemoveGameObject(GameObject gameObject)
+        {
+            if (gameObjectCollection != null)
+            {
+                gameObjectCollection.Remove(gameObject);
+            }
+            if (gameObject != null)
+            {
+                Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
+                Destroy(gameObject);
+            }
         }
     }
 }

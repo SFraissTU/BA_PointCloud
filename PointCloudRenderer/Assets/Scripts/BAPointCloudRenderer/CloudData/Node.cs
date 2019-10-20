@@ -216,6 +216,14 @@ namespace BAPointCloudRenderer.CloudData {
             return gameObjects.Count != 0;
         }
 
+        public Vector3[] VerticesToStore {
+            get { return verticesToStore; }
+        }
+
+        public Color[] ColorsToStore {
+            get { return colorsToStore; }
+        }
+
         /// <summary>
         /// Sets the child with the given index
         /// </summary>

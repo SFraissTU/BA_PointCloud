@@ -75,8 +75,11 @@ namespace BAPointCloudRenderer.ObjectCreation
         }
 
         public override void RemoveGameObject(GameObject gameObject) {
-            Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
-            Destroy(gameObject);
+            if (gameObject != null)
+            {
+                Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
+                Destroy(gameObject);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using BAPointCloudRenderer.Loading;
 using System;
 using System.Threading;
 using UnityEngine;
+using UnityEditor;
 
 namespace BAPointCloudRenderer.CloudController {
     /* While PointCloudLoaderController will load the complete file as one and render the comlete one, 
@@ -11,6 +12,7 @@ namespace BAPointCloudRenderer.CloudController {
     /// <summary>
     /// Use this script to load a single PointCloud from a directory.
     /// </summary>
+    [DisallowMultipleComponent]
     public class PointCloudLoader : MonoBehaviour {
 
         /// <summary>
@@ -31,6 +33,17 @@ namespace BAPointCloudRenderer.CloudController {
         private Node rootNode;
 
         void Start() {
+            MeshFilter mf = GetComponent<MeshFilter>();
+            MeshRenderer mr = GetComponent<MeshRenderer>();
+            if (mf != null)
+            {
+                Destroy(mf);
+            }
+            if (mr != null)
+            {
+                Destroy(mr);
+            }
+
             if (loadOnStart) {
                 LoadPointCloud();
             }
@@ -43,14 +56,21 @@ namespace BAPointCloudRenderer.CloudController {
                 }
 
                 PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, false);
-
-                setController.UpdateBoundingBox(this, metaData.boundingBox);
+                
+                setController.UpdateBoundingBox(this, metaData.boundingBox, metaData.tightBoundingBox);
 
                 rootNode = CloudLoader.LoadHierarchyOnly(metaData);
 
-                setController.AddRootNode(rootNode);
+                setController.AddRootNode(this, rootNode, metaData);
+                
+            } catch (System.IO.FileNotFoundException ex)
+            {
+                Debug.LogError("Could not find file: " + ex.FileName);
+            } catch (System.IO.DirectoryNotFoundException ex)
+            {
+                Debug.LogError("Could not find directory: " + ex.Message);
             } catch (Exception ex) {
-                Debug.LogError(ex);
+                Debug.LogError(ex + Thread.CurrentThread.Name);
             }
         }
 
@@ -58,9 +78,13 @@ namespace BAPointCloudRenderer.CloudController {
         /// Starts loading the point cloud. When the hierarchy is loaded it is registered at the corresponding point cloud set
         /// </summary>
         public void LoadPointCloud() {
-            setController.RegisterController(this);
-            Thread thread = new Thread(LoadHierarchy);
-            thread.Start();
+            if (setController != null && cloudPath != null)
+            {
+                setController.RegisterController(this);
+                Thread thread = new Thread(LoadHierarchy);
+                thread.Name = "Loader for " + cloudPath;
+                thread.Start();
+            }
         }
 
         /// <summary>
@@ -68,9 +92,9 @@ namespace BAPointCloudRenderer.CloudController {
         /// </summary>
         /// <returns>True if the cloud was removed. False, when the cloud hasn't even been loaded yet.</returns>
         public bool RemovePointCloud() {
-            if (rootNode == null) {
+            /*if (rootNode == null) {
                 return false;
-            }
+            }*/
             setController.RemoveRootNode(this, rootNode);
             return true;
         }

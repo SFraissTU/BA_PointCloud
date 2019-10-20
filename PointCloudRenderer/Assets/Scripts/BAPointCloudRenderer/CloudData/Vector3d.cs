@@ -69,6 +69,11 @@ namespace BAPointCloudRenderer.CloudData {
             return new Vector3d(a.x - b.x, a.y - b.y, a.z - b.z);
         }
 
+        public static Vector3d operator -(Vector3d a)
+        {
+            return new Vector3d(-a.x, -a.y, -a.z);
+        }
+
         /// <summary>
         /// Calculates the Dot-Product
         /// </summary>
