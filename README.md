@@ -16,7 +16,7 @@ This update contains a lot of new features, especially previewing the point clou
 
 Detailed change list:
 * A Preview-Script is available which allows you to see the bounding box and a coarse preview of the point cloud inside the editor!
-* Transformation of Point Cloud Set gets applied to the whole point cloud
+* Transformation of Point Cloud Set gets applied to the whole point cloud, as the created Node-GameObjects are now children of the set.
 * Eye Dome Lighting (provided by Kazys Stepanas)
 * Point Cloud Sets now provide the option to display the (tight) bounding box of the point clouds as a Gizmo
 * DefaltMeshConfiguration and PointMeshConfiguration now provide the option to display the current LOD-Bounding Boxes
@@ -60,7 +60,7 @@ It's great to see that many people are using this project!
 ## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
 1. Download the current .unitypackage file here: https://github.com/SFraissTU/BA_PointCloud/releases/download/v1.3/BAPC-v01.03.unitypackage
-2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip
+2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip . Alternatively, you also find a set of big point clouds in the git repository.
 3. Create a new project and go to Assets->Import Package and import the downloaded .unitypackage-file.
 4. There is now a DynamicDemo-Scene in the project. You can either use that or follow the steps below in your own scene to get the same result.
 5. If you want to be able to navigate the camera through the scene, I provide a small script for camera controls. This is optional and you can also just use your own control mechanisms instead. Select the Main Camera in the Scene Graph and press "Add Component" in the Inspector. Choose "Scripts"->"BAPointCloudRenderer.Controllers"->"Camera Controllers". When you start the game, you can then move the camera around by using the mouse and the WASD-keys as well as EQ for moving up and down, LeftShift for moving with higher speed and C for moving with lower speed. You can set the normal speed in the Inspector.
@@ -77,7 +77,7 @@ Now, go to the Point Cloud Set and choose the created configuration as your Mesh
 
 ![Creating a Mesh Configuration](doc/tutimgs/B2.PNG)
 
-8. Now let's create a Point Cloud Loader: Create a new Empty object and name it "Cloud Loader" or something similar. Click on "Add Component" and select "Scripts"->"BAPointCloudRenderer.CloudController"->"PointCloudLoader". With this object you can load a single point cloud and attach it to the created point cloud set. As "Cloud Path" specify the path to the point cloud folder (specifically the folder containing the cloud.js-file). Please note that this is a path relative to the execution directory. The point cloud is not used as a resource-asset in this project.
+8. Now let's create a Point Cloud Loader: Create a new Empty object and name it "Cloud Loader" or something similar. Click on "Add Component" and select "Scripts"->"BAPointCloudRenderer.CloudController"->"PointCloudLoader". With this object you can load a single point cloud and attach it to the created point cloud set. As "Cloud Path" specify the path to the point cloud folder (specifically the folder containing the cloud.js-file). Please note that this is either an absolute path or a path relative to the execution directory. The point cloud is not used as a resource-asset in this project.
 
 ![Creating a Point Cloud Loader](doc/tutimgs/C.PNG)
 
@@ -100,7 +100,7 @@ The preview is not refreshed continously, but you need to press the "Update Prev
 Previewing is also displayed in the demo scenes DynamicDemo and StaticDemo
 
 ### Eye-Dome-Lighting
-To use Eye-Dome-Lighting, a handy lighting model for point clouds, especially when they don't have color information, please refer to the setup in the scene EDLDemo.
+To use Eye-Dome-Lighting (thanks to Kazys Stepanas for implementing it!), a good lighting model for point clouds, especially when they don't have color information, please refer to the setup in the scene EDLDemo.
 
 You need to create two cameras. Create a view camera, which is tagged as MainCamera with the ViewCamera-script attached. This is the camera you want to move through the scene.
 Additionally, you need a post processing camera, to which you attach the Edl Camera script. Edl should then work:

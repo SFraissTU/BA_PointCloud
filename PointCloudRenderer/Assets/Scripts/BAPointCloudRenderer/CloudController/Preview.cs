@@ -216,6 +216,10 @@ namespace BAPointCloudRenderer.CloudController
                     mesh.colors = colorData;
                     mesh.SetIndices(indecies, MeshTopology.Points, 0);
                 }
+
+                go.transform.localPosition = new Vector3(0, 0, 0);
+                go.transform.localRotation = Quaternion.identity;
+                go.transform.localScale = new Vector3(1, 1, 1);
             }
         }
 
