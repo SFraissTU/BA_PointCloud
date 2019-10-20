@@ -12,6 +12,8 @@ namespace BAPointCloudRenderer.Loading {
     /// </summary>
     class StaticRenderer : AbstractRenderer {
 
+        private AbstractPointCloudSet pcset;
+
         private Queue<Node> toLoad;
         private List<Node> rootNodes;
         private Dictionary<Node, uint> nodePointcounts;
@@ -23,7 +25,8 @@ namespace BAPointCloudRenderer.Loading {
         private uint pointcount = 0;
         private bool visible = true;
 
-        public StaticRenderer(MeshConfiguration config) {
+        public StaticRenderer(AbstractPointCloudSet pcset, MeshConfiguration config) {
+            this.pcset = pcset;
             rootNodes = new List<Node>();
             toLoad = new Queue<Node>();
             toDisplay = new Queue<Node>();
@@ -81,7 +84,7 @@ namespace BAPointCloudRenderer.Loading {
                 while (toDisplay.Count != 0) {
                     Node n = toDisplay.Dequeue();
                     Monitor.Exit(toDisplay);
-                    n.CreateAllGameObjects(config);
+                    n.CreateAllGameObjects(config, pcset.transform);
                     lock (nodePointcounts) {
                         pointcount += nodePointcounts[n];
                     }

@@ -30,7 +30,7 @@ namespace BAPointCloudRenderer.ObjectCreation
             material.SetInt("_ScreenHeight", (int)screen.height);
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent) {
             GameObject gameObject = new GameObject(name);
 
             Mesh mesh = new Mesh();
@@ -66,6 +66,7 @@ namespace BAPointCloudRenderer.ObjectCreation
 
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+            gameObject.transform.parent = parent;
 
             return gameObject;
         }

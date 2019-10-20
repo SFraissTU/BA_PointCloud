@@ -10,7 +10,7 @@ namespace BAPointCloudRenderer.CloudController {
 
         // Use this for initialization
         protected override void Initialize() {
-            PointRenderer = new StaticRenderer(meshConfiguration);
+            PointRenderer = new StaticRenderer(this, meshConfiguration);
         }
 
 

@@ -11,6 +11,8 @@ namespace BAPointCloudRenderer.Loading {
     /// </summary>
     class V2Renderer : AbstractRenderer {
 
+        private AbstractPointCloudSet pcset;
+
         private bool paused = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
         private V2TraversalThread traversalThread;
@@ -40,7 +42,8 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="camera">User Camera</param>
         /// <param name="config">MeshConfiguration, defining how the points should be rendered</param>
         /// <param name="cacheSize">Size of cache in points</param>
-        public V2Renderer(int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
+        public V2Renderer(AbstractPointCloudSet pcset, int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
+            this.pcset = pcset;
             rootNodes = new List<Node>();
             this.camera = camera;
             this.config = config;
@@ -121,7 +124,7 @@ namespace BAPointCloudRenderer.Loading {
                 Node n = toRender.Dequeue();
                 lock (n) {
                     if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
-                        n.CreateGameObjects(config);
+                        n.CreateGameObjects(config, pcset.transform);
                     }
                 }
             }

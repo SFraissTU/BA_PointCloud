@@ -39,7 +39,7 @@ namespace BAPointCloudRenderer.CloudController {
             if (userCamera == null) {
                 userCamera = Camera.main;
             }
-            PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
+            PointRenderer = new V2Renderer(this, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
         }
 
 

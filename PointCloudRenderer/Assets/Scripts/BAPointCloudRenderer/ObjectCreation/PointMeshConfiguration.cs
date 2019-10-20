@@ -34,7 +34,7 @@ namespace BAPointCloudRenderer.ObjectCreation
             }
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox)
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent)
         {
             GameObject gameObject = new GameObject(name);
 
@@ -58,6 +58,7 @@ namespace BAPointCloudRenderer.ObjectCreation
 
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+            gameObject.transform.SetParent(parent, false);
 
             gameObject.AddComponent<BoundingBoxComponent>().boundingBox = boundingBox; ;
 

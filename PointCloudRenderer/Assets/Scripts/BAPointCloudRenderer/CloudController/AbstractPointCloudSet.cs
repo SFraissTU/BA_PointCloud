@@ -178,7 +178,7 @@ namespace BAPointCloudRenderer.CloudController {
                 {
                     if (!boundingBoxes.ContainsValue(null))
                     {
-                        moving = new Vector3d(transform.position) - overallTightBoundingBox.Center();
+                        moving = -overallTightBoundingBox.Center();
                         foreach (BoundingBox bb in boundingBoxes.Values)
                         {
                             bb.MoveAlong(moving);
@@ -213,7 +213,7 @@ namespace BAPointCloudRenderer.CloudController {
         {
             if (showBoundingBox)
             {
-                Utility.BBDraw.DrawBoundingBox(overallTightBoundingBox, null, Color.cyan, false);
+                Utility.BBDraw.DrawBoundingBox(overallTightBoundingBox, transform, Color.cyan, false);
             }
         }
 

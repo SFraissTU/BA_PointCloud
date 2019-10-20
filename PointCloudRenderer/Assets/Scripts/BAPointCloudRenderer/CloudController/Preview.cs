@@ -15,12 +15,14 @@ namespace BAPointCloudRenderer.CloudController
         private List<PointCloudLoader> _loaders = null;
         private List<Node> _nodes = null;
         private BoundingBox _currentBB = null;
-        private Vector3 _setPosition;
+        private Transform _setTransform;
         private AbstractPointCloudSet _setToPreview;
         private bool _showPoints;
         private int _pointBudget;
         private Material _material;
         private bool _createMesh = false;
+        private Thread loadingThread = null;
+        private bool _abortLoading = false;
 
         public AbstractPointCloudSet SetToPreview;
         public bool ShowPoints = false;
@@ -41,12 +43,12 @@ namespace BAPointCloudRenderer.CloudController
             }
             if (_loaders != null)
             {
-                Debug.Log("Please wait until last preview is ready! Preview aborted.");
+                Debug.Log("Another updating process seems to be in progress. Please wait or restart.");
                 return;
             }
             _setToPreview = SetToPreview;
             _showPoints = ShowPoints;
-            _setPosition = _setToPreview.transform.position;
+            _setTransform = _setToPreview.transform;
             _pointBudget = PointBudget;
             PointCloudLoader[] allLoaders = FindObjectsOfType<PointCloudLoader>();
             _loaders = new List<PointCloudLoader>();
@@ -68,8 +70,8 @@ namespace BAPointCloudRenderer.CloudController
                     DestroyImmediate(mr);
                 }
             }
-            Thread thread = new Thread(LoadBoundingBoxes);
-            thread.Start();
+            loadingThread = new Thread(LoadBoundingBoxes);
+            loadingThread.Start();
         }
 
         private void LoadBoundingBoxes()
@@ -78,6 +80,8 @@ namespace BAPointCloudRenderer.CloudController
                                                                     double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
             foreach (PointCloudLoader loader in _loaders)
             {
+                if (_abortLoading) { 
+}
                 string path = loader.cloudPath;
                 if (!path.EndsWith("/"))
                 {
@@ -101,7 +105,7 @@ namespace BAPointCloudRenderer.CloudController
             }
             if (_setToPreview.moveCenterToTransformPosition)
             {
-                Vector3d moving = new Vector3d(_setPosition) - overallBoundingBox.Center();
+                Vector3d moving = -overallBoundingBox.Center();
                 overallBoundingBox.MoveAlong(moving);
                 foreach (Node n  in _nodes)
                 {
@@ -136,7 +140,7 @@ namespace BAPointCloudRenderer.CloudController
             if (_currentBB != null)
             {
                 //Utility.BBDraw.DrawBoundingBox(currentBB, null, Color.cyan, true, 0.1f);
-                Utility.BBDraw.DrawBoundingBoxInEditor(_currentBB, null);
+                Utility.BBDraw.DrawBoundingBoxInEditor(_currentBB, _setTransform);
             }
         }
 
@@ -255,7 +259,7 @@ namespace BAPointCloudRenderer.CloudController
                 Vector3 translation = n.BoundingBox.Min().ToFloatVector();
                 for (int newIndex = 0, oldIndex = 0; newIndex < assignedPointCounts[j]; oldIndex += stride, ++newIndex)
                 {
-                    filteredVertices[newIndex] = nodeVertices[oldIndex] + translation;
+                    filteredVertices[newIndex] = _setTransform.TransformPoint(nodeVertices[oldIndex] + translation);
                     filteredColors[newIndex] = nodeColors[oldIndex];
                 }
                 result.Add(new Tuple<PointCloudLoader, Vector3[], Color[]>(_loaders[j], filteredVertices, filteredColors));
