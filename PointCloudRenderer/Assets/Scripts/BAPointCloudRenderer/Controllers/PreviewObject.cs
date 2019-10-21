@@ -15,7 +15,7 @@ namespace BAPointCloudRenderer.Controllers
     {
         public void Start()
         {
-            if (EditorApplication.isPlaying)
+            if (Application.isPlaying)
             {
                 Destroy(gameObject);
             }

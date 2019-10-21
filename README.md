@@ -128,5 +128,8 @@ Also, it might be a bit tricky to use EDL with VR. I don't really know how to do
 Apparently there have been some troubles using this project for WebGL. Another user has been trying to make it work. See this thread for more information: https://github.com/SFraissTU/BA_PointCloud/issues/12
 In general, if you want to render your point clouds in the browser, I recommend Potree: http://potree.org/
 
+### What about point attributes other than color?
+Not possible at the moment. If you want to implement it yourself, see this thread: https://github.com/SFraissTU/BA_PointCloud/issues/9
+
 #### Anything else?
 Please send me an email or open a github issue. Please note that I don't have a lot of time to work for this project, so I might not be able to fulfill every request, but I'm open to suggestions.
