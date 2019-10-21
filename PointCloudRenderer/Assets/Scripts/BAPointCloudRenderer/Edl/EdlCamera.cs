@@ -150,7 +150,9 @@ namespace BAPointCloudRenderer.Edl
         void Start()
         {
             // Disable if we don't support image effects
+#pragma warning disable CS0618 // Type or member is obsolete
             if (!SystemInfo.supportsImageEffects)
+#pragma warning restore CS0618 // Type or member is obsolete
             {
                 Debug.Log("Doesn't support Image effects");
                 enabled = false;

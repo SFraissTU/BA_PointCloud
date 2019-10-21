@@ -28,6 +28,8 @@ Detailed change list:
 * Provided Mac-Os-Compability by replacing "\" with "/"
 * Deleted old obsolete Controller-classes
 * Tested VR-Support with HTC Vive
+
+!(New features in action)[doc/tutimgs/newfeatures.PNG]
   
 
 ### Version 1.2 (19.02.2019):
@@ -47,7 +49,6 @@ Please note that because of the restructuring, the project is not fully compatib
 ### Future
 Features that may or may not come in the future (Right now, I do this in my leisure time, so I cannot work a lot on it):
 * Adaptive Point Sizes
-* Live Preview
 * Better WebGL-Support
 * On-Demand-Hierarchy-Loading
 * Loading Point Clouds from the Resources-folder
@@ -56,6 +57,12 @@ Features that may or may not come in the future (Right now, I do this in my leis
 
 I work on this project in my leisure time, so I do not have a lot of time to work on this, so I'm happy about contributions and feedback.
 It's great to see that many people are using this project!
+
+## Example Scenes
+* DynamicDemo.unity: Demonstrates DynamicPointCloudSet and Preview on the Lion-Point-Cloud
+* StaticDemo.unity: Demonstrates StaticPointCloudSet and Preview on the Lion-Point-Cloud
+* EDLDemo.unity: Demonstrates DynamicPointCloudSet and EDL on the Lion-Point-Cloud
+* BigSceneDemo.unity (GitHub-Repo only): Demonstrates DynamicPointCloudSet with several clouds from the CA13-Point Cloud.
 
 ## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
@@ -91,21 +98,23 @@ Alternatively to the Point Cloud Loader you can also use a Directory Loader. Her
 ## Special Topics
 ### Preview
 To get a preview of your scene inside the editor, please create a "Preview"-Component (in BAPointCloudRenderer.CloudController). Choose the set that you want to preview.
-By default, the preview object will simply display the bounding box of the point cloud set in the editor (Gizmos have to be enabled). If you also want to load points, please activate the checkbox "Show Points".
+By default, the preview object will simply display the bounding box of the point cloud set in the editor (Gizmos have to be enabled - may only be visible in the editor). If you also want to load points, please activate the checkbox "Show Points".
 You can also specify a Point Budget, which is the maximum number of points to display. This value shouldn't be too high, in order not to crash the editor when using very large point clouds. Please note, that less points than this value might be loaded, as only the first level of the octree hierarchy is considered.
-The preview is not refreshed continously, but you need to press the "Update Preview"-Button in the editor.
+The preview is not refreshed automatically when you add or remove point clouds, so please use the "Update Preview"-Button in the editor when you make changes.
 
 ![Preview](doc/tutimgs/Preview.PNG)
 
-Previewing is also displayed in the demo scenes DynamicDemo and StaticDemo
+Previewing is also displayed in the demo scenes DynamicDemo and StaticDemo.
 
 ### Eye-Dome-Lighting
 To use Eye-Dome-Lighting (thanks to Kazys Stepanas for implementing it!), a good lighting model for point clouds, especially when they don't have color information, please refer to the setup in the scene EDLDemo.
 
 You need to create two cameras. Create a view camera, which is tagged as MainCamera with the ViewCamera-script attached. This is the camera you want to move through the scene.
-Additionally, you need a post processing camera, to which you attach the Edl Camera script. Edl should then work:
+Additionally, you need a post processing camera, to which you attach the Edl Camera script. As "Edl Shader" choose EDL and as "Edl Off Shader" choose "ScreenBlit". Edl should then work:
 
 ![Edl](doc/tutimgs/Edl.PNG)
+
+Please note that there's a bug when using EDL and the "Display LOD"-functionality in the MeshConfiguration. It displays the bounding boxes twice: Once in the scene, once in front of the camera. This may or may not be fixed in a future version.
 
 ## FAQ and Trouble-Shooting
 

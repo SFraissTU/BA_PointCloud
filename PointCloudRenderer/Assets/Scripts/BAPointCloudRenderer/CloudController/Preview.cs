@@ -6,6 +6,7 @@ using UnityEditor;
 using BAPointCloudRenderer.CloudData;
 using BAPointCloudRenderer.Loading;
 using System.Collections.Generic;
+using BAPointCloudRenderer.Controllers;
 
 namespace BAPointCloudRenderer.CloudController
 {
@@ -62,6 +63,8 @@ namespace BAPointCloudRenderer.CloudController
                 Debug.Log("Another updating process seems to be in progress. Please wait, recreate this object or restart.");
                 return;
             }
+            //Delete Preview of old set
+            HidePreview();
             //Copy current values to make sure they are consistent
             _setToPreview = SetToPreview;
             _showPoints = ShowPoints;
@@ -89,7 +92,10 @@ namespace BAPointCloudRenderer.CloudController
             PreviewObject[] previewObjects = FindObjectsOfType<PreviewObject>();
             for (int i = 0; i < previewObjects.Length; ++i)
             {
-                DestroyImmediate(previewObjects[i].gameObject);
+                if (previewObjects[i].transform.parent == _setTransform)
+                {
+                    DestroyImmediate(previewObjects[i].gameObject);
+                }
             }
             _currentBB = null;
         }
@@ -295,17 +301,6 @@ namespace BAPointCloudRenderer.CloudController
                 ++j;
             }
             return result;
-        }
-
-        private class PreviewObject : MonoBehaviour
-        {
-            public void Start()
-            {
-                if (EditorApplication.isPlaying)
-                {
-                    Destroy(this.gameObject);
-                }
-            }
         }
     }
 }
