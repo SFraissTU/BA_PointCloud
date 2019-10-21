@@ -3,6 +3,7 @@ using BAPointCloudRenderer.CloudData;
 using BAPointCloudRenderer.ObjectCreation;
 using System.Threading;
 using System;
+using BAPointCloudRenderer.CloudController;
 
 namespace BAPointCloudRenderer.Loading {
     /// <summary>
@@ -10,6 +11,8 @@ namespace BAPointCloudRenderer.Loading {
     /// It is possible to add and remove nodes after initialization.
     /// </summary>
     class StaticRenderer : AbstractRenderer {
+
+        private AbstractPointCloudSet pcset;
 
         private Queue<Node> toLoad;
         private List<Node> rootNodes;
@@ -22,7 +25,8 @@ namespace BAPointCloudRenderer.Loading {
         private uint pointcount = 0;
         private bool visible = true;
 
-        public StaticRenderer(MeshConfiguration config) {
+        public StaticRenderer(AbstractPointCloudSet pcset, MeshConfiguration config) {
+            this.pcset = pcset;
             rootNodes = new List<Node>();
             toLoad = new Queue<Node>();
             toDisplay = new Queue<Node>();
@@ -31,7 +35,7 @@ namespace BAPointCloudRenderer.Loading {
             this.config = config;
         }
 
-        public void AddRootNode(Node rootNode) {
+        public void AddRootNode(Node rootNode, PointCloudLoader loader) {
             toLoad.Enqueue(rootNode);
             if (!running) {
                 if (loadingThread != null) {
@@ -50,7 +54,7 @@ namespace BAPointCloudRenderer.Loading {
             return rootNodes.Count;
         }
 
-        public void RemoveRootNode(Node rootNode) {
+        public void RemoveRootNode(Node rootNode, PointCloudLoader loader) {
             rootNodes.Remove(rootNode);
             toRemove.Enqueue(rootNode);
         }
@@ -80,7 +84,7 @@ namespace BAPointCloudRenderer.Loading {
                 while (toDisplay.Count != 0) {
                     Node n = toDisplay.Dequeue();
                     Monitor.Exit(toDisplay);
-                    n.CreateAllGameObjects(config);
+                    n.CreateAllGameObjects(config, pcset.transform);
                     lock (nodePointcounts) {
                         pointcount += nodePointcounts[n];
                     }

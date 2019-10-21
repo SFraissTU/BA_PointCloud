@@ -3,11 +3,9 @@ using BAPointCloudRenderer.Loading;
 using System;
 using System.Threading;
 using UnityEngine;
+using UnityEditor;
 
 namespace BAPointCloudRenderer.CloudController {
-    /* While PointCloudLoaderController will load the complete file as one and render the comlete one, 
-     * the DynamicLoaderController will first only load the hierarchy. It can be given registered at a PointCloudSetController to render it.
-     */
     /// <summary>
     /// Use this script to load a single PointCloud from a directory.
     /// </summary>
@@ -38,19 +36,26 @@ namespace BAPointCloudRenderer.CloudController {
 
         private void LoadHierarchy() {
             try {
-                if (!cloudPath.EndsWith("\\")) {
-                    cloudPath = cloudPath + "\\";
+                if (!cloudPath.EndsWith("/")) {
+                    cloudPath = cloudPath + "/";
                 }
 
                 PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, false);
-
-                setController.UpdateBoundingBox(this, metaData.boundingBox);
+                
+                setController.UpdateBoundingBox(this, metaData.boundingBox, metaData.tightBoundingBox);
 
                 rootNode = CloudLoader.LoadHierarchyOnly(metaData);
 
-                setController.AddRootNode(rootNode);
+                setController.AddRootNode(this, rootNode, metaData);
+                
+            } catch (System.IO.FileNotFoundException ex)
+            {
+                Debug.LogError("Could not find file: " + ex.FileName);
+            } catch (System.IO.DirectoryNotFoundException ex)
+            {
+                Debug.LogError("Could not find directory: " + ex.Message);
             } catch (Exception ex) {
-                Debug.LogError(ex);
+                Debug.LogError(ex + Thread.CurrentThread.Name);
             }
         }
 
@@ -58,9 +63,13 @@ namespace BAPointCloudRenderer.CloudController {
         /// Starts loading the point cloud. When the hierarchy is loaded it is registered at the corresponding point cloud set
         /// </summary>
         public void LoadPointCloud() {
-            setController.RegisterController(this);
-            Thread thread = new Thread(LoadHierarchy);
-            thread.Start();
+            if (setController != null && cloudPath != null)
+            {
+                setController.RegisterController(this);
+                Thread thread = new Thread(LoadHierarchy);
+                thread.Name = "Loader for " + cloudPath;
+                thread.Start();
+            }
         }
 
         /// <summary>
@@ -68,9 +77,9 @@ namespace BAPointCloudRenderer.CloudController {
         /// </summary>
         /// <returns>True if the cloud was removed. False, when the cloud hasn't even been loaded yet.</returns>
         public bool RemovePointCloud() {
-            if (rootNode == null) {
+            /*if (rootNode == null) {
                 return false;
-            }
+            }*/
             setController.RemoveRootNode(this, rootNode);
             return true;
         }

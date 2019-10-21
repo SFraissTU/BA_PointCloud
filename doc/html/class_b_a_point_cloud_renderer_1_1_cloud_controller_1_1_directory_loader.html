@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.2</span>
+   &#160;<span id="projectnumber">1.3</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -65,6 +65,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -72,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Use this loader, if you have several pointcloud-folders in the same directory and want to load all of them at once. This controller will create a DynamicLoaderController for each of the point clouds.  
+<p>Use this loader, if you have several pointcloud-folders in the same directory and want to import all of them to your program. To import them, create a <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html" title="Use this loader, if you have several pointcloud-folders in the same directory and want to import all ...">DirectoryLoader</a> and press the "Load Directory" Button in the Editor (or call the function LoadAll).  
  <a href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for BAPointCloudRenderer.CloudController.DirectoryLoader:</div>
@@ -83,6 +84,12 @@ Inheritance diagram for BAPointCloudRenderer.CloudController.DirectoryLoader:</d
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ac56c6f7320cf2d7898c134128b62a754"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#ac56c6f7320cf2d7898c134128b62a754">LoadAll</a> ()</td></tr>
+<tr class="memdesc:ac56c6f7320cf2d7898c134128b62a754"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html" title="Use this script to load a single PointCloud from a directory. ">PointCloudLoader</a> objects for all the point clouds in the given path.  <a href="#ac56c6f7320cf2d7898c134128b62a754">More...</a><br /></td></tr>
+<tr class="separator:ac56c6f7320cf2d7898c134128b62a754"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad14a7eb448a6036bc9874407900ad6fc"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#ad14a7eb448a6036bc9874407900ad6fc">path</a></td></tr>
@@ -93,8 +100,36 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a109e3a3bf011f6b364e6baec8596516a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Use this loader, if you have several pointcloud-folders in the same directory and want to load all of them at once. This controller will create a DynamicLoaderController for each of the point clouds. </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
+<div class="textblock"><p>Use this loader, if you have several pointcloud-folders in the same directory and want to import all of them to your program. To import them, create a <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html" title="Use this loader, if you have several pointcloud-folders in the same directory and want to import all ...">DirectoryLoader</a> and press the "Load Directory" Button in the Editor (or call the function LoadAll). </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac56c6f7320cf2d7898c134128b62a754"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac56c6f7320cf2d7898c134128b62a754">&#9670;&nbsp;</a></span>LoadAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BAPointCloudRenderer.CloudController.DirectoryLoader.LoadAll </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html" title="Use this script to load a single PointCloud from a directory. ">PointCloudLoader</a> objects for all the point clouds in the given path. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
 <a id="ad14a7eb448a6036bc9874407900ad6fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad14a7eb448a6036bc9874407900ad6fc">&#9670;&nbsp;</a></span>path</h2>
 

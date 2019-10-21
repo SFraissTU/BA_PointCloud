@@ -53,9 +53,17 @@ namespace BAPointCloudRenderer.ObjectCreation {
         /// Set this to true to reload the shaders according to the changed parameters. After applying the changes, the variable will set itself back to false.
         /// </summary>
         public bool reload = false;
+        /// <summary>
+        /// The camera that's used for rendering. If not set, Camera.main is used. 
+        /// This should usually be the same camera that's used as "User Camera" in the point cloud set.
+        /// </summary>
+        public Camera renderCamera = null;
+        /// <summary>
+        /// If set to true, the Bounding Boxes of the individual octree nodes will be displayed.
+        /// </summary>
+        public bool displayLOD = false;
 
         private Material material;
-        private Camera mainCamera;
         private HashSet<GameObject> gameObjectCollection = null;
 
         private void LoadShaders() {
@@ -75,6 +83,10 @@ namespace BAPointCloudRenderer.ObjectCreation {
             }
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
+            if (renderCamera == null)
+            {
+                renderCamera = Camera.main;
+            }
         }
 
         public void Start() {
@@ -82,7 +94,6 @@ namespace BAPointCloudRenderer.ObjectCreation {
                 gameObjectCollection = new HashSet<GameObject>();
             }
             LoadShaders();
-            mainCamera = Camera.main;
         }
 
         public void Update() {
@@ -93,19 +104,27 @@ namespace BAPointCloudRenderer.ObjectCreation {
                 }
                 reload = false;
             }
+            if (displayLOD)
+            {
+                foreach (GameObject go in gameObjectCollection)
+                {
+                    BoundingBoxComponent bbc = go.GetComponent<BoundingBoxComponent>();
+                    Utility.BBDraw.DrawBoundingBox(bbc.boundingBox, bbc.parent, Color.red, false);
+                }
+            }
             if (screenSize) {
                 if (interpolation != FragInterpolationMode.OFF) {
-                    Matrix4x4 invP = (GL.GetGPUProjectionMatrix(mainCamera.projectionMatrix, true)).inverse;
+                    Matrix4x4 invP = (GL.GetGPUProjectionMatrix(renderCamera.projectionMatrix, true)).inverse;
                     material.SetMatrix("_InverseProjMatrix", invP);
-                    material.SetFloat("_FOV", Mathf.Deg2Rad * mainCamera.fieldOfView);
+                    material.SetFloat("_FOV", Mathf.Deg2Rad * renderCamera.fieldOfView);
                 }
-                Rect screen = mainCamera.pixelRect;
+                Rect screen = renderCamera.pixelRect;
                 material.SetInt("_ScreenWidth", (int)screen.width);
                 material.SetInt("_ScreenHeight", (int)screen.height);
             }
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent) {
             GameObject gameObject = new GameObject(name);
 
             Mesh mesh = new Mesh();
@@ -127,6 +146,11 @@ namespace BAPointCloudRenderer.ObjectCreation {
 
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+            gameObject.transform.SetParent(parent, false);
+
+            BoundingBoxComponent bbc = gameObject.AddComponent<BoundingBoxComponent>();
+            bbc.boundingBox = boundingBox; ;
+            bbc.parent = parent;
 
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);

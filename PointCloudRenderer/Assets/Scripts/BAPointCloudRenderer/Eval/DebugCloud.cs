@@ -22,7 +22,7 @@ namespace BAPointCloudRenderer.Eval {
                 cols[i] = new Color(i / 12.0f, 1 - i / 12.0f, 1);
             }
             n.SetPoints(vecs, cols);
-            n.CreateGameObjects(configuration);
+            n.CreateGameObjects(configuration, this.transform);
         }
 
         // Update is called once per frame

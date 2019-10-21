@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['parent',['Parent',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#a6d063e2cc8b47e966906f4ed1f5b091c',1,'BAPointCloudRenderer::CloudData::Node']]],
-  ['pointcount',['PointCount',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#af9999841d3f9285ac4b1f12f86151da3',1,'BAPointCloudRenderer::CloudData::Node']]],
-  ['pointrenderer',['PointRenderer',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#afa930a499cbfdf100388b22799ce79ec',1,'BAPointCloudRenderer.CloudController.AbstractPointCloudSet.PointRenderer()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_abstract_point_set_controller.html#a3b80d0b9746486e2331e7d37181fae2b',1,'BAPointCloudRenderer.Controllers.AbstractPointSetController.PointRenderer()']]]
+  ['metadata',['MetaData',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html#a57320ba46f521a17711c52d4c18246c8',1,'BAPointCloudRenderer::CloudData::Node']]],
+  ['migratesettings',['MigrateSettings',['../class_b_a_point_cloud_renderer_1_1_edl_1_1_edl_camera.html#a3426bfa86abd499d338d5010ef76e24e',1,'BAPointCloudRenderer::Edl::EdlCamera']]]
 ];

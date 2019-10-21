@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['nodesgosperframe',['nodesGOsPerFrame',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#a0181ac28dd612cc0fdd3c72a01ef835e',1,'BAPointCloudRenderer.CloudController.DynamicPointCloudSet.nodesGOsPerFrame()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_point_cloud_set_real_time_controller.html#a06a3b7c47e66c6ee3d9060039cdae65d',1,'BAPointCloudRenderer.Controllers.PointCloudSetRealTimeController.nodesGOsPerFrame()']]],
-  ['nodesloadedperframe',['nodesLoadedPerFrame',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#ac5670c2ecbc6c96132ce5a25855417df',1,'BAPointCloudRenderer.CloudController.DynamicPointCloudSet.nodesLoadedPerFrame()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_point_cloud_set_real_time_controller.html#abf09a7429deb0caa7fa2eea4c9b70d59',1,'BAPointCloudRenderer.Controllers.PointCloudSetRealTimeController.nodesLoadedPerFrame()']]]
+  ['meshconfiguration',['meshConfiguration',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a5061c21262ff329ed27bbfe6d410fd2d',1,'BAPointCloudRenderer::CloudController::AbstractPointCloudSet']]],
+  ['minnodesize',['minNodeSize',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#aa1a0e7a5f8cdc0fcefc4ba1f13f9efc8',1,'BAPointCloudRenderer::CloudController::DynamicPointCloudSet']]],
+  ['movecentertotransformposition',['moveCenterToTransformPosition',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a2b66379b334f58ad3f90b56d6d7ecb2b',1,'BAPointCloudRenderer::CloudController::AbstractPointCloudSet']]]
 ];

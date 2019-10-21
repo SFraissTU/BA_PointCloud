@@ -1,4 +1,5 @@
-﻿using BAPointCloudRenderer.CloudData;
+﻿using BAPointCloudRenderer.CloudController;
+using BAPointCloudRenderer.CloudData;
 using BAPointCloudRenderer.ObjectCreation;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,6 +10,8 @@ namespace BAPointCloudRenderer.Loading {
     /// The multithreaded Real-Time-Renderer as described in the Bachelor Thesis in chapter 3.2.2 - 3.2.7
     /// </summary>
     class V2Renderer : AbstractRenderer {
+
+        private AbstractPointCloudSet pcset;
 
         private bool paused = false;  //true, iff everything should be stopped (the point loading will stop and every method will not do anything anymore)
 
@@ -39,14 +42,15 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="camera">User Camera</param>
         /// <param name="config">MeshConfiguration, defining how the points should be rendered</param>
         /// <param name="cacheSize">Size of cache in points</param>
-        public V2Renderer(int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
+        public V2Renderer(AbstractPointCloudSet pcset, int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
+            this.pcset = pcset;
             rootNodes = new List<Node>();
             this.camera = camera;
             this.config = config;
             cache = new V2Cache(cacheSize);
             loadingThread = new V2LoadingThread(cache);
             loadingThread.Start();
-            traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
+            traversalThread = new V2TraversalThread(pcset.gameObject, this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
             traversalThread.Start();
             toDeleteExternal = new Queue<Node>();
         }
@@ -55,7 +59,7 @@ namespace BAPointCloudRenderer.Loading {
         /// Registers the root node of a point cloud in the renderer.
         /// </summary>
         /// <param name="rootNode">not null</param>
-        public void AddRootNode(Node rootNode) {
+        public void AddRootNode(Node rootNode, PointCloudLoader loader) {
             rootNodes.Add(rootNode);
         }
 
@@ -64,7 +68,7 @@ namespace BAPointCloudRenderer.Loading {
         /// This has to be called from the main thread!
         /// </summary>
         /// <param name="rootNode">not null</param>
-        public void RemoveRootNode(Node rootNode) {
+        public void RemoveRootNode(Node rootNode, PointCloudLoader loader) {
             lock (toDeleteExternal) {
                 toDeleteExternal.Enqueue(rootNode);
             }
@@ -93,7 +97,7 @@ namespace BAPointCloudRenderer.Loading {
             unityThread = Thread.CurrentThread;
             if (paused) return;
             //Set new Camera Data
-            traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera), camera.pixelRect.height, camera.fieldOfView);
+            traversalThread.SetNextCameraData(camera.transform.position, camera.transform.forward, GeometryUtility.CalculateFrustumPlanes(camera.projectionMatrix * camera.worldToCameraMatrix * pcset.transform.localToWorldMatrix), camera.pixelRect.height, camera.fieldOfView);
             
             //Update GameObjects
             Queue<Node> toRender;
@@ -120,7 +124,7 @@ namespace BAPointCloudRenderer.Loading {
                 Node n = toRender.Dequeue();
                 lock (n) {
                     if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
-                        n.CreateGameObjects(config);
+                        n.CreateGameObjects(config, pcset.transform);
                     }
                 }
             }

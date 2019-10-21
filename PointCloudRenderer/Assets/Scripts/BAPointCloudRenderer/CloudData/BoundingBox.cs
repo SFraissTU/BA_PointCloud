@@ -153,7 +153,7 @@ namespace BAPointCloudRenderer.CloudData {
         }
 
         public override string ToString() {
-            return "BoundingBox: [" + lx + "," + ly + "," + lz + ";" + ux + "," + uy + "," + uz + "]";
+            return "BoundingBox: [" + lx + "/" + ly + "/" + lz + ";" + ux + "/" + uy + "/" + uz + "]";
         }
 
         /// <summary>

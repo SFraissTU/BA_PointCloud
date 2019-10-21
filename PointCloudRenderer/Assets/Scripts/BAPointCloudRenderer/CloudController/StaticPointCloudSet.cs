@@ -7,15 +7,10 @@ namespace BAPointCloudRenderer.CloudController {
     /// Should only be used for small clouds. Might take some time to load.
     /// </summary>
     class StaticPointCloudSet : AbstractPointCloudSet {
-        
-        /// <summary>
-        /// MeshConfiguration that specifies how the cloud is to be displayed
-        /// </summary>
-        public MeshConfiguration meshConfiguration = null;
 
         // Use this for initialization
         protected override void Initialize() {
-            PointRenderer = new StaticRenderer(meshConfiguration);
+            PointRenderer = new StaticRenderer(this, meshConfiguration);
         }
 
 
@@ -23,6 +18,7 @@ namespace BAPointCloudRenderer.CloudController {
         void Update() {
             if (!CheckReady()) return;
             PointRenderer.Update();
+            DrawDebugInfo();
         }
     }
 }

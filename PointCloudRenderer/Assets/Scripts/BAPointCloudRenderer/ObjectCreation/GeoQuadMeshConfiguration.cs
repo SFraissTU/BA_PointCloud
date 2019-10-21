@@ -145,7 +145,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
             }
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent) {
             GameObject gameObject = new GameObject(name);
 
             Mesh mesh = new Mesh();
@@ -167,6 +167,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
 
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+            gameObject.transform.SetParent(parent, false);
 
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);
@@ -183,8 +184,11 @@ namespace BAPointCloudRenderer.ObjectCreation {
             if (gameObjectCollection != null) {
                 gameObjectCollection.Remove(gameObject);
             }
-            Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
-            Destroy(gameObject);
+            if (gameObject != null)
+            {
+                Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
+                Destroy(gameObject);
+            }
         }
     }
 }

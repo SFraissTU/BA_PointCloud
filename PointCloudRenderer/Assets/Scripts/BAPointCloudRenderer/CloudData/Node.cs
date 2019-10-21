@@ -58,10 +58,10 @@ namespace BAPointCloudRenderer.CloudData {
         /// Vertices and Colors have to be set before calling this function (via SetPoints)! This function has to be called from the main thread!
         /// </summary>
         /// <param name="configuration">The MeshConfiguration which should be used for creating the Game Objects</param>
-        public void CreateGameObjects(MeshConfiguration configuration) {
+        public void CreateGameObjects(MeshConfiguration configuration, Transform parent) {
             int max = configuration.GetMaximumPointsPerMesh();
             if (verticesToStore.Length <= max) {
-                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox));
+                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox, parent));
             } else {
                 int amount = Math.Min(max, verticesToStore.Length);
                 int index = 0; //name index
@@ -72,7 +72,7 @@ namespace BAPointCloudRenderer.CloudData {
                     Color[] colors = restColors.Take(amount).ToArray(); ;
                     restVertices = restVertices.Skip(amount).ToArray();
                     restColors = restColors.Skip(amount).ToArray();
-                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index + " (" + vertices.Length + ")", vertices, colors, boundingBox));
+                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index + " (" + vertices.Length + ")", vertices, colors, boundingBox, parent));
                     amount = Math.Min(max, vertices.Length);
                     index++;
                 }
@@ -97,11 +97,11 @@ namespace BAPointCloudRenderer.CloudData {
         /// Vertices and Colors have to be set before calling this function (via SetPoints) for this object and all its children! This function has to be called from the main thread!
         /// </summary>
         /// <param name="configuration">The MeshConfiguration which should be used for creating the Game Objects</param>
-        public void CreateAllGameObjects(MeshConfiguration configuration) {
-            CreateGameObjects(configuration);
+        public void CreateAllGameObjects(MeshConfiguration configuration, Transform parent) {
+            CreateGameObjects(configuration, parent);
             for (int i = 0; i < 8; i++) {
                 if (children[i] != null) {
-                    children[i].CreateAllGameObjects(configuration);
+                    children[i].CreateAllGameObjects(configuration, parent);
                 }
             }
         }
@@ -214,6 +214,14 @@ namespace BAPointCloudRenderer.CloudData {
         /// </summary>
         public bool HasGameObjects() {
             return gameObjects.Count != 0;
+        }
+
+        public Vector3[] VerticesToStore {
+            get { return verticesToStore; }
+        }
+
+        public Color[] ColorsToStore {
+            get { return colorsToStore; }
         }
 
         /// <summary>

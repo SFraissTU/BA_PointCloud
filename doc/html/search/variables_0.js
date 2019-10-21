@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['cachesizeinpoints',['cacheSizeInPoints',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#ac09209f57afd213fc09b369e5026d8d9',1,'BAPointCloudRenderer.CloudController.DynamicPointCloudSet.cacheSizeInPoints()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_point_cloud_set_real_time_controller.html#a0af5d97280a62ca69fc32846633e77b7',1,'BAPointCloudRenderer.Controllers.PointCloudSetRealTimeController.cacheSizeInPoints()']]],
-  ['cloudpath',['cloudPath',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html#a5f92ca25f6792bb98f8edb015c0e7adc',1,'BAPointCloudRenderer.CloudController.PointCloudLoader.cloudPath()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_dynamic_loader_controller.html#a9f812235ac3996675c4738b11d84f6f7',1,'BAPointCloudRenderer.Controllers.DynamicLoaderController.cloudPath()'],['../class_b_a_point_cloud_renderer_1_1_controllers_1_1_point_cloud_loader_controller.html#a419be2bf1ae2d912b5001596700d78e8',1,'BAPointCloudRenderer.Controllers.PointCloudLoaderController.cloudPath()']]]
+  ['cachesizeinpoints',['cacheSizeInPoints',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html#ac09209f57afd213fc09b369e5026d8d9',1,'BAPointCloudRenderer::CloudController::DynamicPointCloudSet']]],
+  ['cloudpath',['cloudPath',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html#a5f92ca25f6792bb98f8edb015c0e7adc',1,'BAPointCloudRenderer::CloudController::PointCloudLoader']]]
 ];
