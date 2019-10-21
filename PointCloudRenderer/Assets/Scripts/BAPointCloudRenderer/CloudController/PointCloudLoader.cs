@@ -9,7 +9,6 @@ namespace BAPointCloudRenderer.CloudController {
     /// <summary>
     /// Use this script to load a single PointCloud from a directory.
     /// </summary>
-    [DisallowMultipleComponent]
     public class PointCloudLoader : MonoBehaviour {
 
         /// <summary>
@@ -30,18 +29,6 @@ namespace BAPointCloudRenderer.CloudController {
         private Node rootNode;
 
         void Start() {
-            //Remove potential meshes from the editor preview
-            MeshFilter mf = GetComponent<MeshFilter>();
-            MeshRenderer mr = GetComponent<MeshRenderer>();
-            if (mf != null)
-            {
-                Destroy(mf);
-            }
-            if (mr != null)
-            {
-                Destroy(mr);
-            }
-
             if (loadOnStart) {
                 LoadPointCloud();
             }

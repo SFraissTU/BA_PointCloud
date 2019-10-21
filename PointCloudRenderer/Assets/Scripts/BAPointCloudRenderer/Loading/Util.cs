@@ -13,7 +13,7 @@ namespace BAPointCloudRenderer.Loading {
         /// </summary>
         public static bool InsideFrustum(BoundingBox box, Plane[] frustum) {
             bool inside;
-            for (int i = 1; i < 5; i++) {
+            for (int i = 0; i < 5; i++) {
                 inside = false;
                 Plane plane = frustum[i];   //Ignore Far Plane, because it doesnt work because of inf values
                 inside |= plane.GetSide(new Vector3((float)box.Lx, (float)box.Ly, (float)box.Lz));

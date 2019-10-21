@@ -57,9 +57,9 @@ namespace BAPointCloudRenderer.CloudController
                 Debug.Log("No PointCloudSet given. Preview aborted.");
                 return;
             }
-            if (_loaders != null)
+            if (_loaders != null && _loaders.Count != 0)
             {
-                Debug.Log("Another updating process seems to be in progress. Please wait or restart.");
+                Debug.Log("Another updating process seems to be in progress. Please wait, recreate this object or restart.");
                 return;
             }
             //Copy current values to make sure they are consistent
@@ -67,6 +67,8 @@ namespace BAPointCloudRenderer.CloudController
             _showPoints = ShowPoints;
             _setTransform = _setToPreview.transform;
             _pointBudget = PointBudget;
+            //Hide old Preview
+            HidePreview();
             //Look for loaders for the given set
             PointCloudLoader[] allLoaders = FindObjectsOfType<PointCloudLoader>();
             _loaders = new List<PointCloudLoader>();
@@ -77,19 +79,19 @@ namespace BAPointCloudRenderer.CloudController
                 {
                     _loaders.Add(allLoaders[i]);
                 }
-                MeshFilter mf = allLoaders[i].GetComponent<MeshFilter>();
-                MeshRenderer mr = allLoaders[i].GetComponent<MeshRenderer>();
-                if (mf != null)
-                {
-                    DestroyImmediate(mf);
-                }
-                if (mr != null)
-                {
-                    DestroyImmediate(mr);
-                }
             }
             loadingThread = new Thread(LoadBoundingBoxes);
             loadingThread.Start();
+        }
+
+        public void HidePreview()
+        {
+            PreviewObject[] previewObjects = FindObjectsOfType<PreviewObject>();
+            for (int i = 0; i < previewObjects.Length; ++i)
+            {
+                DestroyImmediate(previewObjects[i].gameObject);
+            }
+            _currentBB = null;
         }
 
         //This loads bounding boxes and also point cloud meta data (if showpoints is enabled).
@@ -173,7 +175,7 @@ namespace BAPointCloudRenderer.CloudController
                 Vector3[] vertexData = cloud.Item2;
                 Color[] colorData = cloud.Item3;
 
-                GameObject go = cloud.Item1.gameObject;
+                GameObject go = new GameObject("Preview: " + cloud.Item1.cloudPath);
                 MeshFilter filter = go.GetComponent<MeshFilter>();
                 Mesh mesh;
                 if (filter == null)
@@ -216,10 +218,12 @@ namespace BAPointCloudRenderer.CloudController
                     mesh.colors = colorData;
                     mesh.SetIndices(indecies, MeshTopology.Points, 0);
                 }
+                go.AddComponent<PreviewObject>();
 
                 go.transform.localPosition = new Vector3(0, 0, 0);
                 go.transform.localRotation = Quaternion.identity;
                 go.transform.localScale = new Vector3(1, 1, 1);
+                go.transform.SetParent(_setToPreview.transform, false);
             }
         }
 
@@ -284,13 +288,24 @@ namespace BAPointCloudRenderer.CloudController
                 Vector3 translation = n.BoundingBox.Min().ToFloatVector();
                 for (int newIndex = 0, oldIndex = 0; newIndex < assignedPointCounts[j]; oldIndex += stride, ++newIndex)
                 {
-                    filteredVertices[newIndex] = _setTransform.TransformPoint(nodeVertices[oldIndex] + translation);
+                    filteredVertices[newIndex] = nodeVertices[oldIndex] + translation;
                     filteredColors[newIndex] = nodeColors[oldIndex];
                 }
                 result.Add(new Tuple<PointCloudLoader, Vector3[], Color[]>(_loaders[j], filteredVertices, filteredColors));
                 ++j;
             }
             return result;
+        }
+
+        private class PreviewObject : MonoBehaviour
+        {
+            public void Start()
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    Destroy(this.gameObject);
+                }
+            }
         }
     }
 }

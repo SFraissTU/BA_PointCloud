@@ -17,6 +17,10 @@ public class PreviewEditor : Editor
             {
                 previewscript.UpdatePreview();
             }
+            if (GUILayout.Button("Hide Preview"))
+            {
+                previewscript.HidePreview();
+            }
         }
     }
 }
