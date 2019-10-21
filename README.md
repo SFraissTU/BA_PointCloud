@@ -29,7 +29,7 @@ Detailed change list:
 * Deleted old obsolete Controller-classes
 * Tested VR-Support with HTC Vive
 
-!(New features in action)[doc/tutimgs/newfeatures.PNG]
+![New features in action](doc/tutimgs/newfeatures.PNG)
   
 
 ### Version 1.2 (19.02.2019):
