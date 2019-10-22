@@ -121,8 +121,7 @@ Please note that there's a bug when using EDL and the "Display LOD"-functionalit
 #### Does this work with VR?
 Yes. I've tested it with an HTC Vive and it worked fine. If you use SteamVR, just create a CameraRig-object and pass the child camera of it to the Point Cloud Set (and the DefaltMeshConfiguration).
 
-The only issue I found was that everything seems a bit brighter. I don't know why that is. If you have any idea, please let me know.
-Also, it might be a bit tricky to use EDL with VR. I don't really know how to do that.
+It might be a bit tricky to use EDL with VR. I don't really know how to do that.
 
 #### Does this work with WebGL?
 Apparently there have been some troubles using this project for WebGL. Another user has been trying to make it work. See this thread for more information: https://github.com/SFraissTU/BA_PointCloud/issues/12
