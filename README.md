@@ -25,7 +25,7 @@ Detailed change list:
 * DefaultMeshConfiguration now also requires a camera to be used. Before it always took the default one, which might not always be what you want.
 * Project Update to Unity 2019
 * Fixed changing "MoveCenterToTransform" sometimes leading to an exception
-* Provided Mac-Os-Compability by replacing "\" with "/"
+* Provided Mac-Os-Compability by replacing "\\" with "/"
 * Deleted old obsolete Controller-classes
 * Tested VR-Support with HTC Vive
 
