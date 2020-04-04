@@ -8,9 +8,18 @@ Please refer to the code documentation for details about the classes and scripts
 For details about the algorithms please refer to the bachelor thesis (https://www.cg.tuwien.ac.at/research/publications/2017/FRAISS-2017-PCU/).
 Below you will find a Getting-Started-Guide
 
-Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/download/v1.3/BAPC-v01.03.unitypackage
+Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/
 
 ## Change Log
+### Version 1.4 (04.04.2020):
+A small update with bugfixes and minor improvements.
+
+Change list:
+* Easier support for Streaming Assets in Point Cloud Loader and Directory Loader. If "Streaming Assets As Root" is set to true, the path is relative to the streaming assets directory (code provided by Pablo Vidaurre).
+* Moved "Hide" and "Display" buttons from Preview object to Dynamic Point Cloud Set.
+* Fixed "PointCloudLoader.LoadPointCloud()" sometimes not working when "Load on Start" is set to False.
+* Added GUI-Buttons in Point Cloud Loader for loading and removing point cloud at runtime.
+
 ### Version 1.3 (20.10.2019):
 This update contains a lot of new features, especially previewing the point cloud in the editor, applying complex transformations to point clouds and eye dome lighting!
 
@@ -129,6 +138,9 @@ In general, if you want to render your point clouds in the browser, I recommend 
 
 ### What about point attributes other than color?
 Not possible at the moment. If you want to implement it yourself, see this thread: https://github.com/SFraissTU/BA_PointCloud/issues/9
+
+### Which Potree Converter version does this support?
+This should work with point clouds created with Potree Converter up to version 1.6. In 1.7 there will be updates which are not yet supported (you will probably only get a bunch of small black dots on the screen).
 
 #### Anything else?
 Please send me an email or open a github issue. Please note that I don't have a lot of time to work for this project, so I might not be able to fulfill every request, but I'm open to suggestions.
