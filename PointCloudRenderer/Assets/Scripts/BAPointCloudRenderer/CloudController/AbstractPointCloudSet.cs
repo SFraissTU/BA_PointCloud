@@ -178,11 +178,21 @@ namespace BAPointCloudRenderer.CloudController {
         /// Returns true, iff all the nodes are registered, have been moved to the center (if required) and the renderer is loaded.
         /// </summary>
         protected bool CheckReady() {
+            if (!IsInitialized())
+            {
+                return false;
+            }
             lock (boundingBoxes)
             {
                 if (!hasMoved)
                 {
-                    if (!boundingBoxes.ContainsValue(null))
+                    if (boundingBoxes.Count == 0)
+                    {
+                        //nothing to move along...
+                        hasMoved = true;
+                        waiterForBoundingBoxUpdate.Set();
+                    }
+                    else if (!boundingBoxes.ContainsValue(null))
                     {
                         moving = -overallTightBoundingBox.Center();
                         foreach (BoundingBox bb in boundingBoxes.Values)

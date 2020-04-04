@@ -70,3 +70,5 @@ PointCloudRenderer/Assets/Scenes/old.meta
 PointCloudRenderer/Assets/Scenes/old
 PointCloudRenderer/Assets/Scenes/old/*
 PointCloudRenderer/Logs/Packages-Update.log
+PointCloudRenderer/Assets/StreamingAssets/*
+PointCloudRenderer/Assets/StreamingAssets.meta
