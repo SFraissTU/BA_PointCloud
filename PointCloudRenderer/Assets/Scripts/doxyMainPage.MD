@@ -21,4 +21,4 @@ Important classes for usage:
 * ObjectCreation.MeshConfiguration: Attach one of its subclasses to your scene and attach it to the PointCloudSet, in order to determine how the points should be rendered
 * CloudController.Preview: Use this to show a preview of your point cloud inside the editor.
 
-Thanks to Kazys Stepanas and Garrison Price for their contributions to this project!
+Thanks to Kazys Stepanas, Garrison Price, Pablo Vidaurre and everyone else who added contributions to this project!

@@ -17,5 +17,6 @@ var searchData=
   ['start',['Start',['../class_b_a_point_cloud_renderer_1_1_loading_1_1_v2_traversal_thread.html#a44839c92edaa1a6c661a91d574d07a33',1,'BAPointCloudRenderer::Loading::V2TraversalThread']]],
   ['staticpointcloudset',['StaticPointCloudSet',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_static_point_cloud_set.html',1,'BAPointCloudRenderer::CloudController']]],
   ['staticrenderer',['StaticRenderer',['../class_b_a_point_cloud_renderer_1_1_loading_1_1_static_renderer.html',1,'BAPointCloudRenderer::Loading']]],
+  ['streamingassetsasroot',['streamingAssetsAsRoot',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#a832c934879043fb4dec353e97b78a117',1,'BAPointCloudRenderer.CloudController.DirectoryLoader.streamingAssetsAsRoot()'],['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_point_cloud_loader.html#a809d63d96b94d04bb68bec8aab9b8ebf',1,'BAPointCloudRenderer.CloudController.PointCloudLoader.streamingAssetsAsRoot()']]],
   ['switchyz',['SwitchYZ',['../class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html#adfb5081ec4a8a8610a8b99039fd71c72',1,'BAPointCloudRenderer::CloudData::BoundingBox']]]
 ];

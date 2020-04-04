@@ -13,5 +13,6 @@ var searchData=
   ['drawboundingbox',['DrawBoundingBox',['../class_b_a_point_cloud_renderer_1_1_utility_1_1_b_b_draw.html#ac90ad7f2c9abc6dd390b36b7e801a085',1,'BAPointCloudRenderer::Utility::BBDraw']]],
   ['drawboundingboxineditor',['DrawBoundingBoxInEditor',['../class_b_a_point_cloud_renderer_1_1_utility_1_1_b_b_draw.html#aa27f989102d631d25b247b9e01a44547',1,'BAPointCloudRenderer::Utility::BBDraw']]],
   ['drawdebuginfo',['DrawDebugInfo',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html#a3436f533042129a0e699bd7e5906480c',1,'BAPointCloudRenderer::CloudController::AbstractPointCloudSet']]],
-  ['dynamicpointcloudset',['DynamicPointCloudSet',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html',1,'BAPointCloudRenderer::CloudController']]]
+  ['dynamicpointcloudset',['DynamicPointCloudSet',['../class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_dynamic_point_cloud_set.html',1,'BAPointCloudRenderer::CloudController']]],
+  ['dynamicpointcloudseteditor',['DynamicPointCloudSetEditor',['../class_dynamic_point_cloud_set_editor.html',1,'']]]
 ];

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.3</span>
+   &#160;<span id="projectnumber">1.4</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -95,12 +95,16 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ad14a7eb448a6036bc9874407900ad6fc"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#ad14a7eb448a6036bc9874407900ad6fc">path</a></td></tr>
 <tr class="memdesc:ad14a7eb448a6036bc9874407900ad6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path of the directory containing the point clouds  <a href="#ad14a7eb448a6036bc9874407900ad6fc">More...</a><br /></td></tr>
 <tr class="separator:ad14a7eb448a6036bc9874407900ad6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a832c934879043fb4dec353e97b78a117"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#a832c934879043fb4dec353e97b78a117">streamingAssetsAsRoot</a> = false</td></tr>
+<tr class="memdesc:a832c934879043fb4dec353e97b78a117"><td class="mdescLeft">&#160;</td><td class="mdescRight">When true, the cloudPath is relative to the streaming assets directory  <a href="#a832c934879043fb4dec353e97b78a117">More...</a><br /></td></tr>
+<tr class="separator:a832c934879043fb4dec353e97b78a117"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a109e3a3bf011f6b364e6baec8596516a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_abstract_point_cloud_set.html">AbstractPointCloudSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html#a109e3a3bf011f6b364e6baec8596516a">pointset</a></td></tr>
 <tr class="memdesc:a109e3a3bf011f6b364e6baec8596516a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PointSetController  <a href="#a109e3a3bf011f6b364e6baec8596516a">More...</a><br /></td></tr>
 <tr class="separator:a109e3a3bf011f6b364e6baec8596516a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Use this loader, if you have several pointcloud-folders in the same directory and want to import all of them to your program. To import them, create a <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_controller_1_1_directory_loader.html" title="Use this loader, if you have several pointcloud-folders in the same directory and want to import all ...">DirectoryLoader</a> and press the "Load Directory" Button in the Editor (or call the function LoadAll). </p>
+<p>Streaming Assets support provided by Pablo Vidaurre </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ac56c6f7320cf2d7898c134128b62a754"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac56c6f7320cf2d7898c134128b62a754">&#9670;&nbsp;</a></span>LoadAll()</h2>
@@ -159,6 +163,22 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The PointSetController </p>
+
+</div>
+</div>
+<a id="a832c934879043fb4dec353e97b78a117"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a832c934879043fb4dec353e97b78a117">&#9670;&nbsp;</a></span>streamingAssetsAsRoot</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BAPointCloudRenderer.CloudController.DirectoryLoader.streamingAssetsAsRoot = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>When true, the cloudPath is relative to the streaming assets directory </p>
 
 </div>
 </div>
