@@ -4,12 +4,10 @@ using UnityEngine;
 
 namespace BAPointCloudRenderer.CloudData
 {
-    /// <summary>
-    /// Description of Point Attribute. Created from the cloud.js-File.
-    /// </summary>
-    [Serializable]
-    public class PointAttribute
-    {
+
+  [Serializable]
+  public class PointAttribute
+  {
       public string name;
       public int size;
       public int elements;
@@ -17,7 +15,7 @@ namespace BAPointCloudRenderer.CloudData
       public string type;
       public string description;
 
-    }
+  }
     /// <summary>
     /// Description of a Bounding Box. Created from the cloud.js-File.
     /// Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud)
@@ -52,10 +50,21 @@ namespace BAPointCloudRenderer.CloudData
         {
             Debug.Log("ReadFromJson");
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);
-            data.pointByteSize = 0;
-            foreach (PointAttribute pointAttribute in data.pointAttributes) {
-              data.pointByteSize += pointAttribute.size;
+            if(data.version == "1.8"){
+              foreach (PointAttribute pointAttribute in data.pointAttributes) {
+                Debug.Log(pointAttribute.name);
+                Debug.Log(pointAttribute.size);
+                data.pointByteSize += pointAttribute.size;
+                }
+            }else{
+                //workarround for version < 1.7
+                data.pointByteSize = 16;
+                data.pointAttributes[0].name="POSITION_CARTESIAN";
+                data.pointAttributes[1].name="COLOR_PACKED";
             }
+            
+            Debug.Log(data.pointByteSize);
+
             data.boundingBox.Init();
             data.boundingBox.SwitchYZ();
             data.tightBoundingBox.SwitchYZ();

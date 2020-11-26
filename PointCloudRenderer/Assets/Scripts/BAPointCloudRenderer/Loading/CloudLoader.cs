@@ -1,4 +1,4 @@
-using BAPointCloudRenderer.CloudData;
+﻿using BAPointCloudRenderer.CloudData;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -20,6 +20,7 @@ namespace BAPointCloudRenderer.Loading {
          /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
+            Debug.Log(cloudPath);
             bool isCloudOnline = Uri.IsWellFormedUriString(cloudPath, UriKind.Absolute);
             if (isCloudOnline){
                 WebClient client = new WebClient();
@@ -34,15 +35,19 @@ namespace BAPointCloudRenderer.Loading {
             }
 
             PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
+            
+            metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("/") + 1);
+            Debug.Log(metaData.cloudName);
+            
             if (isCloudOnline){
               metaData.cloudUrl = cloudPath;
-              metaData.cloudPath = "temp";
+              metaData.cloudPath = "temp/"+metaData.cloudName+"/";
             }else{
               metaData.cloudPath = cloudPath;
               metaData.cloudUrl = null;
             }
 
-            metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("/") + 1);
+
             return metaData;
         }
 
@@ -198,9 +203,13 @@ namespace BAPointCloudRenderer.Loading {
                 path += id.Substring(i * metaData.hierarchyStepSize, metaData.hierarchyStepSize) + "/";
             }
             path += "r" + id + fileending;
+            //Debug.Log("FindAndLoadFile "+path);
             if (File.Exists(metaData.cloudPath + dataRPath + path)){
                 return File.ReadAllBytes(metaData.cloudPath + dataRPath + path);
             }else if(metaData.cloudUrl != null){
+              //Debug.Log(metaData.cloudUrl + dataRPath + path);
+              //Debug.Log(metaData.cloudPath + dataRPath + path);
+              Directory.CreateDirectory(Path.GetDirectoryName(metaData.cloudPath + dataRPath + path));
               WebClient webClient = new WebClient();
               webClient.DownloadFile(metaData.cloudUrl + dataRPath + path, metaData.cloudPath + dataRPath + path);
               return File.ReadAllBytes(metaData.cloudPath + dataRPath + path);
@@ -227,3 +236,4 @@ namespace BAPointCloudRenderer.Loading {
         }
     }
 }
+
