@@ -16,6 +16,7 @@ namespace BAPointCloudRenderer.CloudData
       public string description;
 
   }
+  
     /// <summary>
     /// Description of a Bounding Box. Created from the cloud.js-File.
     /// Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud)
@@ -29,7 +30,8 @@ namespace BAPointCloudRenderer.CloudData
         public int points;
         public BoundingBox boundingBox;
         public BoundingBox tightBoundingBox;
-        public List<PointAttribute> pointAttributes;
+        [NonSerialized]
+        public List<PointAttribute> pointAttributesList;
         public double spacing;
         public double scale;
         public int hierarchyStepSize;
@@ -41,41 +43,70 @@ namespace BAPointCloudRenderer.CloudData
         public string cloudUrl;
         [NonSerialized]
         public int pointByteSize;
-        /// <summary>
-        /// Reads the metadata from a json-string.
-        /// </summary>
-        /// <param name="json">Json-String</param>
-        /// <param name="moveToOrigin">True, iff the center of the bounding boxes should be moved to the origin</param>
-        public static PointCloudMetaData ReadFromJson(string json, bool moveToOrigin)
-        {
-            Debug.Log("ReadFromJson");
-            PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);
-            if(data.version == "1.8"){
-              foreach (PointAttribute pointAttribute in data.pointAttributes) {
-                Debug.Log(pointAttribute.name);
-                Debug.Log(pointAttribute.size);
-                data.pointByteSize += pointAttribute.size;
-                }
-            }else{
-                //workarround for version < 1.7
-                data.pointByteSize = 16;
-                data.pointAttributes[0].name="POSITION_CARTESIAN";
-                data.pointAttributes[1].name="COLOR_PACKED";
-            }
-            
-            Debug.Log(data.pointByteSize);
-
-            data.boundingBox.Init();
-            data.boundingBox.SwitchYZ();
-            data.tightBoundingBox.SwitchYZ();
-            if (moveToOrigin)
-            {
-                data.boundingBox.MoveToOrigin();
-                data.tightBoundingBox.MoveToOrigin();
-            }
-            return data;
-        }
-
-
     }
+
+    [Serializable]
+    public class PointCloudMetaDataV1_8 : PointCloudMetaData
+    {
+        public List<PointAttribute> pointAttributes;
+    }
+
+    [Serializable]
+    public class PointCloudMetaDataV1_7 : PointCloudMetaData
+    {
+        public List<string> pointAttributes;
+    }
+
+    public class PointCloudMetaDataReader
+    {
+      /// <summary>
+      /// Reads the metadata from a json-string.
+      /// </summary>
+      /// <param name="json">Json-String</param>
+      /// <param name="moveToOrigin">True, iff the center of the bounding boxes should be moved to the origin</param>
+      public static PointCloudMetaData ReadFromJson(string json, bool moveToOrigin)
+      {
+          PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);
+          Debug.Log("ReadFromJson - Version: "+data.version);
+          if(data.version == "1.8"){
+            PointCloudMetaDataV1_8 dt = JsonUtility.FromJson<PointCloudMetaDataV1_8>(json);
+            data.pointAttributesList = dt.pointAttributes;
+          }else{
+              //workarround for version < 1.7
+              PointCloudMetaDataV1_7 dt = JsonUtility.FromJson<PointCloudMetaDataV1_7>(json);
+              data.pointAttributesList = new List<PointAttribute>();
+              foreach(string attr in dt.pointAttributes){
+                PointAttribute pta = new PointAttribute();
+                pta.name = attr;
+                if (attr =="POSITION_CARTESIAN"){
+                  pta.size = 12;
+                }else if (attr =="COLOR_PACKED"){
+                  pta.size = 4;
+                }else if (attr =="INTENSITY"){
+                  pta.size = 2;
+                }else if (attr =="CLASSIFICATION"){
+                  pta.size = 2;
+                }
+                data.pointAttributesList.Add(pta);
+              }
+          }
+          data.pointByteSize = 0;
+          foreach (PointAttribute pointAttribute in data.pointAttributesList) {
+            data.pointByteSize += pointAttribute.size;
+            }
+
+          data.boundingBox.Init();
+          data.boundingBox.SwitchYZ();
+          data.tightBoundingBox.SwitchYZ();
+          if (moveToOrigin)
+          {
+              data.boundingBox.MoveToOrigin();
+              data.tightBoundingBox.MoveToOrigin();
+          }
+          return data;
+      }
+    }
+
+
+
 }

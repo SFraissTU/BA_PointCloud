@@ -34,11 +34,11 @@ namespace BAPointCloudRenderer.Loading {
               }
             }
 
-            PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
-            
+            PointCloudMetaData metaData = PointCloudMetaDataReader.ReadFromJson(jsonfile, moveToOrigin);
+
             metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("/") + 1);
             Debug.Log(metaData.cloudName);
-            
+
             if (isCloudOnline){
               metaData.cloudUrl = cloudPath;
               metaData.cloudPath = "temp/"+metaData.cloudName+"/";
@@ -158,7 +158,7 @@ namespace BAPointCloudRenderer.Loading {
             Vector3[] vertices = new Vector3[numPoints];
             Color[] colors = new Color[numPoints];
             //Read in data
-            foreach (PointAttribute pointAttribute in metaData.pointAttributes) {
+            foreach (PointAttribute pointAttribute in metaData.pointAttributesList) {
                 if (pointAttribute.name.Equals(PointAttributes.POSITION_CARTESIAN)) {
                     for (int i = 0; i < numPoints; i++) {
                         //Reduction to single precision!
@@ -236,4 +236,3 @@ namespace BAPointCloudRenderer.Loading {
         }
     }
 }
-
