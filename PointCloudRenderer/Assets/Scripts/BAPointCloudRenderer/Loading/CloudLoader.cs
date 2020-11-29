@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Net;
+using System;
 using UnityEngine;
 
 namespace BAPointCloudRenderer.Loading {
@@ -18,23 +20,44 @@ namespace BAPointCloudRenderer.Loading {
          /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
-            using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default)) {
+            Debug.Log(cloudPath);
+            bool isCloudOnline = Uri.IsWellFormedUriString(cloudPath, UriKind.Absolute);
+            if (isCloudOnline){
+                WebClient client = new WebClient();
+                Stream stream = client.OpenRead(cloudPath + "cloud.js");
+                StreamReader reader = new StreamReader(stream);
                 jsonfile = reader.ReadToEnd();
-                reader.Close();
+            }else{
+              using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default)) {
+                  jsonfile = reader.ReadToEnd();
+                  reader.Close();
+              }
             }
-            PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
-            metaData.cloudPath = cloudPath;
+
+            PointCloudMetaData metaData = PointCloudMetaDataReader.ReadFromJson(jsonfile, moveToOrigin);
+
             metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("/") + 1);
+            Debug.Log(metaData.cloudName);
+
+            if (isCloudOnline){
+              metaData.cloudUrl = cloudPath;
+              metaData.cloudPath = "temp/"+metaData.cloudName+"/";
+            }else{
+              metaData.cloudPath = cloudPath;
+              metaData.cloudUrl = null;
+            }
+
+
             return metaData;
         }
-        
+
         /// <summary>
         /// Loads the complete Hierarchy and ALL points from the pointcloud.
         /// </summary>
         /// <param name="metaData">MetaData-Object, as received by LoadMetaData</param>
         /// <returns>The Root Node of the point cloud</returns>
         public static Node LoadPointCloud(PointCloudMetaData metaData) {
-            string dataRPath = metaData.cloudPath + metaData.octreeDir + "/r/";
+            string dataRPath = metaData.octreeDir + "/r/"; //metaData.cloudPath + ...
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             LoadAllPoints(dataRPath, metaData, rootNode);
@@ -47,7 +70,7 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="metaData">MetaData-Object, as received by LoadMetaData</param>
         /// <returns>The Root Node of the point cloud</returns>
         public static Node LoadHierarchyOnly(PointCloudMetaData metaData) {
-            string dataRPath = metaData.cloudPath + metaData.octreeDir + "/r/";
+            string dataRPath = metaData.octreeDir + "/r/"; //metaData.cloudPath + ...
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
             LoadHierarchy(dataRPath, metaData, rootNode);
             return rootNode;
@@ -57,7 +80,7 @@ namespace BAPointCloudRenderer.Loading {
         /// Loads the points for the given node
         /// </summary>
         public static void LoadPointsForNode(Node node) {
-            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "/r/";
+            string dataRPath = node.MetaData.octreeDir + "/r/"; //node.MetaData.cloudPath + ...
             LoadPoints(dataRPath, node.MetaData, node);
         }
 
@@ -128,15 +151,15 @@ namespace BAPointCloudRenderer.Loading {
         private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
 
             byte[] data = FindAndLoadFile(dataRPath, metaData, node.Name, ".bin");
-            int pointByteSize = 16;//TODO: Is this always the case?
+            int pointByteSize = metaData.pointByteSize;//TODO: Is this always the case?
             int numPoints = data.Length / pointByteSize;
             int offset = 0;
 
             Vector3[] vertices = new Vector3[numPoints];
             Color[] colors = new Color[numPoints];
             //Read in data
-            foreach (string pointAttribute in metaData.pointAttributes) {
-                if (pointAttribute.Equals(PointAttributes.POSITION_CARTESIAN)) {
+            foreach (PointAttribute pointAttribute in metaData.pointAttributesList) {
+                if (pointAttribute.name.Equals(PointAttributes.POSITION_CARTESIAN)) {
                     for (int i = 0; i < numPoints; i++) {
                         //Reduction to single precision!
                         //Note: y and z are switched
@@ -146,7 +169,7 @@ namespace BAPointCloudRenderer.Loading {
                         vertices[i] = new Vector3(x, y, z);
                     }
                     offset += 12;
-                } else if (pointAttribute.Equals(PointAttributes.COLOR_PACKED)) {
+                } else if (pointAttribute.name.Equals(PointAttributes.COLOR_PACKED)) {
                     for (int i = 0; i < numPoints; i++) {
                         byte r = data[offset + i * pointByteSize + 0];
                         byte g = data[offset + i * pointByteSize + 1];
@@ -154,6 +177,15 @@ namespace BAPointCloudRenderer.Loading {
                         colors[i] = new Color32(r, g, b, 255);
                     }
                     offset += 3;
+                }else if (pointAttribute.name.Equals(PointAttributes.RGBA)) {
+                    for (int i = 0; i < numPoints; i++) {
+                        byte r = data[offset + i * pointByteSize + 0];
+                        byte g = data[offset + i * pointByteSize + 1];
+                        byte b = data[offset + i * pointByteSize + 2];
+                        byte a = data[offset + i * pointByteSize + 3];
+                        colors[i] = new Color32(r, g, b, a);
+                    }
+                    offset += 4;
                 }
             }
             node.SetPoints(vertices, colors);
@@ -171,7 +203,18 @@ namespace BAPointCloudRenderer.Loading {
                 path += id.Substring(i * metaData.hierarchyStepSize, metaData.hierarchyStepSize) + "/";
             }
             path += "r" + id + fileending;
-            return File.ReadAllBytes(dataRPath + path);
+            //Debug.Log("FindAndLoadFile "+path);
+            if (File.Exists(metaData.cloudPath + dataRPath + path)){
+                return File.ReadAllBytes(metaData.cloudPath + dataRPath + path);
+            }else if(metaData.cloudUrl != null){
+              //Debug.Log(metaData.cloudUrl + dataRPath + path);
+              //Debug.Log(metaData.cloudPath + dataRPath + path);
+              Directory.CreateDirectory(Path.GetDirectoryName(metaData.cloudPath + dataRPath + path));
+              WebClient webClient = new WebClient();
+              webClient.DownloadFile(metaData.cloudUrl + dataRPath + path, metaData.cloudPath + dataRPath + path);
+              return File.ReadAllBytes(metaData.cloudPath + dataRPath + path);
+            }
+            return null;
         }
 
         /* Loads the points for that node and all its children
@@ -188,7 +231,7 @@ namespace BAPointCloudRenderer.Loading {
         }
 
         public static uint LoadAllPointsForNode(Node node) {
-            string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "/r/";
+            string dataRPath = node.MetaData.octreeDir + "/r/"; // node.MetaData.cloudPath + ...
             return LoadAllPoints(dataRPath, node.MetaData, node);
         }
     }

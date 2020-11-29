@@ -8,6 +8,8 @@ namespace BAPointCloudRenderer.Loading
     {
         public const string POSITION_CARTESIAN = "POSITION_CARTESIAN";
         public const string COLOR_PACKED = "COLOR_PACKED";
+        public const string RGBA = "RGBA";
 
     }
 }
+
