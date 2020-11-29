@@ -66,7 +66,11 @@ namespace BAPointCloudRenderer.CloudController {
             } catch (System.IO.DirectoryNotFoundException ex)
             {
                 Debug.LogError("Could not find directory: " + ex.Message);
-            } catch (Exception ex) {
+            } catch (System.Net.WebException ex)
+            {
+                Debug.LogError("Could not access web address. " + ex.Message);
+            }
+            catch (Exception ex) {
                 Debug.LogError(ex + Thread.CurrentThread.Name);
             }
         }
