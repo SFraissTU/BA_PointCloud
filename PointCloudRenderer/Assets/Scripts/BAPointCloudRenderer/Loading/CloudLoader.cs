@@ -16,7 +16,7 @@ namespace BAPointCloudRenderer.Loading {
          /// <summary>
          /// Loads the meta data from the json-file in the given cloudpath. Attributes "cloudPath", and "cloudName" are set as well.
          /// </summary>
-         /// <param name="cloudPath">Folderpath of the cloud</param>
+         /// <param name="cloudPath">Folderpath of the cloud or URL to download the cloud from. In the latter case, it will be downloaded to a /temp folder</param>
          /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;

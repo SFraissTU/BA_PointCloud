@@ -14,7 +14,7 @@ namespace BAPointCloudRenderer.CloudController {
     public class PointCloudLoader : MonoBehaviour {
 
         /// <summary>
-        /// Path to the folder which contains the cloud.js file
+        /// Path to the folder which contains the cloud.js file or URL to download the cloud from. In the latter case, it will be downloaded to a /temp folder
         /// </summary>
         public string cloudPath;
 

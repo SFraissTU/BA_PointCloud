@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.4</span>
+   &#160;<span id="projectnumber">1.5</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -65,7 +65,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -73,15 +72,19 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Description of a Bounding Box. Created from the cloud.js-File. Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud)  
+<p>Description of a Bounding Box. Created from the cloud.js-File. Contains all attributes from the cloud.js-File. The cloud may be local or online. If it's local, cloudPath is the path to the cloud, and cloudUrl is null. If it's local, cloudUrl is the url to the cloud, and cloudPath is the destination where to download it to.  
  <a href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html#details">More...</a></p>
+<div class="dynheader">
+Inheritance diagram for BAPointCloudRenderer.CloudData.PointCloudMetaData:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.png" usemap="#BAPointCloudRenderer.CloudData.PointCloudMetaData_map" alt=""/>
+  <map id="BAPointCloudRenderer.CloudData.PointCloudMetaData_map" name="BAPointCloudRenderer.CloudData.PointCloudMetaData_map">
+<area href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data_v1__7.html" alt="BAPointCloudRenderer.CloudData.PointCloudMetaDataV1_7" shape="rect" coords="0,56,355,80"/>
+<area href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data_v1__8.html" alt="BAPointCloudRenderer.CloudData.PointCloudMetaDataV1_8" shape="rect" coords="365,56,720,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a75bcbea009d898559d6883465aef1a1e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html#a75bcbea009d898559d6883465aef1a1e">ReadFromJson</a> (string json, bool moveToOrigin)</td></tr>
-<tr class="memdesc:a75bcbea009d898559d6883465aef1a1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the metadata from a json-string.  <a href="#a75bcbea009d898559d6883465aef1a1e">More...</a><br /></td></tr>
-<tr class="separator:a75bcbea009d898559d6883465aef1a1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ab844bf08cdb9d1b452a6202ffe625ccc"><td class="memItemLeft" align="right" valign="top"><a id="ab844bf08cdb9d1b452a6202ffe625ccc"></a>
@@ -102,9 +105,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>points</b></td></tr>
 <tr class="memitem:af846f2b1127f91715deb6a4922167bd4"><td class="memItemLeft" align="right" valign="top"><a id="af846f2b1127f91715deb6a4922167bd4"></a>
 <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><b>tightBoundingBox</b></td></tr>
 <tr class="separator:af846f2b1127f91715deb6a4922167bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cdfd5f796700e7d3de4545d06926192"><td class="memItemLeft" align="right" valign="top"><a id="a9cdfd5f796700e7d3de4545d06926192"></a>
-List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pointAttributes</b></td></tr>
-<tr class="separator:a9cdfd5f796700e7d3de4545d06926192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e51162de88b31c5a55ddfacb3c67e07"><td class="memItemLeft" align="right" valign="top"><a id="a7e51162de88b31c5a55ddfacb3c67e07"></a>
+List&lt; <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_attribute.html">PointAttribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pointAttributesList</b></td></tr>
+<tr class="separator:a7e51162de88b31c5a55ddfacb3c67e07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf1560c0aab308642bbb99ba2626640d"><td class="memItemLeft" align="right" valign="top"><a id="aaf1560c0aab308642bbb99ba2626640d"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>spacing</b></td></tr>
 <tr class="separator:aaf1560c0aab308642bbb99ba2626640d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,56 +123,16 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>cloudPath</b></td><
 <tr class="memitem:ab3c88087472711eab4c3972cb494530c"><td class="memItemLeft" align="right" valign="top"><a id="ab3c88087472711eab4c3972cb494530c"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><b>cloudName</b></td></tr>
 <tr class="separator:ab3c88087472711eab4c3972cb494530c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4366544db5d81a1a442c77c08055db"><td class="memItemLeft" align="right" valign="top"><a id="a4b4366544db5d81a1a442c77c08055db"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><b>cloudUrl</b></td></tr>
+<tr class="separator:a4b4366544db5d81a1a442c77c08055db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad65390290237b7e18c24e8255e1507e4"><td class="memItemLeft" align="right" valign="top"><a id="ad65390290237b7e18c24e8255e1507e4"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pointByteSize</b></td></tr>
+<tr class="separator:ad65390290237b7e18c24e8255e1507e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Description of a Bounding Box. Created from the cloud.js-File. Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud) </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a75bcbea009d898559d6883465aef1a1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75bcbea009d898559d6883465aef1a1e">&#9670;&nbsp;</a></span>ReadFromJson()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> BAPointCloudRenderer.CloudData.PointCloudMetaData.ReadFromJson </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>json</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>moveToOrigin</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reads the metadata from a json-string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">json</td><td>Json-String</td></tr>
-    <tr><td class="paramname">moveToOrigin</td><td>True, iff the center of the bounding boxes should be moved to the origin</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><p>Description of a Bounding Box. Created from the cloud.js-File. Contains all attributes from the cloud.js-File. The cloud may be local or online. If it's local, cloudPath is the path to the cloud, and cloudUrl is null. If it's local, cloudUrl is the url to the cloud, and cloudPath is the destination where to download it to. </p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>BAPointCloudRenderer/CloudData/PointCloudMetaData.cs</li>
 </ul>
 </div><!-- contents -->

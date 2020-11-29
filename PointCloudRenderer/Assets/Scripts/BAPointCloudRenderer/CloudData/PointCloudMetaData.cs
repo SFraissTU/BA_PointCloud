@@ -19,7 +19,10 @@ namespace BAPointCloudRenderer.CloudData
   
     /// <summary>
     /// Description of a Bounding Box. Created from the cloud.js-File.
-    /// Contains all attributes from that file plus two more: cloudPath (folder path of the cloud) and cloudName (name of the cloud)
+    /// Contains all attributes from the cloud.js-File.
+    /// The cloud may be local or online. If it's local, cloudPath is the path to the cloud,
+    /// and cloudUrl is null. If it's local, cloudUrl is the url to the cloud, and cloudPath
+    /// is the destination where to download it to.
     /// </summary>
     [Serializable]
     public class PointCloudMetaData
