@@ -11,6 +11,11 @@ Below you will find a Getting-Started-Guide
 Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/
 
 ## Change Log
+### Version 1.5 (30.11.2020):
+Changes provided by user [Adrien Gressin](https://github.com/agressin):
+* Support for Potree Format V1.8 (Created by Potree Converter 1.7)
+* Path to pointcloud can now be an URL. In that case, the pointcloud will be downloaded to a folder "temp".
+
 ### Version 1.4 (04.04.2020):
 A small update with bugfixes and minor improvements.
 
@@ -56,16 +61,16 @@ Detailed change list:
 Please note that because of the restructuring, the project is not fully compatible with previous versions. If you want to update your project, you need to do a bit of refactoring, as the namespaces and paths to the files have changed.
 
 ### Future
-Features that may or may not come in the future (Right now, I do this in my leisure time, so I cannot work a lot on it):
+I maintain this project in my free time, so I ask for understanding that I do not have time to build many new features, and I apologize if some Github-Issues remain unanswered.
+If you want to contribute something to this project, please feel free to do so. Contact me or just commit a pull request!
+Features that may or may not come in the future, by me or someone else:
+* Support for Potree Format 2.0
 * Adaptive Point Sizes
 * Better WebGL-Support
 * On-Demand-Hierarchy-Loading
 * Loading Point Clouds from the Resources-folder
 * laz-support
 * More flexible Point Cloud Transformations. Transforming single clouds instead of the whole set.
-
-I work on this project in my leisure time, so I do not have a lot of time to work on this, so I'm happy about contributions and feedback.
-It's great to see that many people are using this project!
 
 ## Example Scenes
 * DynamicDemo.unity: Demonstrates DynamicPointCloudSet and Preview on the Lion-Point-Cloud
@@ -75,8 +80,8 @@ It's great to see that many people are using this project!
 
 ## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
-1. Download the current .unitypackage file here: https://github.com/SFraissTU/BA_PointCloud/releases/download/v1.3/BAPC-v01.03.unitypackage
-2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip . Alternatively, you also find a set of big point clouds in the git repository.
+1. Download the current .unitypackage file here: https://github.com/SFraissTU/BA_PointCloud/releases/
+2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter (version 1.7 or lower!) and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip . Alternatively, you also find a set of big point clouds in the git repository.
 3. Create a new project and go to Assets->Import Package and import the downloaded .unitypackage-file.
 4. There is now a DynamicDemo-Scene in the project. You can either use that or follow the steps below in your own scene to get the same result.
 5. If you want to be able to navigate the camera through the scene, I provide a small script for camera controls. This is optional and you can also just use your own control mechanisms instead. Select the Main Camera in the Scene Graph and press "Add Component" in the Inspector. Choose "Scripts"->"BAPointCloudRenderer.Controllers"->"Camera Controllers". When you start the game, you can then move the camera around by using the mouse and the WASD-keys as well as EQ for moving up and down, LeftShift for moving with higher speed and C for moving with lower speed. You can set the normal speed in the Inspector.
@@ -116,7 +121,7 @@ The preview is not refreshed automatically when you add or remove point clouds, 
 Previewing is also displayed in the demo scenes DynamicDemo and StaticDemo.
 
 ### Eye-Dome-Lighting
-To use Eye-Dome-Lighting (thanks to Kazys Stepanas for implementing it!), a good lighting model for point clouds, especially when they don't have color information, please refer to the setup in the scene EDLDemo.
+To use Eye-Dome-Lighting (thanks to [Kazys Stepanas](https://github.com/KazNX) for implementing it!), a good lighting model for point clouds, especially when they don't have color information, please refer to the setup in the scene EDLDemo.
 
 You need to create two cameras. Create a view camera, which is tagged as MainCamera with the ViewCamera-script attached. This is the camera you want to move through the scene.
 Additionally, you need a post processing camera, to which you attach the Edl Camera script. As "Edl Shader" choose EDL and as "Edl Off Shader" choose "ScreenBlit". Edl should then work:
@@ -137,10 +142,10 @@ Apparently there have been some troubles using this project for WebGL. Another u
 In general, if you want to render your point clouds in the browser, I recommend Potree: http://potree.org/
 
 ### What about point attributes other than color?
-Not possible at the moment. If you want to implement it yourself, see this thread: https://github.com/SFraissTU/BA_PointCloud/issues/9
+Not possible at the moment. Intensity values are loaded into the program, but they are currently not used. Depending on what you need, it might be possible to implement this yourself.
 
 ### Which Potree Converter version does this support?
-This should work with point clouds created with Potree Converter up to version 1.6. In 1.7 there will be updates which are not yet supported (you will probably only get a bunch of small black dots on the screen).
+This should work with point clouds created with Potree Converter up to version 1.7 (Potree format 1.8). Files created from Potree Converter 2.0 are currently not supported.
 
 #### Anything else?
 Please send me an email or open a github issue. Please note that I don't have a lot of time to work for this project, so I might not be able to fulfill every request, but I'm open to suggestions.
