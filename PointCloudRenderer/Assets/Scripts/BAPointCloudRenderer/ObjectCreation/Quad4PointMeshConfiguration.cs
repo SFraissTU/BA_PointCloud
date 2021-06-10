@@ -23,6 +23,7 @@ namespace BAPointCloudRenderer.ObjectCreation
 
         public void Start() {
             material = new Material(Shader.Find("Custom/Quad4PointScreenSizeShader"));
+            material.enableInstancing = true;
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
             Rect screen = Camera.main.pixelRect;
