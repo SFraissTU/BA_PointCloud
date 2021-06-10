@@ -16,22 +16,33 @@ Shader "Custom/PointShader"
 			#pragma vertex vert
 			#pragma fragment frag
 
+			#include "UnityCG.cginc"
+
 			struct VertexInput
 			{
 				float4 position : POSITION;
 				float4 color : COLOR;
+
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
 			{
 				float4 position : SV_POSITION;
 				float4 color : COLOR;
+
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			float _PointSize;
 
 			VertexOutput vert(VertexInput v) {
 				VertexOutput o;
+
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_INITIALIZE_OUTPUT(VertexOutput, o);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
 				o.position = UnityObjectToClipPos(v.position);
 				o.color = v.color;
 				return o;

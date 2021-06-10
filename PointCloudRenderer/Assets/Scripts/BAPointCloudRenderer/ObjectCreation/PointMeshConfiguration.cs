@@ -20,6 +20,7 @@ namespace BAPointCloudRenderer.ObjectCreation
         public void Start()
         {
             material = new Material(Shader.Find("Custom/PointShader"));
+            material.enableInstancing = true;
             gameObjectCollection = new HashSet<GameObject>();
         }
 

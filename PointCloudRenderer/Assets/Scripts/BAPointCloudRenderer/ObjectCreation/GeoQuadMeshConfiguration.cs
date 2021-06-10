@@ -113,6 +113,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
                 }
                 material.SetInt("_Cones", (interpolation == InterpolationMode.FRAGMENT_CONE) ? 1 : 0);
             }
+            material.enableInstancing = true;
             material.SetFloat("_PointSize", pointRadius);
             material.SetInt("_Circles", renderCircles ? 1 : 0);
         }

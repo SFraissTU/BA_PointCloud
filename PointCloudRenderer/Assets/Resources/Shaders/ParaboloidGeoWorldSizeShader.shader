@@ -28,10 +28,14 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 			#pragma geometry geom
 			#pragma fragment frag
 
+			#include "UnityCG.cginc"
+
 			struct VertexInput
 			{
 				float4 position : POSITION;
 				float4 color : COLOR;
+
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexMiddle {
@@ -40,6 +44,8 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 				float4 R : NORMAL0;
 				float4 U : NORMAL1;
 				float4 N : NORMAL2;
+
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct VertexOutput
@@ -47,6 +53,9 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 				float4 position : SV_POSITION;
 				float4 color : COLOR;
 				float2 uv : TEXCOORD0;
+
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			float _PointSize;
@@ -55,6 +64,14 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 
 			VertexMiddle vert(VertexInput v) {
 				VertexMiddle o;
+
+				// set all values in the v2g o to 0.0
+				UNITY_INITIALIZE_OUTPUT(VertexMiddle, o);
+				// setup the instanced id to be accessed
+				UNITY_SETUP_INSTANCE_ID(v);
+				// copy instance id in the appdata v to the v2g o
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+
 				o.position = mul(unity_ObjectToWorld, v.position);
 				o.color = v.color;
 
@@ -70,6 +87,15 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 
 			VertexOutput createParaboloidPoint(VertexMiddle input, float u, float v) {
 				VertexOutput nPoint;
+
+				//set all values in the g2f o to 0.0
+				UNITY_INITIALIZE_OUTPUT(VertexOutput, nPoint);
+				// setup the instanced id to be accessed
+				UNITY_SETUP_INSTANCE_ID(input);
+				// copy instance id in the v2f i[0] to the g2f o
+				UNITY_TRANSFER_INSTANCE_ID(input, nPoint);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(nPoint);
+
 				nPoint.position = input.position;
 				nPoint.position += u*input.R;
 				nPoint.position += v*input.U;
