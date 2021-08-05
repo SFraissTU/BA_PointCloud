@@ -12,7 +12,7 @@ Download the current version: https://github.com/SFraissTU/BA_PointCloud/release
 
 ## Change Log
 ### Current changes on Master (no release yet)
-* Changes provided by [Chris Traxler](chris-traxler): Adaption of Shaders to Single Pass Instanced Rendering
+* Changes provided by [Chris Traxler](https://github.com/chris-traxler): Adaption of Shaders to Single Pass Instanced Rendering
 
 ### Version 1.5 (30.11.2020):
 Changes provided by user [Adrien Gressin](https://github.com/agressin):
