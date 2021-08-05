@@ -11,6 +11,9 @@ Below you will find a Getting-Started-Guide
 Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/
 
 ## Change Log
+### Current changes on Master (no release yet)
+* Changes provided by [Chris Traxler](chris-traxler): Adaption of Shaders to Single Pass Instanced Rendering
+
 ### Version 1.5 (30.11.2020):
 Changes provided by user [Adrien Gressin](https://github.com/agressin):
 * Support for Potree Format V1.8 (Created by Potree Converter 1.7)
