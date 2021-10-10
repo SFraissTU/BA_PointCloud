@@ -141,7 +141,7 @@ Yes. I've tested it with an HTC Vive and it worked fine. If you use SteamVR, jus
 It might be a bit tricky to use EDL with VR. I don't really know how to do that.
 
 #### Does this work with WebGL?
-Apparently there have been some troubles using this project for WebGL. Another user has been trying to make it work. See this thread for more information: https://github.com/SFraissTU/BA_PointCloud/issues/12
+Apparently there have been some troubles using this project in its original form for WebGL. However check out this thread and the solution provided by MerryLovasz for an adaptation to make it work in WebGL: https://github.com/SFraissTU/BA_PointCloud/issues/12
 In general, if you want to render your point clouds in the browser, I recommend Potree: http://potree.org/
 
 ### What about point attributes other than color?
