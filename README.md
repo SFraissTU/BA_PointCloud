@@ -135,12 +135,12 @@ Please note that there's a bug when using EDL and the "Display LOD"-functionalit
 
 ## FAQ and Trouble-Shooting
 
-#### Does this work with VR?
+### Does this work with VR?
 Yes. I've tested it with an HTC Vive and it worked fine. If you use SteamVR, just create a CameraRig-object and pass the child camera of it to the Point Cloud Set (and the DefaltMeshConfiguration).
 
 It might be a bit tricky to use EDL with VR. I don't really know how to do that.
 
-#### Does this work with WebGL?
+### Does this work with WebGL?
 Apparently there have been some troubles using this project in its original form for WebGL. However check out this thread and the solution provided by MerryLovasz for an adaptation to make it work in WebGL: https://github.com/SFraissTU/BA_PointCloud/issues/12
 
 In general, if you want to render your point clouds in the browser, I recommend Potree: http://potree.org/
@@ -151,5 +151,5 @@ Not possible at the moment. Intensity values are loaded into the program, but th
 ### Which Potree Converter version does this support?
 This should work with point clouds created with Potree Converter up to version 1.7 (Potree format 1.8). Files created from Potree Converter 2.0 are currently not supported.
 
-#### Anything else?
+### Anything else?
 Please send me an email or open a github issue. Please note that I don't have a lot of time to work for this project, so I might not be able to fulfill every request, but I'm open to suggestions.
