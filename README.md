@@ -140,6 +140,9 @@ Yes. I've tested it with an HTC Vive and it worked fine. If you use SteamVR, jus
 
 It might be a bit tricky to use EDL with VR. I don't really know how to do that.
 
+### I use VR and only see the point cloud on my left eye!
+When using OpenXR or Oculus SDK make sure to set your Render Mode in the XR Project Settings from "Single Pass" to "Multi Pass".
+
 ### Does this work with WebGL?
 Apparently there have been some troubles using this project in its original form for WebGL. However check out this thread and the solution provided by MerryLovasz for an adaptation to make it work in WebGL: https://github.com/SFraissTU/BA_PointCloud/issues/12
 
