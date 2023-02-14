@@ -72,3 +72,10 @@ PointCloudRenderer/Assets/Scenes/old/*
 PointCloudRenderer/Logs/Packages-Update.log
 PointCloudRenderer/Assets/StreamingAssets/*
 PointCloudRenderer/Assets/StreamingAssets.meta
+/PointCloudRenderer/Logs/AssetImportWorker0.log
+/PointCloudRenderer/Logs/shadercompiler-UnityShaderCompiler.exe4.log
+/PointCloudRenderer/Logs/shadercompiler-UnityShaderCompiler.exe3.log
+/PointCloudRenderer/Logs/shadercompiler-UnityShaderCompiler.exe2.log
+/PointCloudRenderer/Logs/shadercompiler-UnityShaderCompiler.exe1.log
+/PointCloudRenderer/Logs/shadercompiler-UnityShaderCompiler.exe0.log
+/PointCloudRenderer/Logs/shadercompiler-AssetImportWorker0.log

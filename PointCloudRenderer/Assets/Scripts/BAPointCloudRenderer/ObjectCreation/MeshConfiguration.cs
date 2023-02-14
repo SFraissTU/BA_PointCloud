@@ -22,7 +22,7 @@ namespace BAPointCloudRenderer.ObjectCreation
         /// <param name="colorData">Colors (same size as vertexData and the length is not higher than GetMaximumPointsPerMesh)</param>
         /// <param name="boundingBox">Bounding Box</param>
         /// <returns></returns>
-        public abstract GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent);
+        public abstract GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent, double version);
 
         /// <summary>
         /// Removes the GameObject
