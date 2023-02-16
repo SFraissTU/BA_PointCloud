@@ -1,3 +1,13 @@
+# The Fork for Potree v2
+This fork provides (evolving) support for Potree v2 file format to the [BA_PointCloud](https://github.com/SFraissTU/BA_PointCloud) Unity implementation.
+
+As of 20230216 loading Potree v2 from local storage works, but loading from a server (with http queries) does not, yet.
+
+Due to the Potree documentation being [missing in action](https://github.com/potree/potree/commit/a41aae95d32fbee43e21ad4a38e1b1d2b2386210), i had to rely on [
+PotreeDesktop](https://github.com/potree/PotreeDesktop) JS/TS implementation. Therefore, there shall be bugs!
+
+---
+
 # BA_PointCloud
 PointCloud-BachelorThesis
 
