@@ -171,9 +171,10 @@ namespace BAPointCloudRenderer.ObjectCreation {
             {
                 // 20230125: potree v2 vertices have absolute coordinates,
                 // hence all gameobjects need to reside at Vector.Zero.
-                // And: the global position must be set after parenthood has been granted.
+                // And: the position must be set after parenthood has been granted.
+                //gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
                 gameObject.transform.SetParent(parent, false);
-                boundingBox.MoveToOrigin();
+                gameObject.transform.localPosition = Vector3.zero;
             }
             else
             {

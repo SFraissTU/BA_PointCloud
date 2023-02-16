@@ -222,8 +222,7 @@ namespace BAPointCloudRenderer.Loading {
 
                     string childName = current.Name + childIndex;
 
-                    //var childAABB = CalculateBoundingBoxV2_0(current.BoundingBox, childIndex, node.MetaData); // createChildAABB(current.boundingBox, childIndex);
-                    BoundingBox childAABB = CalculateBoundingBox(current.BoundingBox, childIndex); // createChildAABB(current.boundingBox, childIndex);
+                    BoundingBox childAABB = CalculateBoundingBox(current.BoundingBox, childIndex);
                     Node child = new Node(childName, node.MetaData, childAABB, current)
                     {
                         spacing = current.spacing / 2,
@@ -310,40 +309,6 @@ namespace BAPointCloudRenderer.Loading {
                 max.x -= size.x / 2;
             }
             return new BoundingBox(min, max);
-        }
-        private static BoundingBox CalculateBoundingBoxV2_0(BoundingBox parent, int index, PointCloudMetaData metaData)
-        {
-            Vector3d min = parent.Min();
-            Vector3d max = parent.Max();
-            Vector3d size = parent.Size();
-            //z and y are different here than in the sample-code because these coordinates are switched in unity
-            if ((index & 2) != 0)
-            {
-                min.z += size.z / 2;
-            }
-            else
-            {
-                max.z -= size.z / 2;
-            }
-            if ((index & 1) != 0)
-            {
-                min.y += size.y / 2;
-            }
-            else
-            {
-                max.y -= size.y / 2;
-            }
-            if ((index & 4) != 0)
-            {
-                min.x += size.x / 2;
-            }
-            else
-            {
-                max.x -= size.x / 2;
-            }
-            Vector3d asd = metaData.boundingBox.Size();
-            return new BoundingBox(min + (metaData.boundingBox.Size() / 2), max + (metaData.boundingBox.Size() / 2));
-            return new BoundingBox(min + (metaData.boundingBox.Size() / 2), max + (metaData.boundingBox.Size() / 2));
         }
 
         /// <summary>
