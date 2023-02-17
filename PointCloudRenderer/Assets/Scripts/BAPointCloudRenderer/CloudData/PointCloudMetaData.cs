@@ -108,17 +108,18 @@ namespace BAPointCloudRenderer.CloudData
         /// Reads the metadata from a json-string.
         /// </summary>
         /// <param name="json">Json-String</param>
-        /// <param name="moveToOrigin">True, iff the center of the bounding boxes should be moved to the origin</param>
+        /// <param name="moveToOrigin">True, if the center of the bounding boxes should be moved to the origin</param>
         public static PointCloudMetaData ReadFromJson(string json, bool moveToOrigin)
         {
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);
-            //Debug.Log("ReadFromJson - Version: "+data.version);
-            //if (double.TryParse(data.version, out double ver) && ver == 2.0)
+
             if(data.version == 2.0)
             {
                 Debug.Log("Potree v2");
+
                 // JsonUtility is incapable of serializing nested dicts. Newton to the help!
-                PointCloudMetaDataV2_0 data_tmp = Newtonsoft.Json.JsonConvert.DeserializeObject<PointCloudMetaDataV2_0>(json); //JsonUtility.FromJson<PointCloudMetaDataV2_0>(json);
+                PointCloudMetaDataV2_0 data_tmp = Newtonsoft.Json.JsonConvert.DeserializeObject<PointCloudMetaDataV2_0>(json);
+
                 data_tmp.pointAttributesList = new List<PointAttribute>();
                 data_tmp.pointByteSize = 0;
                 foreach (PointAttributeV2_0 pointAttribute in data_tmp.attributes)
@@ -155,29 +156,12 @@ namespace BAPointCloudRenderer.CloudData
                         data_tmp.boundingBox["max"][2] - data_tmp.offset[2]
                         )
                     );
-                data_tmp.tightBoundingBox = (data_tmp as PointCloudMetaData).boundingBox;
-
-                /*
-                 * scaling should work, but in reality, with the 0.01 scale, camera doesnt trigger 
-                 * the nodes to become visible.
-                (data_tmp as PointCloudMetaData).boundingBox = new BoundingBox(
-                    new Vector3d(
-                        (data_tmp.boundingBox["min"][0] - data_tmp.offset[0]) * data_tmp.scale[0], 
-                        (data_tmp.boundingBox["min"][1] - data_tmp.offset[1]) * data_tmp.scale[1], 
-                        (data_tmp.boundingBox["min"][2] - data_tmp.offset[2]) * data_tmp.scale[2]
-                        ),
-                    new Vector3d(
-                        (data_tmp.boundingBox["max"][0] - data_tmp.offset[0]) * data_tmp.scale[0], 
-                        (data_tmp.boundingBox["max"][1] - data_tmp.offset[1]) * data_tmp.scale[1], 
-                        (data_tmp.boundingBox["max"][2] - data_tmp.offset[2]) * data_tmp.scale[2]
-                        )
-                    );
-                */
 
                 data_tmp.tightBoundingBox = (data_tmp as PointCloudMetaData).boundingBox;
 
                 (data_tmp as PointCloudMetaData).boundingBox.Init();
                 data_tmp.tightBoundingBox.Init();
+
                 if (moveToOrigin)
                 {
                     (data_tmp as PointCloudMetaData).boundingBox.MoveToOrigin();
