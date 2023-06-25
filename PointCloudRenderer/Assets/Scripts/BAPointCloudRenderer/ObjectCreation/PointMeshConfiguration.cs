@@ -35,7 +35,7 @@ namespace BAPointCloudRenderer.ObjectCreation
             }
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent, double version)
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent, string version)
         {
             GameObject gameObject = new GameObject(name);
 
@@ -58,7 +58,7 @@ namespace BAPointCloudRenderer.ObjectCreation
             mesh.SetIndices(indecies, MeshTopology.Points, 0);
 
             //Set Translation
-            if (version == 2.0)
+            if (version == "2.0")
             {
                 // 20230125: potree v2 vertices have absolute coordinates,
                 // hence all gameobjects need to reside at Vector.Zero.

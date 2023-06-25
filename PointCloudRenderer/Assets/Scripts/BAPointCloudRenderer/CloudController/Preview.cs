@@ -125,7 +125,8 @@ namespace BAPointCloudRenderer.CloudController
 
                 if (_showPoints)
                 {
-                    Node rootNode = new Node("", metaData, metaData.boundingBox, null);
+                    Node rootNode = metaData.createRootNode();
+                    rootNode.type = 2;  //to enforce hierarchy loading in V2 format
                     CloudLoader.LoadPointsForNode(rootNode);
                     _nodes.Add(rootNode);
                 }
@@ -290,7 +291,7 @@ namespace BAPointCloudRenderer.CloudController
                 Color[] nodeColors = n.ColorsToStore;
                 Vector3[] filteredVertices = new Vector3[assignedPointCounts[j]];
                 Color[] filteredColors = new Color[assignedPointCounts[j]];
-                int stride = n.PointCount / assignedPointCounts[j];
+                int stride = assignedPointCounts[j] == 0 ? 0 : n.PointCount / assignedPointCounts[j];
                 Vector3 translation = n.BoundingBox.Min().ToFloatVector();
                 for (int newIndex = 0, oldIndex = 0; newIndex < assignedPointCounts[j]; oldIndex += stride, ++newIndex)
                 {

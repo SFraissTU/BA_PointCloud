@@ -48,7 +48,7 @@ namespace BAPointCloudRenderer.CloudData
     [Serializable]
     public class PointCloudMetaData
     {
-        public double version;
+        public string version;
         public string octreeDir;
         public string projection;
         public int points;
@@ -67,18 +67,33 @@ namespace BAPointCloudRenderer.CloudData
         public string cloudUrl;
         [NonSerialized]
         public int pointByteSize;
+
+        public virtual Node createRootNode()
+        {
+            return null;
+        }
     }
 
     [Serializable]
     public class PointCloudMetaDataV1_8 : PointCloudMetaData
     {
         public List<PointAttribute> pointAttributes;
+
+        public override Node createRootNode()
+        {
+            return new Node("", this, this.boundingBox, null);
+        }
     }
 
     [Serializable]
     public class PointCloudMetaDataV1_7 : PointCloudMetaData
     {
         public List<string> pointAttributes;
+
+        public override Node createRootNode()
+        {
+            return new Node("", this, this.boundingBox, null);
+        }
     }
 
     [Serializable]
@@ -100,6 +115,20 @@ namespace BAPointCloudRenderer.CloudData
         public BoundingBox boundingBoxInternal;
         public string encoding = "DEFAULT";
         public List<PointAttributeV2_0> attributes;
+
+        public override Node createRootNode()
+        {
+            return new Node("", this, base.boundingBox, null)
+            {
+                type = 2,
+                level = 0,
+                hierarchyByteOffset = 0,
+                hierarchyByteSize = this.hierarchy["firstChunkSize"],
+                spacing = this.spacing,
+                byteSize = 0,
+                byteOffset = 0
+            };
+        }
     }
 
     public class PointCloudMetaDataReader
@@ -113,10 +142,8 @@ namespace BAPointCloudRenderer.CloudData
         {
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(json);
 
-            if(data.version == 2.0)
+            if(data.version == "2.0")
             {
-                Debug.Log("Potree v2");
-
                 // JsonUtility is incapable of serializing nested dicts. Newton to the help!
                 PointCloudMetaDataV2_0 data_tmp = Newtonsoft.Json.JsonConvert.DeserializeObject<PointCloudMetaDataV2_0>(json);
 
@@ -169,14 +196,16 @@ namespace BAPointCloudRenderer.CloudData
                 }
                 return data_tmp;
             }
-            else if (data.version == 1.8){
+            else if (data.version == "1.8"){
                 PointCloudMetaDataV1_8 dt = JsonUtility.FromJson<PointCloudMetaDataV1_8>(json);
+                data = dt;
                 data.pointAttributesList = dt.pointAttributes;
             }
-            else if (data.version < 1.8)
+            else if (data.version.StartsWith("1."))
             {
                 //workarround for version < 1.7
                 PointCloudMetaDataV1_7 dt = JsonUtility.FromJson<PointCloudMetaDataV1_7>(json);
+                data = dt;
                 data.pointAttributesList = new List<PointAttribute>();
                 foreach(string attr in dt.pointAttributes){
                     PointAttribute pta = new PointAttribute();
@@ -195,7 +224,7 @@ namespace BAPointCloudRenderer.CloudData
             }
             else
             {
-                throw new Exception("Unsupportder Potree version: " + data.version.ToString());
+                throw new Exception("Unsupported Potree version: " + data.version.ToString());
             }
 
             data.pointByteSize = 0;

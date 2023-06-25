@@ -79,24 +79,13 @@ namespace BAPointCloudRenderer.Loading {
         /// <returns>The Root Node of the point cloud</returns>
         public static Node LoadPointCloud(PointCloudMetaData metaData, bool loadAllPoints = true) {
             string dataRPath = metaData.octreeDir + "/r/";
-            Node rootNode;
-            if (metaData.version == 2.0)
+            Node rootNode = metaData.createRootNode();
+            if (metaData.version == "2.0")
             {
-                rootNode = new Node("", metaData, metaData.boundingBox, null)
-                {
-                    type = 2,
-                    level = 0,
-                    hierarchyByteOffset = 0,
-                    hierarchyByteSize = (metaData as PointCloudMetaDataV2_0).hierarchy["firstChunkSize"],
-                    spacing = metaData.spacing,
-                    byteSize = 0,
-                    byteOffset = 0
-                };
                 LoadHierarchy(metaData, ref rootNode);
             }
             else
             {
-                rootNode = new Node("", metaData, metaData.boundingBox, null);
                 LoadHierarchy(dataRPath, metaData, rootNode);
             }
             if (loadAllPoints)
@@ -320,13 +309,13 @@ namespace BAPointCloudRenderer.Loading {
         private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
             // in potree v2 type 2 nodes are proxies and their hierarchy 
             // yearns to be loaded just-in-time.
-            if (metaData.version == 2.0 && node.type == 2)
+            if (metaData.version == "2.0" && node.type == 2)
             {
                 LoadHierarchy(metaData, ref node);
             }
             byte[] data = metaData.version switch
             {
-                2.0 => ReadFromFile(metaData.cloudPath + "octree.bin", (long)node.byteOffset, node.byteSize),
+                "2.0" => ReadFromFile(metaData.cloudPath + "octree.bin", (long)node.byteOffset, node.byteSize),
                 _ => FindAndLoadFile(dataRPath, metaData, node.Name, ".bin"),
             };
             int pointByteSize = metaData.pointByteSize;
@@ -342,9 +331,9 @@ namespace BAPointCloudRenderer.Loading {
                     for (int i = 0; i < numPoints; i++) {
                         //Reduction to single precision!
                         //Note: y and z are switched
-                        float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * (metaData.version == 2.0 ? (metaData as PointCloudMetaDataV2_0).scale[0] : metaData.scale));
-                        float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * (metaData.version == 2.0 ? (metaData as PointCloudMetaDataV2_0).scale[2] : metaData.scale));
-                        float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * (metaData.version == 2.0 ? (metaData as PointCloudMetaDataV2_0).scale[1] : metaData.scale));
+                        float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * (metaData.version == "2.0" ? (metaData as PointCloudMetaDataV2_0).scale[0] : metaData.scale));
+                        float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * (metaData.version == "2.0" ? (metaData as PointCloudMetaDataV2_0).scale[2] : metaData.scale));
+                        float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * (metaData.version == "2.0" ? (metaData as PointCloudMetaDataV2_0).scale[1] : metaData.scale));
                         vertices[i] = new Vector3(x, y, z);
                     }
                     toSetOff += 12;
@@ -356,10 +345,10 @@ namespace BAPointCloudRenderer.Loading {
                         colors[i] = new Color32(r, g, b, 255);
                     }
                     toSetOff += 3;
-                }else if (pointAttribute.name.Equals(PointAttributes.RGBA) || pointAttribute.name == "rgba") {
-                    if (metaData.version == 2.0)
+                }else if (pointAttribute.name.Equals(PointAttributes.RGBA) || pointAttribute.name == "rgba" || pointAttribute.name == "rgb") {
+                    if (metaData.version == "2.0")
                     {
-                        CalculateRGBA(ref colors, ref offset, data, pointByteSize, numPoints);
+                        CalculateRGBA(ref colors, ref offset, data, pointByteSize, numPoints, pointAttribute.name.EndsWith("a"));
                     } 
                     else
                     {
@@ -397,14 +386,13 @@ namespace BAPointCloudRenderer.Loading {
                     }
                 }
                 */
-                offset += metaData.version == 2.0 ? (pointAttribute as PointAttributeV2_0).byteSize : toSetOff;
+                offset += metaData.version == "2.0" ? (pointAttribute as PointAttributeV2_0).byteSize : toSetOff;
             }
             node.SetPoints(vertices, colors);
         }
-        private static void CalculateRGBA(ref Color[] colors, ref int offset, byte[] data, int pointByteSize, int numPoints)
+        private static void CalculateRGBA(ref Color[] colors, ref int offset, byte[] data, int pointByteSize, int numPoints, bool alpha)
         {
-            byte[] buff = new byte[numPoints * 4];
-            byte[] colours = new byte[buff.Length / 4];
+            int size = alpha ? 4 : 3;
 
             for (int j = 0; j < numPoints; j++)
             {
@@ -414,13 +402,9 @@ namespace BAPointCloudRenderer.Loading {
                 UInt16 g = BitConverter.ToUInt16(data, pointOffset + offset + 2);
                 UInt16 b = BitConverter.ToUInt16(data, pointOffset + offset + 4);
 
-                colours[4 * j + 0] = r > 255 ? (byte)(r / 256) : (byte)r;
-                colours[4 * j + 1] = g > 255 ? (byte)(g / 256) : (byte)g;
-                colours[4 * j + 2] = b > 255 ? (byte)(b / 256) : (byte)b;
-
                 // ~~~ !!! hardcoded alphaville !!! ~~~
                 // although its called RGBA theres no alpha. so..
-                colors[j] = new Color32((byte)r, (byte)g, (byte)b, (byte)128); 
+                colors[j] = new Color32((byte)(r >> 8), (byte)(g >> 8), (byte)(b >> 8), (byte)255);     //<< 8: Move from [0, 65535] to [0, 255]
             }
         }
         /* Finds a file for a node in the hierarchy.

@@ -12,7 +12,7 @@ namespace BAPointCloudRenderer.Eval {
 
         // Use this for initialization
         void Start() {
-            PointCloudMetaData meta = new PointCloudMetaData();
+            PointCloudMetaData meta = new PointCloudMetaDataV1_8();
             meta.cloudName = "";
             Node n = new Node("", meta, new BoundingBox(0,0, 0,10, 10,10), null);
             Vector3[] vecs = new Vector3[12];
