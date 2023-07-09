@@ -1,13 +1,3 @@
-# The Fork for Potree v2
-This fork provides (evolving) support for Potree v2 file format to the [BA_PointCloud](https://github.com/SFraissTU/BA_PointCloud) Unity implementation.
-
-As of 20230216 loading Potree v2 from local storage works, but loading from a server (with http queries) does not, yet.
-
-Due to the Potree documentation being [missing in action](https://github.com/potree/potree/commit/a41aae95d32fbee43e21ad4a38e1b1d2b2386210), i had to rely on [
-PotreeDesktop](https://github.com/potree/PotreeDesktop) JS/TS implementation. Therefore, there shall be bugs!
-
----
-
 # BA_PointCloud
 PointCloud-BachelorThesis
 
@@ -20,9 +10,12 @@ Below you will find a Getting-Started-Guide
 
 Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/
 
-## Change Log
-### Current changes on Master (no release yet)
-* Changes provided by [Chris Traxler](https://github.com/chris-traxler): Adaption of Shaders to Single Pass Instanced Rendering
+### Version 1.6 (09.07.2023)
+Changes:
+* Support for Potree Format V2 (Provided by [cognitivedata])
+ * Loading Potree v2 from local storage works, but loading from a server (with http queries) does not, yet.
+ * Due to a lack of documentation of the Potree format, correctness cannot be guaranteed.
+* This release also includes previous changes provided by [Chris Traxler](https://github.com/chris-traxler): Adaption of Shaders to Single Pass Instanced Rendering
 
 ### Version 1.5 (30.11.2020):
 Changes provided by user [Adrien Gressin](https://github.com/agressin):
@@ -74,16 +67,15 @@ Detailed change list:
 Please note that because of the restructuring, the project is not fully compatible with previous versions. If you want to update your project, you need to do a bit of refactoring, as the namespaces and paths to the files have changed.
 
 ### Future
-I maintain this project in my free time, so I ask for understanding that I do not have time to build many new features, and I apologize if some Github-Issues remain unanswered.
-If you want to contribute something to this project, please feel free to do so. Contact me or just commit a pull request!
-Features that may or may not come in the future, by me or someone else:
-* Support for Potree Format 2.0
+There are many possible features that could be implemented in this project, such as:
 * Adaptive Point Sizes
 * Better WebGL-Support
 * On-Demand-Hierarchy-Loading
 * Loading Point Clouds from the Resources-folder
 * laz-support
 * More flexible Point Cloud Transformations. Transforming single clouds instead of the whole set.
+
+However, I do not have the resources to implement any of this, and sooner or later I will probably disable this repository. So please feel free to fork it and create your own versions and extensions. If I have the time, I may merge pull requests, but I cannot guarantee that.
 
 ## Example Scenes
 * DynamicDemo.unity: Demonstrates DynamicPointCloudSet and Preview on the Lion-Point-Cloud
@@ -94,7 +86,7 @@ Features that may or may not come in the future, by me or someone else:
 ## Getting Started
 Here's a short tutorial on how to display your own cloud in the project.
 1. Download the current .unitypackage file here: https://github.com/SFraissTU/BA_PointCloud/releases/
-2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter (version 1.7 or lower!) and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip . Alternatively, you also find a set of big point clouds in the git repository.
+2. If your point cloud is not in the Potree format yet, you first have to convert it. Head over to https://github.com/potree/PotreeConverter/releases, download the PotreeConverter and convert your cloud into the Potree format. For testing purposes you can also try the converted lion-pointcloud, which is available here: https://github.com/SFraissTU/BA_PointCloud/raw/master/release/lion.zip . Alternatively, you also find a set of big point clouds in the git repository.
 3. Create a new project and go to Assets->Import Package and import the downloaded .unitypackage-file.
 4. There is now a DynamicDemo-Scene in the project. You can either use that or follow the steps below in your own scene to get the same result.
 5. If you want to be able to navigate the camera through the scene, I provide a small script for camera controls. This is optional and you can also just use your own control mechanisms instead. Select the Main Camera in the Scene Graph and press "Add Component" in the Inspector. Choose "Scripts"->"BAPointCloudRenderer.Controllers"->"Camera Controllers". When you start the game, you can then move the camera around by using the mouse and the WASD-keys as well as EQ for moving up and down, LeftShift for moving with higher speed and C for moving with lower speed. You can set the normal speed in the Inspector.

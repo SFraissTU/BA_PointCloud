@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.5</span>
+   &#160;<span id="projectnumber">1.6</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -80,9 +80,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aca6eb887354515321c295f700044a1aa"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_loading_1_1_cloud_loader.html#aca6eb887354515321c295f700044a1aa">LoadMetaData</a> (string cloudPath, bool moveToOrigin=false)</td></tr>
 <tr class="memdesc:aca6eb887354515321c295f700044a1aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the meta data from the json-file in the given cloudpath. Attributes "cloudPath", and "cloudName" are set as well.  <a href="#aca6eb887354515321c295f700044a1aa">More...</a><br /></td></tr>
 <tr class="separator:aca6eb887354515321c295f700044a1aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac25291e05d40b0a4c1812855f12bdd12"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_loading_1_1_cloud_loader.html#ac25291e05d40b0a4c1812855f12bdd12">LoadPointCloud</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> metaData)</td></tr>
-<tr class="memdesc:ac25291e05d40b0a4c1812855f12bdd12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the complete Hierarchy and ALL points from the pointcloud.  <a href="#ac25291e05d40b0a4c1812855f12bdd12">More...</a><br /></td></tr>
-<tr class="separator:ac25291e05d40b0a4c1812855f12bdd12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a057997d8bb7fb383901564ba4cea0d93"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_loading_1_1_cloud_loader.html#a057997d8bb7fb383901564ba4cea0d93">LoadPointCloud</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> metaData, bool loadAllPoints=true)</td></tr>
+<tr class="memdesc:a057997d8bb7fb383901564ba4cea0d93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the complete Hierarchy and ALL points from the pointcloud, if so commanded.  <a href="#a057997d8bb7fb383901564ba4cea0d93">More...</a><br /></td></tr>
+<tr class="separator:a057997d8bb7fb383901564ba4cea0d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add9f9e2d5d8d58f93232c18adc4d09ef"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_loading_1_1_cloud_loader.html#add9f9e2d5d8d58f93232c18adc4d09ef">LoadHierarchyOnly</a> (<a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a> metaData)</td></tr>
 <tr class="memdesc:add9f9e2d5d8d58f93232c18adc4d09ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the hierarchy, but no points are loaded  <a href="#add9f9e2d5d8d58f93232c18adc4d09ef">More...</a><br /></td></tr>
 <tr class="separator:add9f9e2d5d8d58f93232c18adc4d09ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -176,8 +176,8 @@ static uint&#160;</td><td class="memItemRight" valign="bottom"><b>LoadAllPointsF
 
 </div>
 </div>
-<a id="ac25291e05d40b0a4c1812855f12bdd12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac25291e05d40b0a4c1812855f12bdd12">&#9670;&nbsp;</a></span>LoadPointCloud()</h2>
+<a id="a057997d8bb7fb383901564ba4cea0d93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a057997d8bb7fb383901564ba4cea0d93">&#9670;&nbsp;</a></span>LoadPointCloud()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -189,8 +189,18 @@ static uint&#160;</td><td class="memItemRight" valign="bottom"><b>LoadAllPointsF
           <td class="memname">static <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_node.html">Node</a> BAPointCloudRenderer.Loading.CloudLoader.LoadPointCloud </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_point_cloud_meta_data.html">PointCloudMetaData</a>&#160;</td>
-          <td class="paramname"><em>metaData</em></td><td>)</td>
+          <td class="paramname"><em>metaData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>loadAllPoints</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -200,10 +210,11 @@ static uint&#160;</td><td class="memItemRight" valign="bottom"><b>LoadAllPointsF
 </table>
 </div><div class="memdoc">
 
-<p>Loads the complete Hierarchy and ALL points from the pointcloud. </p>
+<p>Loads the complete Hierarchy and ALL points from the pointcloud, if so commanded. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">metaData</td><td>MetaData-Object, as received by LoadMetaData</td></tr>
+    <tr><td class="paramname">loadAllPoints</td><td>whether to load ALL points or not.</td></tr>
   </table>
   </dd>
 </dl>
