@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BAPointCloudRenderer.CloudData {
@@ -239,6 +240,24 @@ namespace BAPointCloudRenderer.CloudData {
                 bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
             }
         }
+
+        public BoundingBox Clone()
+        {
+            return new BoundingBox(lx, ly, lz, ux, uy, uz);
+        }
+    }
+
+    [Serializable]
+    public class BoundingBoxV2
+    {
+        /// <summary>
+        /// Alternative representation of lx, ly, lz (use Init to convert)
+        /// </summary>
+        public List<double> min;
+        /// <summary>
+        /// Alternative representation of ux, uy, uz (use Init to convert)
+        /// </summary>
+        public List<double> max;
     }
 
 }

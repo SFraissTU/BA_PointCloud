@@ -30,6 +30,21 @@ namespace BAPointCloudRenderer.CloudData {
 
         //List containing the gameobjects resembling this node
         private List<GameObject> gameObjects = new List<GameObject>();
+        internal UInt64
+            byteOffset = 0,
+            byteSize,
+            hierarchyByteOffset,
+            hierarchyByteSize,
+            rootHierarchyByteSize = 0;
+        internal int
+            type = 0,
+            level = 0,
+            bytesPerNode = 22,
+            rootLevel = 0,
+            rootNodeType = 2,
+            rootHierarchyByteOffset = 0;
+        internal double spacing;
+        internal uint numPoints;
 
         /// <summary>
         /// Creates a new node object.
@@ -61,7 +76,7 @@ namespace BAPointCloudRenderer.CloudData {
         public void CreateGameObjects(MeshConfiguration configuration, Transform parent) {
             int max = configuration.GetMaximumPointsPerMesh();
             if (verticesToStore.Length <= max) {
-                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox, parent));
+                gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox, parent, metaData.version, metaData.getAdditionalTranslation()));
             } else {
                 int amount = Math.Min(max, verticesToStore.Length);
                 int index = 0; //name index
@@ -72,7 +87,7 @@ namespace BAPointCloudRenderer.CloudData {
                     Color[] colors = restColors.Take(amount).ToArray(); ;
                     restVertices = restVertices.Skip(amount).ToArray();
                     restColors = restColors.Skip(amount).ToArray();
-                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index + " (" + vertices.Length + ")", vertices, colors, boundingBox, parent));
+                    gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + "_" + index + " (" + vertices.Length + ")", vertices, colors, boundingBox, parent, metaData.version, metaData.getAdditionalTranslation()));
                     amount = Math.Min(max, vertices.Length);
                     index++;
                 }

@@ -146,7 +146,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
             }
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent) {
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent, string version, Vector3d translationV2) {
             GameObject gameObject = new GameObject(name);
 
             Mesh mesh = new Mesh();
@@ -167,8 +167,20 @@ namespace BAPointCloudRenderer.ObjectCreation {
             mesh.SetIndices(indecies, MeshTopology.Points, 0);
 
             //Set Translation
-            gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
-            gameObject.transform.SetParent(parent, false);
+            if (version == "2.0")
+            {
+                // 20230125: potree v2 vertices have absolute coordinates,
+                // hence all gameobjects need to reside at Vector.Zero.
+                // And: the position must be set after parenthood has been granted.
+                //gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+                gameObject.transform.SetParent(parent, false);
+                gameObject.transform.localPosition = translationV2.ToFloatVector();
+            }
+            else
+            {
+                gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+                gameObject.transform.SetParent(parent, false);
+            }
 
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);

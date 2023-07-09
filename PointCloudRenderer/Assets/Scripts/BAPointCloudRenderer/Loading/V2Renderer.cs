@@ -123,7 +123,7 @@ namespace BAPointCloudRenderer.Loading {
             while (toRender.Count != 0) {
                 Node n = toRender.Dequeue();
                 lock (n) {
-                    if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
+                    if (n.HasPointsToRender() && (n.MetaData.version == "2.0" || n.Parent == null || n.Parent.HasGameObjects())) {
                         n.CreateGameObjects(config, pcset.transform);
                     }
                 }

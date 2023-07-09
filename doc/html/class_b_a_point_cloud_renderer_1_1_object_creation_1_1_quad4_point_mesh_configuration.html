@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BA Point Cloud Renderer
-   &#160;<span id="projectnumber">1.5</span>
+   &#160;<span id="projectnumber">1.6</span>
    </div>
    <div id="projectbrief">Unity Rendering System for Large Point Clouds</div>
   </td>
@@ -90,9 +90,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25e28e42896af717d3a39fd37519bfb2"><td class="memItemLeft" align="right" valign="top"><a id="a25e28e42896af717d3a39fd37519bfb2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Start</b> ()</td></tr>
 <tr class="separator:a25e28e42896af717d3a39fd37519bfb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bde922fac97ef221acd91d60400be37"><td class="memItemLeft" align="right" valign="top">override GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_quad4_point_mesh_configuration.html#a3bde922fac97ef221acd91d60400be37">CreateGameObject</a> (string name, Vector3[] vertexData, Color[] colorData, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox, Transform parent)</td></tr>
-<tr class="memdesc:a3bde922fac97ef221acd91d60400be37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a single GameObject for the given data.  <a href="#a3bde922fac97ef221acd91d60400be37">More...</a><br /></td></tr>
-<tr class="separator:a3bde922fac97ef221acd91d60400be37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66e9e4afa7dedfca88259ba94d2352b9"><td class="memItemLeft" align="right" valign="top">override GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_quad4_point_mesh_configuration.html#a66e9e4afa7dedfca88259ba94d2352b9">CreateGameObject</a> (string name, Vector3[] vertexData, Color[] colorData, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_bounding_box.html">BoundingBox</a> boundingBox, Transform parent, string version, <a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_vector3d.html">Vector3d</a> translationV2)</td></tr>
+<tr class="memdesc:a66e9e4afa7dedfca88259ba94d2352b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a single GameObject for the given data.  <a href="#a66e9e4afa7dedfca88259ba94d2352b9">More...</a><br /></td></tr>
+<tr class="separator:a66e9e4afa7dedfca88259ba94d2352b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e1327dbb1e95dfddf8cc8c7d4763c1a"><td class="memItemLeft" align="right" valign="top">override int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_quad4_point_mesh_configuration.html#a2e1327dbb1e95dfddf8cc8c7d4763c1a">GetMaximumPointsPerMesh</a> ()</td></tr>
 <tr class="memdesc:a2e1327dbb1e95dfddf8cc8c7d4763c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum number of points a mesh can contain. 4-Vertex Quad Rendering for example only allows 16250, while most others allow 65000.  <a href="#a2e1327dbb1e95dfddf8cc8c7d4763c1a">More...</a><br /></td></tr>
 <tr class="separator:a2e1327dbb1e95dfddf8cc8c7d4763c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,8 +112,8 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>4-Vertex Quad Rendering, as described in the thesis in chapter 3.3.2. Creates sceen faced squares or circles for each point with a given size in pixels, by passing each vertex 4 times to the GPU </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3bde922fac97ef221acd91d60400be37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3bde922fac97ef221acd91d60400be37">&#9670;&nbsp;</a></span>CreateGameObject()</h2>
+<a id="a66e9e4afa7dedfca88259ba94d2352b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66e9e4afa7dedfca88259ba94d2352b9">&#9670;&nbsp;</a></span>CreateGameObject()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -149,7 +149,19 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Transform&#160;</td>
-          <td class="paramname"><em>parent</em>&#160;</td>
+          <td class="paramname"><em>parent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>version</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_b_a_point_cloud_renderer_1_1_cloud_data_1_1_vector3d.html">Vector3d</a>&#160;</td>
+          <td class="paramname"><em>translationV2</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -176,7 +188,7 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p>Implements <a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_mesh_configuration.html#a4e7fae22cfd971c05478484d67044b27">BAPointCloudRenderer.ObjectCreation.MeshConfiguration</a>.</p>
+<p>Implements <a class="el" href="class_b_a_point_cloud_renderer_1_1_object_creation_1_1_mesh_configuration.html#abc5dcce2bc9a45751d64a26ab7324e15">BAPointCloudRenderer.ObjectCreation.MeshConfiguration</a>.</p>
 
 </div>
 </div>

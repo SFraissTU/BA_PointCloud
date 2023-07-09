@@ -54,7 +54,7 @@ namespace BAPointCloudRenderer.CloudController {
 
                 PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, false);
                 
-                setController.UpdateBoundingBox(this, metaData.boundingBox, metaData.tightBoundingBox);
+                setController.UpdateBoundingBox(this, metaData.boundingBox_transformed, metaData.tightBoundingBox_transformed);
 
                 rootNode = CloudLoader.LoadHierarchyOnly(metaData);
 
