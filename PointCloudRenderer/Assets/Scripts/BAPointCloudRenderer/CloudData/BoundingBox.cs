@@ -240,6 +240,11 @@ namespace BAPointCloudRenderer.CloudData {
                 bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
             }
         }
+
+        public BoundingBox Clone()
+        {
+            return new BoundingBox(lx, ly, lz, ux, uy, uz);
+        }
     }
 
     [Serializable]

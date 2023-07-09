@@ -126,7 +126,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
             }
         }
 
-        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent, string version) {
+        public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox, Transform parent, string version, Vector3d translationV2) {
             GameObject gameObject = new GameObject(name);
 
             Mesh mesh = new Mesh();
@@ -154,7 +154,7 @@ namespace BAPointCloudRenderer.ObjectCreation {
                 // And: the position must be set after parenthood has been granted.
                 //gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
                 gameObject.transform.SetParent(parent, false);
-                gameObject.transform.localPosition = Vector3.zero;
+                gameObject.transform.localPosition = translationV2.ToFloatVector();
             }
             else
             {

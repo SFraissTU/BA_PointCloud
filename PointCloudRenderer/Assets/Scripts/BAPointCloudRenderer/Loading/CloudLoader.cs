@@ -327,17 +327,17 @@ namespace BAPointCloudRenderer.Loading {
             //Read in data
             foreach (PointAttribute pointAttribute in metaData.pointAttributesList) {
                 toSetOff = 0;
-                if (pointAttribute.name.Equals(PointAttributes.POSITION_CARTESIAN) || pointAttribute.name == "position") {
+                if (pointAttribute.name.ToUpper().Equals(PointAttributes.POSITION_CARTESIAN) || pointAttribute.name.ToUpper().Equals(PointAttributes.POSITION)) {
                     for (int i = 0; i < numPoints; i++) {
                         //Reduction to single precision!
                         //Note: y and z are switched
-                        float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * (metaData.version == "2.0" ? (metaData as PointCloudMetaDataV2_0).scale[0] : metaData.scale));
-                        float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * (metaData.version == "2.0" ? (metaData as PointCloudMetaDataV2_0).scale[2] : metaData.scale));
-                        float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * (metaData.version == "2.0" ? (metaData as PointCloudMetaDataV2_0).scale[1] : metaData.scale));
+                        float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale3d.x);
+                        float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale3d.z);
+                        float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale3d.y);
                         vertices[i] = new Vector3(x, y, z);
                     }
                     toSetOff += 12;
-                } else if (pointAttribute.name.Equals(PointAttributes.COLOR_PACKED)) {
+                } else if (pointAttribute.name.ToUpper().Equals(PointAttributes.COLOR_PACKED)) {
                     for (int i = 0; i < numPoints; i++) {
                         byte r = data[offset + i * pointByteSize + 0];
                         byte g = data[offset + i * pointByteSize + 1];
@@ -345,7 +345,7 @@ namespace BAPointCloudRenderer.Loading {
                         colors[i] = new Color32(r, g, b, 255);
                     }
                     toSetOff += 3;
-                }else if (pointAttribute.name.Equals(PointAttributes.RGBA) || pointAttribute.name == "rgba" || pointAttribute.name == "rgb") {
+                }else if (pointAttribute.name.ToUpper().Equals(PointAttributes.RGBA) || pointAttribute.name.ToUpper().Equals(PointAttributes.RGB)) {
                     if (metaData.version == "2.0")
                     {
                         CalculateRGBA(ref colors, ref offset, data, pointByteSize, numPoints, pointAttribute.name.EndsWith("a"));

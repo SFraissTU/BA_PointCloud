@@ -59,7 +59,8 @@ namespace BAPointCloudRenderer.CloudData
         [NonSerialized]
         public List<PointAttribute> pointAttributesList;
         public double spacing;
-        public double scale;
+        [NonSerialized]
+        public Vector3d scale3d;
         public int hierarchyStepSize;
         [NonSerialized]
         public string cloudPath;
@@ -74,6 +75,11 @@ namespace BAPointCloudRenderer.CloudData
         {
             return null;
         }
+
+        public virtual Vector3d getAdditionalTranslation()
+        {
+            return new Vector3d(0, 0, 0);
+        }
     }
 
     [Serializable]
@@ -82,6 +88,7 @@ namespace BAPointCloudRenderer.CloudData
         public List<PointAttribute> pointAttributes;
         public BoundingBox boundingBox;
         public BoundingBox tightBoundingBox;
+        public double scale;
 
         public override Node createRootNode()
         {
@@ -95,6 +102,7 @@ namespace BAPointCloudRenderer.CloudData
         public List<string> pointAttributes;
         public BoundingBox boundingBox;
         public BoundingBox tightBoundingBox;
+        public double scale;
 
         public override Node createRootNode()
         {
@@ -120,9 +128,11 @@ namespace BAPointCloudRenderer.CloudData
         public List<float> offset;
         public new List<double> scale;
         public BoundingBoxV2 boundingBox;
-        public BoundingBox boundingBoxInternal;
         public string encoding = "DEFAULT";
         public List<PointAttributeV2_0> attributes;
+
+        [NonSerialized]
+        public Vector3d additionalTranslation = null;
 
         public override Node createRootNode()
         {
@@ -136,6 +146,28 @@ namespace BAPointCloudRenderer.CloudData
                 byteSize = 0,
                 byteOffset = 0
             };
+        }
+        
+        public override Vector3d getAdditionalTranslation()
+        {
+            if (additionalTranslation == null)
+            {
+                //additionalTranslation = -data_tmp.boundingBox_transformed.Center();
+                BoundingBox originalBB = new BoundingBox(
+                    new Vector3d(
+                        boundingBox.min[0] - offset[0],
+                        boundingBox.min[1] - offset[1],
+                        boundingBox.min[2] - offset[2]
+                        ),
+                    new Vector3d(
+                        boundingBox.max[0] - offset[0],
+                        boundingBox.max[1] - offset[1],
+                        boundingBox.max[2] - offset[2]
+                        )
+                    );
+                additionalTranslation = boundingBox_transformed.Center() - originalBB.Center();
+            }
+            return additionalTranslation;
         }
     }
 
@@ -192,10 +224,12 @@ namespace BAPointCloudRenderer.CloudData
                         )
                     );
 
-                data_tmp.tightBoundingBox_transformed = data_tmp.boundingBox_transformed;
+                data_tmp.tightBoundingBox_transformed = data_tmp.boundingBox_transformed.Clone();
 
                 data_tmp.boundingBox_transformed.Init();
                 data_tmp.tightBoundingBox_transformed.Init();
+
+                data_tmp.scale3d = new Vector3d(data_tmp.scale[0], data_tmp.scale[1], data_tmp.scale[2]);
 
                 if (moveToOrigin)
                 {
@@ -211,6 +245,7 @@ namespace BAPointCloudRenderer.CloudData
                     PointCloudMetaDataV1_8 dt = JsonUtility.FromJson<PointCloudMetaDataV1_8>(json);
                     dt.boundingBox_transformed = dt.boundingBox;
                     dt.tightBoundingBox_transformed = dt.tightBoundingBox;
+                    dt.scale3d = new Vector3d(dt.scale, dt.scale, dt.scale);
                     data = dt;
                     data.pointAttributesList = dt.pointAttributes;
                 }
@@ -220,6 +255,7 @@ namespace BAPointCloudRenderer.CloudData
                     PointCloudMetaDataV1_7 dt = JsonUtility.FromJson<PointCloudMetaDataV1_7>(json);
                     dt.boundingBox_transformed = dt.boundingBox;
                     dt.tightBoundingBox_transformed = dt.tightBoundingBox;
+                    dt.scale3d = new Vector3d(dt.scale, dt.scale, dt.scale);
                     data = dt;
                     data.pointAttributesList = new List<PointAttribute>();
                     foreach (string attr in dt.pointAttributes)
