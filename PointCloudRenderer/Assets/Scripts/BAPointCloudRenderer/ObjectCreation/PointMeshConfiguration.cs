@@ -75,7 +75,6 @@ namespace BAPointCloudRenderer.ObjectCreation
 
             gameObject.AddComponent<BoundingBoxComponent>().boundingBox = boundingBox; ;
 
-            Utility.BBDraw.DrawBoundingBox(boundingBox, gameObject.transform, Color.red, true, float.MaxValue);
             if (gameObjectCollection != null)
             {
                 gameObjectCollection.Add(gameObject);
