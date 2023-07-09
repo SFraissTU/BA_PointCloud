@@ -166,9 +166,6 @@ namespace BAPointCloudRenderer.ObjectCreation {
             bbc.boundingBox = boundingBox; ;
             bbc.parent = parent;
 
-            Utility.BBDraw.DrawBoundingBox(bbc.boundingBox, gameObject.transform, Color.cyan, true, float.MaxValue);
-            Utility.BBDraw.DrawBoundingBox(boundingBox, gameObject.transform, Color.red, true, float.MaxValue);
-
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);
             }

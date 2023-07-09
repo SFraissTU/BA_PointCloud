@@ -52,8 +52,10 @@ namespace BAPointCloudRenderer.CloudData
         public string octreeDir;
         public string projection;
         public int points;
-        public BoundingBox boundingBox;
-        public BoundingBox tightBoundingBox;
+        [NonSerialized]
+        public BoundingBox boundingBox_transformed;  //This has to be set explicitely!
+        [NonSerialized]
+        public BoundingBox tightBoundingBox_transformed;
         [NonSerialized]
         public List<PointAttribute> pointAttributesList;
         public double spacing;
@@ -78,10 +80,12 @@ namespace BAPointCloudRenderer.CloudData
     public class PointCloudMetaDataV1_8 : PointCloudMetaData
     {
         public List<PointAttribute> pointAttributes;
+        public BoundingBox boundingBox;
+        public BoundingBox tightBoundingBox;
 
         public override Node createRootNode()
         {
-            return new Node("", this, this.boundingBox, null);
+            return new Node("", this, this.boundingBox_transformed, null);
         }
     }
 
@@ -89,41 +93,45 @@ namespace BAPointCloudRenderer.CloudData
     public class PointCloudMetaDataV1_7 : PointCloudMetaData
     {
         public List<string> pointAttributes;
+        public BoundingBox boundingBox;
+        public BoundingBox tightBoundingBox;
 
         public override Node createRootNode()
         {
-            return new Node("", this, this.boundingBox, null);
+            return new Node("", this, this.boundingBox_transformed, null);
         }
     }
 
     [Serializable]
     public class PointCloudMetaDataV2_0 : PointCloudMetaData
     {
+        [Serializable]
+        public class Hierarchy
+        {
+            public UInt64 firstChunkSize;
+            public UInt64 stepSize;
+            public UInt64 depth;
+        }
+
         public string name;
         public string description;
-        public Dictionary<string, UInt64> hierarchy;
+        public Hierarchy hierarchy;
         public string pointAttributes;
         public List<float> offset;
         public new List<double> scale;
-        /// <summary>
-        /// this is a tricky one, as the dict is a new invention for V2 
-        /// while the name of the attribue is the same as in earlier versions.
-        /// hence the base.boundingBox will need to be used instead for setting 
-        /// and reading The Real Box of Bounding.
-        /// </summary>
-        public new Dictionary<string, List<float>> boundingBox;
+        public BoundingBoxV2 boundingBox;
         public BoundingBox boundingBoxInternal;
         public string encoding = "DEFAULT";
         public List<PointAttributeV2_0> attributes;
 
         public override Node createRootNode()
         {
-            return new Node("", this, base.boundingBox, null)
+            return new Node("", this, base.boundingBox_transformed, null)
             {
                 type = 2,
                 level = 0,
                 hierarchyByteOffset = 0,
-                hierarchyByteSize = this.hierarchy["firstChunkSize"],
+                hierarchyByteSize = this.hierarchy.firstChunkSize,
                 spacing = this.spacing,
                 byteSize = 0,
                 byteOffset = 0
@@ -145,7 +153,7 @@ namespace BAPointCloudRenderer.CloudData
             if(data.version == "2.0")
             {
                 // JsonUtility is incapable of serializing nested dicts. Newton to the help!
-                PointCloudMetaDataV2_0 data_tmp = Newtonsoft.Json.JsonConvert.DeserializeObject<PointCloudMetaDataV2_0>(json);
+                PointCloudMetaDataV2_0 data_tmp = JsonUtility.FromJson<PointCloudMetaDataV2_0>(json);
 
                 data_tmp.pointAttributesList = new List<PointAttribute>();
                 data_tmp.pointByteSize = 0;
@@ -171,76 +179,95 @@ namespace BAPointCloudRenderer.CloudData
                     pointAttribute.byteSize = pointAttribute.numElements * pointAttribute.typeSize;
                 }
                 
-                (data_tmp as PointCloudMetaData).boundingBox = new BoundingBox(
+                data_tmp.boundingBox_transformed = new BoundingBox(
                     new Vector3d(
-                        data_tmp.boundingBox["min"][0] - data_tmp.offset[0], 
-                        data_tmp.boundingBox["min"][1] - data_tmp.offset[1], 
-                        data_tmp.boundingBox["min"][2] - data_tmp.offset[2]
+                        data_tmp.boundingBox.min[0] - data_tmp.offset[0], 
+                        data_tmp.boundingBox.min[1] - data_tmp.offset[1], 
+                        data_tmp.boundingBox.min[2] - data_tmp.offset[2]
                         ),
                     new Vector3d(
-                        data_tmp.boundingBox["max"][0] - data_tmp.offset[0], 
-                        data_tmp.boundingBox["max"][1] - data_tmp.offset[1], 
-                        data_tmp.boundingBox["max"][2] - data_tmp.offset[2]
+                        data_tmp.boundingBox.max[0] - data_tmp.offset[0], 
+                        data_tmp.boundingBox.max[1] - data_tmp.offset[1], 
+                        data_tmp.boundingBox.max[2] - data_tmp.offset[2]
                         )
                     );
 
-                data_tmp.tightBoundingBox = (data_tmp as PointCloudMetaData).boundingBox;
+                data_tmp.tightBoundingBox_transformed = data_tmp.boundingBox_transformed;
 
-                (data_tmp as PointCloudMetaData).boundingBox.Init();
-                data_tmp.tightBoundingBox.Init();
+                data_tmp.boundingBox_transformed.Init();
+                data_tmp.tightBoundingBox_transformed.Init();
 
                 if (moveToOrigin)
                 {
-                    (data_tmp as PointCloudMetaData).boundingBox.MoveToOrigin();
-                    data_tmp.tightBoundingBox.MoveToOrigin();
+                    data_tmp.boundingBox_transformed.MoveToOrigin();
+                    data_tmp.tightBoundingBox_transformed.MoveToOrigin();
                 }
                 return data_tmp;
             }
-            else if (data.version == "1.8"){
-                PointCloudMetaDataV1_8 dt = JsonUtility.FromJson<PointCloudMetaDataV1_8>(json);
-                data = dt;
-                data.pointAttributesList = dt.pointAttributes;
-            }
             else if (data.version.StartsWith("1."))
             {
-                //workarround for version < 1.7
-                PointCloudMetaDataV1_7 dt = JsonUtility.FromJson<PointCloudMetaDataV1_7>(json);
-                data = dt;
-                data.pointAttributesList = new List<PointAttribute>();
-                foreach(string attr in dt.pointAttributes){
-                    PointAttribute pta = new PointAttribute();
-                    pta.name = attr;
-                    if (attr == Loading.PointAttributes.POSITION_CARTESIAN) {
-                        pta.size = 12;
-                    }else if (attr == Loading.PointAttributes.COLOR_PACKED) {
-                        pta.size = 4;
-                    }else if (attr == Loading.PointAttributes.INTENSITY){
-                        pta.size = 2;
-                    }else if (attr == Loading.PointAttributes.CLASSIFICATION){
-                        pta.size = 2;
-                    }
-                    data.pointAttributesList.Add(pta);
+                if (data.version == "1.8")
+                {
+                    PointCloudMetaDataV1_8 dt = JsonUtility.FromJson<PointCloudMetaDataV1_8>(json);
+                    dt.boundingBox_transformed = dt.boundingBox;
+                    dt.tightBoundingBox_transformed = dt.tightBoundingBox;
+                    data = dt;
+                    data.pointAttributesList = dt.pointAttributes;
                 }
+                else
+                {
+                    //workarround for version < 1.7
+                    PointCloudMetaDataV1_7 dt = JsonUtility.FromJson<PointCloudMetaDataV1_7>(json);
+                    dt.boundingBox_transformed = dt.boundingBox;
+                    dt.tightBoundingBox_transformed = dt.tightBoundingBox;
+                    data = dt;
+                    data.pointAttributesList = new List<PointAttribute>();
+                    foreach (string attr in dt.pointAttributes)
+                    {
+                        PointAttribute pta = new PointAttribute();
+                        pta.name = attr;
+                        if (attr == Loading.PointAttributes.POSITION_CARTESIAN)
+                        {
+                            pta.size = 12;
+                        }
+                        else if (attr == Loading.PointAttributes.COLOR_PACKED)
+                        {
+                            pta.size = 4;
+                        }
+                        else if (attr == Loading.PointAttributes.INTENSITY)
+                        {
+                            pta.size = 2;
+                        }
+                        else if (attr == Loading.PointAttributes.CLASSIFICATION)
+                        {
+                            pta.size = 2;
+                        }
+                        data.pointAttributesList.Add(pta);
+                    }
+                }
+                //Common code for V1
+                data.pointByteSize = 0;
+                foreach (PointAttribute pointAttribute in data.pointAttributesList)
+                {
+                    data.pointByteSize += pointAttribute.size;
+                }
+
+                data.boundingBox_transformed.Init();
+                data.boundingBox_transformed.SwitchYZ();
+                data.tightBoundingBox_transformed.Init();
+                data.tightBoundingBox_transformed.SwitchYZ();
+                if (moveToOrigin)
+                {
+                    data.boundingBox_transformed.MoveToOrigin();
+                    data.tightBoundingBox_transformed.MoveToOrigin();
+                }
+                return data;
             }
             else
             {
                 throw new Exception("Unsupported Potree version: " + data.version.ToString());
             }
 
-            data.pointByteSize = 0;
-            foreach (PointAttribute pointAttribute in data.pointAttributesList) {
-                data.pointByteSize += pointAttribute.size;
-            }
-
-            data.boundingBox.Init();
-            data.boundingBox.SwitchYZ();
-            data.tightBoundingBox.SwitchYZ();
-            if (moveToOrigin)
-            {
-                data.boundingBox.MoveToOrigin();
-                data.tightBoundingBox.MoveToOrigin();
-            }
-            return data;
         }
     }
 

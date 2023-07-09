@@ -115,7 +115,7 @@ namespace BAPointCloudRenderer.CloudController
                     path += "/";
                 }
                 PointCloudMetaData metaData = CloudLoader.LoadMetaData(path, false);
-                BoundingBox currentBoundingBox = metaData.tightBoundingBox;
+                BoundingBox currentBoundingBox = metaData.tightBoundingBox_transformed;
                 overallBoundingBox.Lx = Math.Min(overallBoundingBox.Lx, currentBoundingBox.Lx);
                 overallBoundingBox.Ly = Math.Min(overallBoundingBox.Ly, currentBoundingBox.Ly);
                 overallBoundingBox.Lz = Math.Min(overallBoundingBox.Lz, currentBoundingBox.Lz);
