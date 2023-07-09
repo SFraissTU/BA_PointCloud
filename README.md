@@ -12,7 +12,7 @@ Download the current version: https://github.com/SFraissTU/BA_PointCloud/release
 
 ### Version 1.6 (09.07.2023)
 Changes:
-* Support for Potree Format V2 (Provided by [cognitivedata])
+* Support for Potree Format V2 (Provided by [cognitivedata](https://github.com/cognitivedata))
  * Loading Potree v2 from local storage works, but loading from a server (with http queries) does not, yet.
  * Due to a lack of documentation of the Potree format, correctness cannot be guaranteed.
 * This release also includes previous changes provided by [Chris Traxler](https://github.com/chris-traxler): Adaption of Shaders to Single Pass Instanced Rendering
