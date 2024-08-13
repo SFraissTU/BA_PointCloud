@@ -3,12 +3,37 @@ PointCloud-BachelorThesis
 
 Project files for my bachelor thesis on rendering large point clouds in Unity.
 
+
+## Range request
+
+We have to do range request to get the part of the remote file we want, so we're using range request as Potree is doing.
+
 ## Ressources
 Please refer to the code documentation for details about the classes and scripts (Folder "/doc").
 For details about the algorithms please refer to the bachelor thesis (https://www.cg.tuwien.ac.at/research/publications/2017/FRAISS-2017-PCU/).
 Below you will find a Getting-Started-Guide
 
 Download the current version: https://github.com/SFraissTU/BA_PointCloud/releases/
+
+### Version PullRequest PotreeRemoveV2 (13/08/2024)
+
+#### Remote URL
+
+We would like to use the PotreeV2 format for remote url, mainly because we might have to handle several Go of data.
+
+#### Remote/local URL handling with v1/v2 version
+
+For this we had to transform the URL given to the Cloud loader :
+
+Potree1 : 
+Clouds/Lion -> Clouds/Lion/cloud.js
+https://remoteurl.com/Lion -> https://remoteurl.com/Lion/cloud.js
+
+Potree2 : 
+Clouds/Lion2 -> Clouds/Lion2/metadata.json
+https://remoteurl.com/Lion2 -> https://remoteurl.com/Lion2/metadata.json
+
+We did this so codebase can handle in a easier way the remote/local and v1/v2 cases.
 
 ### Version 1.6 (09.07.2023)
 Changes:

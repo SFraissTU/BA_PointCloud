@@ -48,10 +48,6 @@ namespace BAPointCloudRenderer.CloudController {
 
         private void LoadHierarchy() {
             try {
-                if (!cloudPath.EndsWith("/")) {
-                    cloudPath = cloudPath + "/";
-                }
-
                 PointCloudMetaData metaData = CloudLoader.LoadMetaData(cloudPath, false);
                 
                 setController.UpdateBoundingBox(this, metaData.boundingBox_transformed, metaData.tightBoundingBox_transformed);

@@ -4,14 +4,21 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System;
+using System.Diagnostics;
 using UnityEngine;
 using System.Linq;
+using Debug = UnityEngine.Debug;
 
 namespace BAPointCloudRenderer.Loading {
     /// <summary>
     /// Provides methods for loading point clouds from the file system
     /// </summary>
     class CloudLoader {
+        public static bool isCloudOnline;
+
+        public enum FileTypeV2 {
+            HIERARCHY, OCTREE
+        }
         /* Loads the metadata from the json-file in the given cloudpath
          */
          /// <summary>
@@ -19,45 +26,37 @@ namespace BAPointCloudRenderer.Loading {
          /// </summary>
          /// <param name="cloudPath">Folderpath of the cloud or URL to download the cloud from. In the latter case, it will be downloaded to a /temp folder</param>
          /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
-        public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
+        public static PointCloudMetaData LoadMetaData(string fullPath, bool moveToOrigin = false) {
             string jsonfile = "";
-            //Debug.Log(cloudPath);
-            bool isCloudOnline = Uri.IsWellFormedUriString(cloudPath, UriKind.Absolute);
-            if (isCloudOnline){
+            isCloudOnline = Uri.IsWellFormedUriString(fullPath, UriKind.Absolute);
+            if (isCloudOnline) {
                 WebClient client = new WebClient();
-                Stream stream = client.OpenRead(cloudPath + "cloud.js");
+                Stream stream = client.OpenRead(fullPath);
                 StreamReader reader = new StreamReader(stream);
                 jsonfile = reader.ReadToEnd();
                 reader.Close();
             }else{
-                string filePath;
-                if (File.Exists(cloudPath + "cloud.js"))
-                {
-                    filePath = cloudPath + "cloud.js";
+                if (!File.Exists (fullPath)) {
+                    Debug.LogError("Unable to find file from " + fullPath);
+                    throw new Exception("Unable to find file from " + fullPath);
                 }
-                else if (File.Exists(cloudPath + "metadata.json"))
-                {
-                    filePath = cloudPath + "metadata.json";
+                if (fullPath.Length > 0) {
+                    using StreamReader reader = new StreamReader(fullPath, Encoding.Default);
+                    jsonfile = reader.ReadToEnd();
+                    reader.Close();
                 }
-                else
-                {
-                    Debug.LogError("Unable to find neither cloud.js nor metadata.json from " + cloudPath);
-                    throw new Exception("Unable to find neither cloud.js nor metadata.json from " + cloudPath);
-                }
-                if (filePath.Length > 0)
-                {
-                    using (StreamReader reader = new StreamReader(filePath, Encoding.Default))
-                    {
-                        jsonfile = reader.ReadToEnd();
-                        reader.Close();
-                    }
-                }
+            }
+            
+            int lastSlashIndex = fullPath.LastIndexOf('/');
+            string cloudPath = fullPath.Substring (0, lastSlashIndex + 1);
+            if (cloudPath == null) {
+                Debug.LogError("Unable to find directory from " + fullPath);
+                throw new Exception("Unable to find file directory " + fullPath);
             }
 
             PointCloudMetaData metaData = PointCloudMetaDataReader.ReadFromJson(jsonfile, moveToOrigin);
 
             metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("/") + 1);
-            //Debug.Log(metaData.cloudName);
 
             if (isCloudOnline){
                 metaData.cloudUrl = cloudPath;
@@ -116,12 +115,13 @@ namespace BAPointCloudRenderer.Loading {
         /// </summary>
         /// <param name="metaData"></param>
         /// <param name="node"></param>
-        private static void LoadHierarchy(PointCloudMetaData metaData, ref Node node)
+        /// <param name="isUrl"></param>
+        private static void LoadHierarchy (PointCloudMetaData metaData, ref Node node)
         {
             // sanitycheck.
             if (node.hierarchyByteSize > 0)
             {
-                byte[] data = ReadFromFile(metaData.cloudPath + "hierarchy.bin", (long)node.hierarchyByteOffset, node.hierarchyByteSize);
+                byte[] data = ReadFromFile(isCloudOnline ? metaData.cloudUrl : metaData.cloudPath, (long)node.hierarchyByteOffset, node.hierarchyByteSize, FileTypeV2.HIERARCHY, isCloudOnline);
                 if (data.Length == (int)node.hierarchyByteSize)
                 {
                     ParseHierarchy(ref node, data);
@@ -306,18 +306,21 @@ namespace BAPointCloudRenderer.Loading {
         /// <param name="dataRPath"></param>
         /// <param name="metaData"></param>
         /// <param name="node"></param>
-        private static void LoadPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
+        /// <param name="hierarchy"></param>
+        private static void LoadPoints (string dataRPath, PointCloudMetaData metaData, Node node) {
             // in potree v2 type 2 nodes are proxies and their hierarchy 
             // yearns to be loaded just-in-time.
             if (metaData.version == "2.0" && node.type == 2)
             {
                 LoadHierarchy(metaData, ref node);
             }
-            byte[] data = metaData.version switch
-            {
-                "2.0" => ReadFromFile(metaData.cloudPath + "octree.bin", (long)node.byteOffset, node.byteSize),
-                _ => FindAndLoadFile(dataRPath, metaData, node.Name, ".bin"),
-            };
+            byte[] data = null;
+
+            if (metaData.version.Equals ("2.0")) {
+                data = ReadFromFile (isCloudOnline ? metaData.cloudUrl : metaData.cloudPath, (long) node.byteOffset, node.byteSize, FileTypeV2.OCTREE, isCloudOnline);
+            } else {
+                data = FindAndLoadFile (dataRPath, metaData, node.Name, ".bin");
+            }
             int pointByteSize = metaData.pointByteSize;
             int numPoints = data.Length / pointByteSize;
             int offset = 0, toSetOff = 0;
@@ -429,27 +432,63 @@ namespace BAPointCloudRenderer.Loading {
             }
             return null;
         }
+
         /// <summary>
         /// used only for Potree v2. for now.
         /// </summary>
         /// <param name="fileNameWithPath"></param>
         /// <param name="offset"></param>
         /// <param name="size"></param>
+        /// <param name="fileType"></param>
+        /// <param name="isURL"></param>
         /// <returns></returns>
-        private static byte[] ReadFromFile(string fileNameWithPath, long offset, UInt64 size)
+        private static byte[] ReadFromFile (string fileNameWithPath, long offset, ulong size, FileTypeV2 fileType, bool isURL = false)
         {
+            switch (fileType) {
+                case FileTypeV2.HIERARCHY : 
+                    fileNameWithPath = fileNameWithPath + "hierarchy.bin";
+                    break;
+                case FileTypeV2.OCTREE : 
+                    fileNameWithPath = fileNameWithPath + "octree.bin";
+                    break;
+            }
+            
             if (size == 0)
             {
                 return new byte[] { };
             }
             byte[] returnable = new byte[size];
+            
+            if (!isURL) {
+                if (File.Exists(fileNameWithPath))
+                {
+                    using FileStream stream = File.OpenRead(fileNameWithPath);
+                    stream.Seek(offset, SeekOrigin.Begin);
+                    stream.Read(returnable, 0, (int)size);
+                    stream.Close();
+                }
+            } else {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(fileNameWithPath);
+                request.AddRange(offset, offset + (long)size - 1);
 
-            if (File.Exists(fileNameWithPath))
-            {
-                using FileStream stream = File.OpenRead(fileNameWithPath);
-                stream.Seek(offset, SeekOrigin.Begin);
-                stream.Read(returnable, 0, (int)size);
-                stream.Close();
+                try {
+                    using HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    using Stream stream = response.GetResponseStream();
+                    if (stream == null)
+                        return null;
+                    
+                    int bytesRead = 0, totalBytesRead = 0;
+
+                    while ((bytesRead = stream.Read(returnable, totalBytesRead, (int)size - totalBytesRead)) > 0)
+                    {
+                        totalBytesRead += bytesRead;
+                    }
+                }
+                catch (WebException ex)
+                {
+                    Debug.Log($"Error downloading data: {ex.Message}");
+                    return null;
+                }
             }
 
             return returnable;
