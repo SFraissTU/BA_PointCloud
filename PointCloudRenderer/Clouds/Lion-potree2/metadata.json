@@ -1,0 +1,113 @@
+{
+	"version": "2.0",
+	"name": "lion",
+	"description": "",
+	"points": 3954696,
+	"projection": "",
+	"hierarchy": {
+		"firstChunkSize": 12650, 
+		"stepSize": 4, 
+		"depth": 5
+	},
+	"offset": [-0.74821299314498901, -2.7804059982299805, 2.5478212833404541],
+	"scale": [3.1996278762817385e-09, 4.2697496414184577e-09, 4.6478891372680665e-09],
+	"spacing": 0.036311635736800095,
+	"boundingBox": {
+		"min": [-0.74821299314498901, -2.7804059982299805, 2.5478212833404541], 
+		"max": [3.8996763811654231, 1.8674833760804317, 7.1957106576508663]
+	},
+	"encoding": "BROTLI",
+	"attributes": [
+		{
+			"name": "position",
+			"description": "",
+			"size": 12,
+			"numElements": 3,
+			"elementSize": 4,
+			"type": "int32",
+			"min": [-0.74821299314498901, -2.7804059982299805, 2.5478212833404541],
+			"max": [2.4514148223438199, 1.4893437627414672, 7.1957106576508663]
+		},{
+			"name": "intensity",
+			"description": "",
+			"size": 2,
+			"numElements": 1,
+			"elementSize": 2,
+			"type": "uint16",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "return number",
+			"description": "",
+			"size": 1,
+			"numElements": 1,
+			"elementSize": 1,
+			"type": "uint8",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "number of returns",
+			"description": "",
+			"size": 1,
+			"numElements": 1,
+			"elementSize": 1,
+			"type": "uint8",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "classification",
+			"description": "",
+			"size": 1,
+			"numElements": 1,
+			"elementSize": 1,
+			"type": "uint8",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "scan angle rank",
+			"description": "",
+			"size": 1,
+			"numElements": 1,
+			"elementSize": 1,
+			"type": "uint8",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "user data",
+			"description": "",
+			"size": 1,
+			"numElements": 1,
+			"elementSize": 1,
+			"type": "uint8",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "point source id",
+			"description": "",
+			"size": 2,
+			"numElements": 1,
+			"elementSize": 2,
+			"type": "uint16",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "gps-time",
+			"description": "",
+			"size": 8,
+			"numElements": 1,
+			"elementSize": 8,
+			"type": "double",
+			"min": [0],
+			"max": [0]
+		},{
+			"name": "rgb",
+			"description": "",
+			"size": 6,
+			"numElements": 3,
+			"elementSize": 2,
+			"type": "uint16",
+			"min": [5632, 5376, 4864],
+			"max": [65280, 65280, 65280]
+		}
+	]
+}

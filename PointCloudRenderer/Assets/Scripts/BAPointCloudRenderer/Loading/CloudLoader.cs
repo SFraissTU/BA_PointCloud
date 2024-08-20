@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System;
+using System.IO.Compression;
 using UnityEngine;
 using System.Linq;
 
@@ -318,9 +319,21 @@ namespace BAPointCloudRenderer.Loading {
                 "2.0" => ReadFromFile(metaData.cloudPath + "octree.bin", (long)node.byteOffset, node.byteSize),
                 _ => FindAndLoadFile(dataRPath, metaData, node.Name, ".bin"),
             };
+            bool isBrotliEncoding = metaData is PointCloudMetaDataV2_0 metaDataV2 && metaDataV2.encoding == "BROTLI";
             int pointByteSize = metaData.pointByteSize;
-            int numPoints = data.Length / pointByteSize;
+            int numPoints = isBrotliEncoding ? (int)node.numPoints : data.Length / pointByteSize;
             int offset = 0, toSetOff = 0;
+            
+            if (isBrotliEncoding) {
+                using (var compressedStream = new MemoryStream (data)) {
+                    using (var decompressedStream = new MemoryStream ()) {
+                        using (var brotliStream = new BrotliStream (compressedStream, CompressionMode.Decompress)) {
+                            brotliStream.CopyTo (decompressedStream);
+                            data = decompressedStream.ToArray ();
+                        }
+                    }
+                }
+            }
 
             Vector3[] vertices = new Vector3[numPoints];
             Color[] colors = new Color[numPoints];
@@ -328,15 +341,54 @@ namespace BAPointCloudRenderer.Loading {
             foreach (PointAttribute pointAttribute in metaData.pointAttributesList) {
                 toSetOff = 0;
                 if (pointAttribute.name.ToUpper().Equals(PointAttributes.POSITION_CARTESIAN) || pointAttribute.name.ToUpper().Equals(PointAttributes.POSITION)) {
-                    for (int i = 0; i < numPoints; i++) {
-                        //Reduction to single precision!
-                        //Note: y and z are switched
-                        float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale3d.x);
-                        float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale3d.z);
-                        float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale3d.y);
-                        vertices[i] = new Vector3(x, y, z);
+                    if (isBrotliEncoding) {
+                         for (int i = 0; i < numPoints; i++) {
+                            uint mc_0 = System.BitConverter.ToUInt32 (data, toSetOff + 4);
+                            uint mc_1 = System.BitConverter.ToUInt32 (data, toSetOff + 0);
+                            uint mc_2 = System.BitConverter.ToUInt32 (data, toSetOff + 12);
+                            uint mc_3 = System.BitConverter.ToUInt32 (data, toSetOff + 8);
+                            
+                            toSetOff += 16;
+
+                            uint X = dealign24b ((mc_3 & 0x00FFFFFF) >> 0)
+                                   | (dealign24b (((mc_3 >> 24) | (mc_2 << 8)) >> 0) << 8);
+
+                            uint Y = dealign24b ((mc_3 & 0x00FFFFFF) >> 1)
+                                   | (dealign24b (((mc_3 >> 24) | (mc_2 << 8)) >> 1) << 8);
+
+                            uint Z = dealign24b ((mc_3 & 0x00FFFFFF) >> 2)
+                                   | (dealign24b (((mc_3 >> 24) | (mc_2 << 8)) >> 2) << 8);
+
+                            if (mc_1 != 0 || mc_2 != 0) {
+                                X = X | (dealign24b ((mc_1 & 0x00FFFFFF) >> 0) << 16)
+                                      | (dealign24b (((mc_1 >> 24) | (mc_0 << 8)) >> 0) << 24);
+
+                                Y = Y | (dealign24b ((mc_1 & 0x00FFFFFF) >> 1) << 16)
+                                      | (dealign24b (((mc_1 >> 24) | (mc_0 << 8)) >> 1) << 24);
+
+                                Z = Z | (dealign24b ((mc_1 & 0x00FFFFFF) >> 2) << 16)
+                                      | (dealign24b (((mc_1 >> 24) | (mc_0 << 8)) >> 2) << 24);
+                            }
+
+                            //Reduction to single precision!
+                            //Note: y and z are switched
+                            float x = (float) (X * metaData.scale3d.x);
+                            float y = (float) (Z * metaData.scale3d.z);
+                            float z = (float) (Y * metaData.scale3d.y);
+
+                            vertices[i] = new Vector3 (x, y, z);
+                        }
+                    } else {
+                        for (int i = 0; i < numPoints; i++) {
+                            //Reduction to single precision!
+                            //Note: y and z are switched
+                            float x = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 0) * metaData.scale3d.x);
+                            float y = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 8) * metaData.scale3d.z);
+                            float z = (float)(System.BitConverter.ToUInt32(data, offset + i * pointByteSize + 4) * metaData.scale3d.y);
+                            vertices[i] = new Vector3(x, y, z);
+                        }
+                        toSetOff += 12;
                     }
-                    toSetOff += 12;
                 } else if (pointAttribute.name.ToUpper().Equals(PointAttributes.COLOR_PACKED)) {
                     for (int i = 0; i < numPoints; i++) {
                         byte r = data[offset + i * pointByteSize + 0];
@@ -348,7 +400,7 @@ namespace BAPointCloudRenderer.Loading {
                 }else if (pointAttribute.name.ToUpper().Equals(PointAttributes.RGBA) || pointAttribute.name.ToUpper().Equals(PointAttributes.RGB)) {
                     if (metaData.version == "2.0")
                     {
-                        CalculateRGBA(ref colors, ref offset, data, pointByteSize, numPoints, pointAttribute.name.EndsWith("a"));
+                        CalculateRGBA(ref colors, ref offset, ref toSetOff, data, pointByteSize, numPoints, pointAttribute.name.EndsWith("a"), isBrotliEncoding);
                     } 
                     else
                     {
@@ -361,6 +413,12 @@ namespace BAPointCloudRenderer.Loading {
                             colors[i] = new Color32(r, g, b, a);
                         }
                         toSetOff += 4;
+                    }
+                } else {
+                    if (isBrotliEncoding) {
+                        for (int j = 0; j < numPoints; j++) {
+                            toSetOff += (pointAttribute as PointAttributeV2_0).byteSize;
+                        }
                     }
                 }
                 /*
@@ -386,25 +444,44 @@ namespace BAPointCloudRenderer.Loading {
                     }
                 }
                 */
-                offset += metaData.version == "2.0" ? (pointAttribute as PointAttributeV2_0).byteSize : toSetOff;
+                offset += metaData.version == "2.0" && !isBrotliEncoding ? (pointAttribute as PointAttributeV2_0).byteSize : toSetOff;
             }
             node.SetPoints(vertices, colors);
         }
-        private static void CalculateRGBA(ref Color[] colors, ref int offset, byte[] data, int pointByteSize, int numPoints, bool alpha)
+        private static void CalculateRGBA(ref Color[] colors, ref int offset, ref int toSetOff, byte[] data, int pointByteSize, int numPoints, bool alpha, bool isBrotliEncoding)
         {
             int size = alpha ? 4 : 3;
 
             for (int j = 0; j < numPoints; j++)
             {
-                int pointOffset = j * pointByteSize;
+                if (isBrotliEncoding) {
+                    uint mc_0 = System.BitConverter.ToUInt32 (data, offset + toSetOff + 4);
+                    uint mc_1 = System.BitConverter.ToUInt32 (data, offset + toSetOff + 0);
+                    toSetOff += 8;
+                    
+                    uint r = dealign24b((mc_1 & 0x00FFFFFF) >> 0)
+                           | (dealign24b(((mc_1 >> 24) | (mc_0 << 8)) >> 0) << 8);
 
-                UInt16 r = BitConverter.ToUInt16(data, pointOffset + offset + 0);
-                UInt16 g = BitConverter.ToUInt16(data, pointOffset + offset + 2);
-                UInt16 b = BitConverter.ToUInt16(data, pointOffset + offset + 4);
+                    uint g = dealign24b((mc_1 & 0x00FFFFFF) >> 1)
+                           | (dealign24b(((mc_1 >> 24) | (mc_0 << 8)) >> 1) << 8);
 
-                // ~~~ !!! hardcoded alphaville !!! ~~~
-                // although its called RGBA theres no alpha. so..
-                colors[j] = new Color32((byte)(r >> 8), (byte)(g >> 8), (byte)(b >> 8), (byte)255);     //<< 8: Move from [0, 65535] to [0, 255]
+                    uint b = dealign24b((mc_1 & 0x00FFFFFF) >> 2)
+                           | (dealign24b(((mc_1 >> 24) | (mc_0 << 8)) >> 2) << 8);
+                    
+                    // ~~~ !!! hardcoded alphaville !!! ~~~
+                    // although its called RGBA theres no alpha. so..
+                    colors[j] = new Color32 ((byte) (r >> 8), (byte) (g >> 8), (byte) (b >> 8), (byte) 255); //<< 8: Move from [0, 65535] to [0, 255]
+                } else {
+                    int pointOffset = j * pointByteSize;
+
+                    UInt16 r = BitConverter.ToUInt16(data, pointOffset + offset + 0);
+                    UInt16 g = BitConverter.ToUInt16(data, pointOffset + offset + 2);
+                    UInt16 b = BitConverter.ToUInt16(data, pointOffset + offset + 4);
+
+                    // ~~~ !!! hardcoded alphaville !!! ~~~
+                    // although its called RGBA theres no alpha. so..
+                    colors[j] = new Color32((byte)(r >> 8), (byte)(g >> 8), (byte)(b >> 8), (byte)255);     //<< 8: Move from [0, 65535] to [0, 255]
+                }
             }
         }
         /* Finds a file for a node in the hierarchy.
@@ -470,6 +547,36 @@ namespace BAPointCloudRenderer.Loading {
         public static uint LoadAllPointsForNode(Node node) {
             string dataRPath = node.MetaData.octreeDir + "/r/";
             return LoadAllPoints(dataRPath, node.MetaData, node);
+        }
+        
+        private static uint dealign24b (uint mortoncode) {
+            // see https://stackoverflow.com/questions/45694690/how-i-can-remove-all-odds-bits-in-c
+
+            // input alignment of desired bits
+            // ..a..b..c..d..e..f..g..h..i..j..k..l..m..n..o..p
+            uint x = mortoncode;
+
+            //          ..a..b..c..d..e..f..g..h..i..j..k..l..m..n..o..p                     ..a..b..c..d..e..f..g..h..i..j..k..l..m..n..o..p
+            //          ..a.....c.....e.....g.....i.....k.....m.....o...                     .....b.....d.....f.....h.....j.....l.....n.....p
+            //          ....a.....c.....e.....g.....i.....k.....m.....o.                     .....b.....d.....f.....h.....j.....l.....n.....p
+            x = ((x & 0b001000001000001000001000) >> 2) | ((x & 0b000001000001000001000001) >> 0);
+            //          ....ab....cd....ef....gh....ij....kl....mn....op                     ....ab....cd....ef....gh....ij....kl....mn....op
+            //          ....ab..........ef..........ij..........mn......                     ..........cd..........gh..........kl..........op
+            //          ........ab..........ef..........ij..........mn..                     ..........cd..........gh..........kl..........op
+            x = ((x & 0b000011000000000011000000) >> 4) | ((x & 0b000000000011000000000011) >> 0);
+            //          ........abcd........efgh........ijkl........mnop                     ........abcd........efgh........ijkl........mnop
+            //          ........abcd....................ijkl............                     ....................efgh....................mnop
+            //          ................abcd....................ijkl....                     ....................efgh....................mnop
+            x = ((x & 0b000000001111000000000000) >> 8) | ((x & 0b000000000000000000001111) >> 0);
+            //          ................abcdefgh................ijklmnop                     ................abcdefgh................ijklmnop
+            //          ................abcdefgh........................                     ........................................ijklmnop
+            //          ................................abcdefgh........                     ........................................ijklmnop
+            x = ((x & 0b000000000000000000000000) >> 16) | ((x & 0b000000000000000011111111) >> 0);
+
+            // sucessfully realigned!
+            // ................................abcdefghijklmnop
+
+            return x;
         }
     }
 }
